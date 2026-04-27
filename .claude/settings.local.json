@@ -36,7 +36,8 @@
       "WebFetch(domain:registry.npmjs.org)",
       "WebFetch(domain:sentry.io)",
       "Bash(kill %1 npx vite preview --port 4180)",
-      "Bash(kill %1 %2)"
+      "Bash(kill %1 %2)",
+      "Bash(vercel logs *)"
     ]
   },
   "sandbox": {
