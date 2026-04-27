@@ -1,11 +1,13 @@
 import { Package, Pill, Stethoscope, Truck, Apple, Dna } from 'lucide-react'
 import SectionTitle from '../components/SectionTitle'
 import ScrollReveal from '../components/ScrollReveal'
-import { productsContent } from '../data/content'
+import { useContent } from '../context/ContentContext'
 
 const categoryIcons = { Package, Pill, Stethoscope, Truck, Apple, Dna }
 
 export default function Products() {
+  const { getContent } = useContent()
+  const productsContent = getContent('products')
   return (
     <div>
       {/* Page Header */}

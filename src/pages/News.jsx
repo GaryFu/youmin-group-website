@@ -2,13 +2,15 @@ import { useState } from 'react'
 import { Calendar, Tag, ChevronRight } from 'lucide-react'
 import SectionTitle from '../components/SectionTitle'
 import ScrollReveal from '../components/ScrollReveal'
-import { newsContent } from '../data/content'
+import { useContent } from '../context/ContentContext'
 
 const PAGE_SIZE = 6
 
 const allCategories = ['全部', ...new Set(newsContent.articles.map((a) => a.category))]
 
 export default function News() {
+  const { getContent } = useContent()
+  const newsContent = getContent('news')
   const [filter, setFilter] = useState('全部')
   const [page, setPage] = useState(0)
 

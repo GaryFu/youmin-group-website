@@ -2,9 +2,11 @@ import { useState } from 'react'
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from 'lucide-react'
 import SectionTitle from '../components/SectionTitle'
 import ScrollReveal from '../components/ScrollReveal'
-import { contactContent } from '../data/content'
+import { useContent } from '../context/ContentContext'
 
 export default function Contact() {
+  const { getContent } = useContent()
+  const contactContent = getContent('contact')
   const [submitted, setSubmitted] = useState(false)
 
   const handleSubmit = (e) => {

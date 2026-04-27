@@ -1,7 +1,7 @@
 import { Building2, GraduationCap, Factory, Ship, Handshake } from 'lucide-react'
 import SectionTitle from '../components/SectionTitle'
 import ScrollReveal from '../components/ScrollReveal'
-import { partnersContent } from '../data/content'
+import { useContent } from '../context/ContentContext'
 
 const categoryConfig = [
   { icon: GraduationCap, color: 'bg-blue-50 text-blue-600 border-blue-100' },
@@ -11,6 +11,8 @@ const categoryConfig = [
 ]
 
 export default function Partners() {
+  const { getContent } = useContent()
+  const partnersContent = getContent('partners')
   return (
     <div>
       {/* Page Header */}

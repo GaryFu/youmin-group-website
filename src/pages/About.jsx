@@ -1,7 +1,7 @@
 import { Building2, Target, Eye, Heart, Handshake } from 'lucide-react'
 import SectionTitle from '../components/SectionTitle'
 import ScrollReveal from '../components/ScrollReveal'
-import { aboutContent } from '../data/content'
+import { useContent } from '../context/ContentContext'
 
 const cultureIcons = {
   '企业使命': Target,
@@ -11,6 +11,9 @@ const cultureIcons = {
 }
 
 export default function About() {
+  const { getContent } = useContent()
+  const aboutContent = getContent('about')
+
   return (
     <div>
       {/* Page Header */}
@@ -68,19 +71,16 @@ export default function About() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle subtitle="MILESTONES" title="发展历程" />
           <div className="max-w-3xl mx-auto relative">
-            {/* Timeline line */}
             <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-green-200 md:-translate-x-px" />
             <div className="space-y-8">
               {aboutContent.timeline.map((item, i) => (
                 <ScrollReveal key={i}>
                   <div className={`flex items-start gap-6 md:gap-10 ${i % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
-                    {/* Dot */}
                     <div className="relative z-10 flex items-center justify-center shrink-0">
                       <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg shadow-green-200">
                         {item.year.slice(2)}
                       </div>
                     </div>
-                    {/* Content */}
                     <div className={`flex-1 bg-gray-50 rounded-xl p-6 border border-gray-100 ${i % 2 === 1 ? 'md:text-right' : ''}`}>
                       <span className="text-green-600 font-bold text-lg">{item.year}</span>
                       <p className="text-gray-600 text-sm mt-1 leading-relaxed">{item.event}</p>

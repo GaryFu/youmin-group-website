@@ -2,13 +2,14 @@ import { useState } from 'react'
 import { Building2, Factory, Ship } from 'lucide-react'
 import SectionTitle from '../components/SectionTitle'
 import ScrollReveal from '../components/ScrollReveal'
-import { industryContent } from '../data/content'
+import { useContent } from '../context/ContentContext'
 
 const tabIcons = { rd: Building2, agri: Factory, trade: Ship }
 
 export default function Industry() {
   const [activeTab, setActiveTab] = useState('rd')
-
+  const { getContent } = useContent()
+  const industryContent = getContent('industry')
   return (
     <div>
       {/* Page Header */}

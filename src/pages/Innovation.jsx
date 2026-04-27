@@ -1,7 +1,7 @@
 import { Microscope, Beaker, Atom, Award, BookOpen, GraduationCap } from 'lucide-react'
 import SectionTitle from '../components/SectionTitle'
 import ScrollReveal from '../components/ScrollReveal'
-import { innovationContent } from '../data/content'
+import { useContent } from '../context/ContentContext'
 
 const centerIcons = { Microscope, Beaker, Atom }
 
@@ -12,6 +12,8 @@ const achievements = [
 ]
 
 export default function Innovation() {
+  const { getContent } = useContent()
+  const innovationContent = getContent('innovation')
   return (
     <div>
       {/* Page Header */}

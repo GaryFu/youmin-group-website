@@ -3,11 +3,14 @@ import { ArrowRight, FlaskConical, Layers, Leaf, Shield, ChevronRight } from 'lu
 import SectionTitle from '../components/SectionTitle'
 import Card from '../components/Card'
 import ScrollReveal from '../components/ScrollReveal'
-import { homeContent, newsContent } from '../data/content'
+import { useContent } from '../context/ContentContext'
 
 const advantageIcons = { FlaskConical, Layers, Leaf, Shield }
 
 export default function Home() {
+  const { getContent } = useContent()
+  const homeContent = getContent('home')
+  const newsContent = getContent('news')
   return (
     <div>
       {/* Hero */}

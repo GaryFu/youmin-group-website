@@ -1,11 +1,13 @@
 import { Sprout, Heart, ShieldCheck, Users } from 'lucide-react'
 import SectionTitle from '../components/SectionTitle'
 import ScrollReveal from '../components/ScrollReveal'
-import { greenContent } from '../data/content'
+import { useContent } from '../context/ContentContext'
 
 const practiceIcons = { Sprout, Heart, ShieldCheck, Users }
 
 export default function Green() {
+  const { getContent } = useContent()
+  const greenContent = getContent('green')
   return (
     <div>
       {/* Page Header */}
