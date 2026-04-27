@@ -1,9 +1,8 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import Layout from './components/Layout'
 import AdminLayout from './components/admin/AdminLayout'
 import { useAuth } from './context/AuthContext'
 
-// Front-end pages
 import Home from './pages/Home'
 import About from './pages/About'
 import Industry from './pages/Industry'
@@ -14,7 +13,6 @@ import News from './pages/News'
 import Partners from './pages/Partners'
 import Contact from './pages/Contact'
 
-// Admin pages
 import AdminLogin from './pages/admin/AdminLogin'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminSiteConfig from './pages/admin/AdminSiteConfig'
@@ -34,10 +32,18 @@ function RequireAuth({ children }) {
   return children
 }
 
+function FrontendLayout() {
+  return (
+    <Layout>
+      <Outlet />
+    </Layout>
+  )
+}
+
 export default function App() {
   return (
     <Routes>
-      {/* Admin Routes */}
+      {/* Admin routes — isolated from front-end Layout */}
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route
         path="/admin"
@@ -47,7 +53,7 @@ export default function App() {
           </RequireAuth>
         }
       >
-        <Route index element={<Navigate to="/admin/dashboard" replace />} />
+        <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<AdminDashboard />} />
         <Route path="site-config" element={<AdminSiteConfig />} />
         <Route path="home" element={<AdminHome />} />
@@ -61,26 +67,19 @@ export default function App() {
         <Route path="contact" element={<AdminContact />} />
       </Route>
 
-      {/* Front-end Routes */}
-      <Route
-        path="*"
-        element={
-          <Layout>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/industry" element={<Industry />} />
-              <Route path="/innovation" element={<Innovation />} />
-              <Route path="/products" element={<Products />} />
-              <Route path="/green" element={<Green />} />
-              <Route path="/news" element={<News />} />
-              <Route path="/partners" element={<Partners />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="*" element={<Home />} />
-            </Routes>
-          </Layout>
-        }
-      />
+      {/* Front-end routes — wrapped in Navbar + Footer Layout */}
+      <Route element={<FrontendLayout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/industry" element={<Industry />} />
+        <Route path="/innovation" element={<Innovation />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/green" element={<Green />} />
+        <Route path="/news" element={<News />} />
+        <Route path="/partners" element={<Partners />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="*" element={<Home />} />
+      </Route>
     </Routes>
   )
 }
