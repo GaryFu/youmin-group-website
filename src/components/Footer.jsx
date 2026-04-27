@@ -49,7 +49,7 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <Link to="/" className="inline-block mb-4">
               <img
-                src="/images/logo.png"
+                src="/images/logo-default.png"
                 alt="佑民集团"
                 className="h-12 w-auto object-contain brightness-110"
               />

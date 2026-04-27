@@ -42,11 +42,13 @@ export default function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-0 shrink-0">
             <img
-              src="/images/logo.png"
+              src={
+                location.pathname === '/' && !scrolled
+                  ? '/images/logo-white.png'
+                  : '/images/logo-default.png'
+              }
               alt="佑民集团"
-              className={`h-10 lg:h-12 w-auto object-contain transition-all duration-300 ${
-                scrolled ? '' : 'brightness-0 invert'
-              }`}
+              className="h-10 lg:h-12 w-auto object-contain transition-all duration-300"
             />
           </Link>
 
