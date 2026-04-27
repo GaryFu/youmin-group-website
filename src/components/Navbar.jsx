@@ -44,7 +44,9 @@ export default function Navbar() {
             <img
               src="/images/logo.png"
               alt="佑民集团"
-              className="h-10 lg:h-12 w-auto object-contain"
+              className={`h-10 lg:h-12 w-auto object-contain transition-all duration-300 ${
+                scrolled ? '' : 'brightness-0 invert'
+              }`}
             />
           </Link>
 
