@@ -44,7 +44,7 @@ export default function Navbar() {
             <img
               src={
                 location.pathname === '/' && !scrolled
-                  ? '/images/logo-white.png'
+                  ? '/images/logo-white-v2.png'
                   : '/images/logo-default.png'
               }
               alt="佑民集团"
