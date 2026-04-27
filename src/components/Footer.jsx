@@ -47,14 +47,12 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <Link to="/" className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
-                佑
-              </div>
-              <div>
-                <div className="text-white font-bold text-base">天佑农牧发展（河南）集团</div>
-                <div className="text-gray-500 text-xs">TIANYOU AGRI GROUP</div>
-              </div>
+            <Link to="/" className="inline-block mb-4">
+              <img
+                src="/images/logo.png"
+                alt="佑民集团"
+                className="h-12 w-auto object-contain brightness-110"
+              />
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed mb-6 max-w-sm">
               以绿色农业与现代畜牧科技为核心，构建研发、农牧、贸易协同发展的全产业链集团。打造世界一流农牧企业，做农民信得过的品牌。

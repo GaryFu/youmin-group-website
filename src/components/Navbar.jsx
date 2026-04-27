@@ -40,18 +40,12 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 shrink-0">
-            <div className="w-9 h-9 bg-green-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">
-              佑
-            </div>
-            <div className="hidden sm:block">
-              <div className={`text-sm font-bold leading-tight transition-colors ${scrolled ? 'text-green-900' : 'text-white'}`}>
-                天佑农牧集团
-              </div>
-              <div className={`text-[10px] leading-tight transition-colors ${scrolled ? 'text-gray-500' : 'text-green-100'}`}>
-                TIANYOU AGRI GROUP
-              </div>
-            </div>
+          <Link to="/" className="flex items-center gap-0 shrink-0">
+            <img
+              src="/images/logo.png"
+              alt="佑民集团"
+              className="h-10 lg:h-12 w-auto object-contain"
+            />
           </Link>
 
           {/* Desktop Nav */}

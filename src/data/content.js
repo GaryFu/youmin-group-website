@@ -1,14 +1,14 @@
 export const site = {
   name: '天佑农牧发展（河南）集团',
-  shortName: '天佑农牧集团',
-  englishName: 'TIANYOU AGRI GROUP',
+  shortName: '佑民集团',
+  englishName: 'YOU MIN GROUP',
   tagline: '诚信立企，科技兴农，品质为本，服务为心',
   mission: '打造世界一流农牧企业，做农民信得过的品牌',
   description:
     '以绿色农业与现代畜牧科技为核心，构建研发、农牧、贸易协同发展的全产业链集团。',
   address: '河南省郑州市',
   phone: '400-XXX-XXXX',
-  email: 'contact@tianyouagri.com',
+  email: 'contact@youmingroup.com',
 }
 
 export const homeContent = {

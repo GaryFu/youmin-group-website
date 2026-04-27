@@ -1,0 +1,44 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(brew list *)",
+      "Bash(npm list *)",
+      "Bash(pip list *)",
+      "Bash(pip3 list *)",
+      "Bash(mas list *)",
+      "Bash(mdfind \"kMDItemDisplayName == '*xiaolongxia*' || kMDItemDisplayName == '*小龙虾*' || kMDItemDisplayName == '*crayfish*' || kMDItemDisplayName == '*lobster*'\")",
+      "Bash(openclaw --version)",
+      "Bash(openclaw version *)",
+      "Bash(mdfind \"kMDItemDisplayName == '*openclaw*'\")",
+      "Bash(openclaw config *)",
+      "Bash(openclaw --help)",
+      "Bash(openclaw configure *)",
+      "WebFetch(domain:api-docs.deepseek.com)",
+      "Bash(openclaw channels *)",
+      "WebFetch(domain:docs.openclaw.ai)",
+      "Bash(openclaw plugins *)",
+      "Bash(npx *)",
+      "Bash(python3 *)",
+      "Bash(openclaw gateway *)",
+      "Bash(openclaw agents *)",
+      "WebFetch(domain:github.com)",
+      "Bash(npm install *)",
+      "Bash(openclaw health *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://127.0.0.1:18789/health)",
+      "Bash(\"/Users/minyou/.local/state/fnm_multishells/98300_1777120922773/bin/openclaw\" --version)",
+      "Bash(launchctl kickstart *)",
+      "Bash(awk '{print $NF}')",
+      "Bash(openclaw capability *)",
+      "Bash(openclaw docs *)",
+      "Bash(npm view *)",
+      "Bash(curl *)",
+      "WebSearch",
+      "WebFetch(domain:registry.npmjs.org)",
+      "WebFetch(domain:sentry.io)"
+    ]
+  },
+  "sandbox": {
+    "enabled": true,
+    "autoAllowBashIfSandboxed": true
+  }
+}

@@ -25,7 +25,7 @@ export default function Home() {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 text-center">
           <ScrollReveal>
             <p className="text-green-300 text-sm font-semibold tracking-[0.3em] uppercase mb-6">
-              天佑农牧 · TIANYOU AGRI GROUP
+              佑民集团 · YOU MIN GROUP
             </p>
           </ScrollReveal>
           <ScrollReveal>
