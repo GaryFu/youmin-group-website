@@ -1,18 +1,19 @@
+import { deepClone } from '../../utils/deepClone'
 import { useState, useEffect } from 'react'
 import EditorShell from '../../components/admin/EditorShell'
 import { Plus, Trash2 } from 'lucide-react'
 
 function ProductsForm({ data, onSave, resetKey }) {
-  const [form, setForm] = useState(structuredClone(data))
+  const [form, setForm] = useState(deepClone(data))
 
-  useEffect(() => { setForm(structuredClone(data)) }, [data, resetKey])
+  useEffect(() => { setForm(deepClone(data)) }, [data, resetKey])
 
   const handleSubmit = (e) => { e.preventDefault(); onSave(form) }
 
   const updateField = (path) => (e) => {
     setForm((f) => {
       const keys = path.split('.')
-      const copy = structuredClone(f)
+      const copy = deepClone(f)
       let obj = copy
       for (let i = 0; i < keys.length - 1; i++) obj = obj[keys[i]]
       obj[keys[keys.length - 1]] = e.target.value
@@ -22,7 +23,7 @@ function ProductsForm({ data, onSave, resetKey }) {
 
   const updateCategory = (ci, field) => (e) => {
     setForm((f) => {
-      const copy = structuredClone(f)
+      const copy = deepClone(f)
       copy.categories[ci][field] = e.target.value
       return copy
     })
@@ -30,7 +31,7 @@ function ProductsForm({ data, onSave, resetKey }) {
 
   const updateItem = (ci, ii) => (e) => {
     setForm((f) => {
-      const copy = structuredClone(f)
+      const copy = deepClone(f)
       copy.categories[ci].items[ii] = e.target.value
       return copy
     })
@@ -38,7 +39,7 @@ function ProductsForm({ data, onSave, resetKey }) {
 
   const addItem = (ci) => {
     setForm((f) => {
-      const copy = structuredClone(f)
+      const copy = deepClone(f)
       copy.categories[ci].items.push('')
       return copy
     })
@@ -46,7 +47,7 @@ function ProductsForm({ data, onSave, resetKey }) {
 
   const removeItem = (ci, ii) => {
     setForm((f) => {
-      const copy = structuredClone(f)
+      const copy = deepClone(f)
       copy.categories[ci].items.splice(ii, 1)
       return copy
     })

@@ -37,7 +37,9 @@
       "WebFetch(domain:sentry.io)",
       "Bash(kill %1 npx vite preview --port 4180)",
       "Bash(kill %1 %2)",
-      "Bash(vercel logs *)"
+      "Bash(vercel logs *)",
+      "Bash(lsof -ti:4173)",
+      "Bash(xargs kill *)"
     ]
   },
   "sandbox": {

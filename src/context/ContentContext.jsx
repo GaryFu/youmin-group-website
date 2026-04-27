@@ -1,3 +1,4 @@
+import { deepClone } from '../utils/deepClone'
 import { createContext, useContext, useState, useCallback, useEffect } from 'react'
 import {
   site as defaultSite,
@@ -27,10 +28,6 @@ const defaults = {
   contact: defaultContact,
 }
 
-function clone(obj) {
-  return JSON.parse(JSON.stringify(obj))
-}
-
 function loadFromStorage() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
@@ -51,7 +48,7 @@ const ContentContext = createContext(null)
 
 export function ContentProvider({ children }) {
   const [content, setContent] = useState(() => {
-    return loadFromStorage() || clone(defaults)
+    return loadFromStorage() || deepClone(defaults)
   })
 
   useEffect(() => {
@@ -59,25 +56,25 @@ export function ContentProvider({ children }) {
   }, [content])
 
   const getContent = useCallback((key) => {
-    return content[key] ?? clone(defaults[key])
+    return content[key] ?? deepClone(defaults[key])
   }, [content])
 
   const updateContent = useCallback((key, newData) => {
     setContent((prev) => {
-      const updated = { ...prev, [key]: clone(newData) }
+      const updated = { ...prev, [key]: deepClone(newData) }
       return updated
     })
   }, [])
 
   const resetContent = useCallback((key) => {
     setContent((prev) => {
-      const updated = { ...prev, [key]: clone(defaults[key]) }
+      const updated = { ...prev, [key]: deepClone(defaults[key]) }
       return updated
     })
   }, [])
 
   const resetAll = useCallback(() => {
-    setContent(clone(defaults))
+    setContent(deepClone(defaults))
   }, [])
 
   return (

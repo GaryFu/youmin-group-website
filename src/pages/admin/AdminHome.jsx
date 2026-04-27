@@ -1,11 +1,12 @@
+import { deepClone } from '../../utils/deepClone'
 import { useState, useEffect } from 'react'
 import EditorShell from '../../components/admin/EditorShell'
 import { Plus, Trash2 } from 'lucide-react'
 
 function HomeForm({ data, onSave, resetKey }) {
-  const [form, setForm] = useState(structuredClone(data))
+  const [form, setForm] = useState(deepClone(data))
 
-  useEffect(() => { setForm(structuredClone(data)) }, [data, resetKey])
+  useEffect(() => { setForm(deepClone(data)) }, [data, resetKey])
 
   const handleSubmit = (e) => { e.preventDefault(); onSave(form) }
 
@@ -26,7 +27,7 @@ function HomeForm({ data, onSave, resetKey }) {
 
   const updateAdvantage = (i, field) => (e) => {
     setForm((f) => {
-      const a = structuredClone(f.advantages)
+      const a = deepClone(f.advantages)
       a[i] = { ...a[i], [field]: e.target.value }
       return { ...f, advantages: a }
     })

@@ -1,18 +1,19 @@
+import { deepClone } from '../../utils/deepClone'
 import { useState, useEffect } from 'react'
 import EditorShell from '../../components/admin/EditorShell'
 import { Plus, Trash2 } from 'lucide-react'
 
 function IndustryForm({ data, onSave, resetKey }) {
-  const [form, setForm] = useState(structuredClone(data))
+  const [form, setForm] = useState(deepClone(data))
 
-  useEffect(() => { setForm(structuredClone(data)) }, [data, resetKey])
+  useEffect(() => { setForm(deepClone(data)) }, [data, resetKey])
 
   const handleSubmit = (e) => { e.preventDefault(); onSave(form) }
 
   const updateField = (path) => (e) => {
     setForm((f) => {
       const keys = path.split('.')
-      const copy = structuredClone(f)
+      const copy = deepClone(f)
       let obj = copy
       for (let i = 0; i < keys.length - 1; i++) obj = obj[keys[i]]
       obj[keys[keys.length - 1]] = e.target.value
@@ -22,7 +23,7 @@ function IndustryForm({ data, onSave, resetKey }) {
 
   const updateCompany = (tabIdx, companyIdx, field) => (e) => {
     setForm((f) => {
-      const copy = structuredClone(f)
+      const copy = deepClone(f)
       copy.tabs[tabIdx].companies[companyIdx][field] = e.target.value
       return copy
     })
@@ -30,7 +31,7 @@ function IndustryForm({ data, onSave, resetKey }) {
 
   const addCompany = (tabIdx) => {
     setForm((f) => {
-      const copy = structuredClone(f)
+      const copy = deepClone(f)
       copy.tabs[tabIdx].companies.push({ name: '', desc: '' })
       return copy
     })
@@ -38,7 +39,7 @@ function IndustryForm({ data, onSave, resetKey }) {
 
   const removeCompany = (tabIdx, companyIdx) => {
     setForm((f) => {
-      const copy = structuredClone(f)
+      const copy = deepClone(f)
       copy.tabs[tabIdx].companies.splice(companyIdx, 1)
       return copy
     })

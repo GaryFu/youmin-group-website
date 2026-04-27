@@ -1,18 +1,19 @@
+import { deepClone } from '../../utils/deepClone'
 import { useState, useEffect } from 'react'
 import EditorShell from '../../components/admin/EditorShell'
 import { Plus, Trash2 } from 'lucide-react'
 
 function AboutForm({ data, onSave, resetKey }) {
-  const [form, setForm] = useState(structuredClone(data))
+  const [form, setForm] = useState(deepClone(data))
 
-  useEffect(() => { setForm(structuredClone(data)) }, [data, resetKey])
+  useEffect(() => { setForm(deepClone(data)) }, [data, resetKey])
 
   const handleSubmit = (e) => { e.preventDefault(); onSave(form) }
 
   const updateField = (path) => (e) => {
     setForm((f) => {
       const keys = path.split('.')
-      const copy = structuredClone(f)
+      const copy = deepClone(f)
       let obj = copy
       for (let i = 0; i < keys.length - 1; i++) obj = obj[keys[i]]
       obj[keys[keys.length - 1]] = e.target.value
@@ -22,7 +23,7 @@ function AboutForm({ data, onSave, resetKey }) {
 
   const updateOverviewPara = (i) => (e) => {
     setForm((f) => {
-      const copy = structuredClone(f)
+      const copy = deepClone(f)
       copy.overview.paragraphs[i] = e.target.value
       return copy
     })
@@ -30,7 +31,7 @@ function AboutForm({ data, onSave, resetKey }) {
 
   const updateCultureItem = (i, field) => (e) => {
     setForm((f) => {
-      const copy = structuredClone(f)
+      const copy = deepClone(f)
       copy.culture.items[i][field] = e.target.value
       return copy
     })
@@ -38,7 +39,7 @@ function AboutForm({ data, onSave, resetKey }) {
 
   const updateTimeline = (i, field) => (e) => {
     setForm((f) => {
-      const copy = structuredClone(f)
+      const copy = deepClone(f)
       copy.timeline[i][field] = field === 'year' ? e.target.value : e.target.value
       return copy
     })
@@ -46,7 +47,7 @@ function AboutForm({ data, onSave, resetKey }) {
 
   const addTimeline = () => {
     setForm((f) => {
-      const copy = structuredClone(f)
+      const copy = deepClone(f)
       copy.timeline.push({ year: '', event: '' })
       return copy
     })
@@ -54,7 +55,7 @@ function AboutForm({ data, onSave, resetKey }) {
 
   const removeTimeline = (i) => {
     setForm((f) => {
-      const copy = structuredClone(f)
+      const copy = deepClone(f)
       copy.timeline.splice(i, 1)
       return copy
     })
