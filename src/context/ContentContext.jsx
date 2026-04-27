@@ -27,6 +27,10 @@ const defaults = {
   contact: defaultContact,
 }
 
+function clone(obj) {
+  return JSON.parse(JSON.stringify(obj))
+}
+
 function loadFromStorage() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
@@ -47,7 +51,7 @@ const ContentContext = createContext(null)
 
 export function ContentProvider({ children }) {
   const [content, setContent] = useState(() => {
-    return loadFromStorage() || structuredClone(defaults)
+    return loadFromStorage() || clone(defaults)
   })
 
   useEffect(() => {
@@ -55,25 +59,25 @@ export function ContentProvider({ children }) {
   }, [content])
 
   const getContent = useCallback((key) => {
-    return content[key] ?? structuredClone(defaults[key])
+    return content[key] ?? clone(defaults[key])
   }, [content])
 
   const updateContent = useCallback((key, newData) => {
     setContent((prev) => {
-      const updated = { ...prev, [key]: structuredClone(newData) }
+      const updated = { ...prev, [key]: clone(newData) }
       return updated
     })
   }, [])
 
   const resetContent = useCallback((key) => {
     setContent((prev) => {
-      const updated = { ...prev, [key]: structuredClone(defaults[key]) }
+      const updated = { ...prev, [key]: clone(defaults[key]) }
       return updated
     })
   }, [])
 
   const resetAll = useCallback(() => {
-    setContent(structuredClone(defaults))
+    setContent(clone(defaults))
   }, [])
 
   return (

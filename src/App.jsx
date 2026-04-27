@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, Outlet } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Layout from './components/Layout'
 import AdminLayout from './components/admin/AdminLayout'
 import { useAuth } from './context/AuthContext'
@@ -16,15 +16,15 @@ import Contact from './pages/Contact'
 import AdminLogin from './pages/admin/AdminLogin'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminSiteConfig from './pages/admin/AdminSiteConfig'
-import AdminHome from './pages/admin/AdminHome'
-import AdminAbout from './pages/admin/AdminAbout'
-import AdminIndustry from './pages/admin/AdminIndustry'
-import AdminInnovation from './pages/admin/AdminInnovation'
-import AdminProducts from './pages/admin/AdminProducts'
-import AdminGreen from './pages/admin/AdminGreen'
-import AdminNews from './pages/admin/AdminNews'
-import AdminPartners from './pages/admin/AdminPartners'
-import AdminContact from './pages/admin/AdminContact'
+import AdminHomePage from './pages/admin/AdminHome'
+import AdminAboutPage from './pages/admin/AdminAbout'
+import AdminIndustryPage from './pages/admin/AdminIndustry'
+import AdminInnovationPage from './pages/admin/AdminInnovation'
+import AdminProductsPage from './pages/admin/AdminProducts'
+import AdminGreenPage from './pages/admin/AdminGreen'
+import AdminNewsPage from './pages/admin/AdminNews'
+import AdminPartnersPage from './pages/admin/AdminPartners'
+import AdminContactPage from './pages/admin/AdminContact'
 
 function RequireAuth({ children }) {
   const { isAuthenticated } = useAuth()
@@ -32,43 +32,35 @@ function RequireAuth({ children }) {
   return children
 }
 
-function FrontendLayout() {
+export default function App() {
+  const location = useLocation()
+  const isAdmin = location.pathname.startsWith('/admin')
+
+  if (isAdmin) {
+    return (
+      <Routes>
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin" element={<RequireAuth><AdminLayout /></RequireAuth>}>
+          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="site-config" element={<AdminSiteConfig />} />
+          <Route path="home" element={<AdminHomePage />} />
+          <Route path="about" element={<AdminAboutPage />} />
+          <Route path="industry" element={<AdminIndustryPage />} />
+          <Route path="innovation" element={<AdminInnovationPage />} />
+          <Route path="products" element={<AdminProductsPage />} />
+          <Route path="green" element={<AdminGreenPage />} />
+          <Route path="news" element={<AdminNewsPage />} />
+          <Route path="partners" element={<AdminPartnersPage />} />
+          <Route path="contact" element={<AdminContactPage />} />
+        </Route>
+      </Routes>
+    )
+  }
+
   return (
     <Layout>
-      <Outlet />
-    </Layout>
-  )
-}
-
-export default function App() {
-  return (
-    <Routes>
-      {/* Admin routes — isolated from front-end Layout */}
-      <Route path="/admin/login" element={<AdminLogin />} />
-      <Route
-        path="/admin"
-        element={
-          <RequireAuth>
-            <AdminLayout />
-          </RequireAuth>
-        }
-      >
-        <Route index element={<Navigate to="dashboard" replace />} />
-        <Route path="dashboard" element={<AdminDashboard />} />
-        <Route path="site-config" element={<AdminSiteConfig />} />
-        <Route path="home" element={<AdminHome />} />
-        <Route path="about" element={<AdminAbout />} />
-        <Route path="industry" element={<AdminIndustry />} />
-        <Route path="innovation" element={<AdminInnovation />} />
-        <Route path="products" element={<AdminProducts />} />
-        <Route path="green" element={<AdminGreen />} />
-        <Route path="news" element={<AdminNews />} />
-        <Route path="partners" element={<AdminPartners />} />
-        <Route path="contact" element={<AdminContact />} />
-      </Route>
-
-      {/* Front-end routes — wrapped in Navbar + Footer Layout */}
-      <Route element={<FrontendLayout />}>
+      <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/industry" element={<Industry />} />
@@ -79,7 +71,7 @@ export default function App() {
         <Route path="/partners" element={<Partners />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="*" element={<Home />} />
-      </Route>
-    </Routes>
+      </Routes>
+    </Layout>
   )
 }
