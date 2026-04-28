@@ -31,27 +31,57 @@ const defaults = {
 
 const ALL_KEYS = Object.keys(defaults)
 
+function isAdmin() {
+  return window.location.pathname.startsWith('/admin')
+}
+
 const ContentContext = createContext(null)
 
 export function ContentProvider({ children }) {
   const [content, setContent] = useState(null)
 
-  // Load all content from API on mount
+  // Load content on mount
   useEffect(() => {
-    Promise.all(
+    if (isAdmin()) {
+      // Admin: always load from API for real-time editing
+      loadFromAPI()
+    } else {
+      // Public: load static content.json first (instant), fall back to API
+      loadStatic()
+    }
+  }, [])
+
+  async function loadStatic() {
+    try {
+      const res = await fetch('/content.json')
+      if (!res.ok) throw new Error('not found')
+      const data = await res.json()
+      // Merge with defaults for any missing keys
+      const merged = { ...deepClone(defaults) }
+      for (const key of ALL_KEYS) {
+        if (data[key]) merged[key] = data[key]
+      }
+      setContent(merged)
+    } catch {
+      // Fall back to API if content.json not available (dev mode)
+      loadFromAPI()
+    }
+  }
+
+  async function loadFromAPI() {
+    const results = await Promise.all(
       ALL_KEYS.map((key) =>
         apiGet(`/content/${key}`)
           .then((d) => ({ key, data: d.data }))
           .catch(() => ({ key, data: deepClone(defaults[key]) }))
       )
-    ).then((results) => {
-      const map = {}
-      results.forEach(({ key, data }) => {
-        map[key] = data
-      })
-      setContent(map)
+    )
+    const map = {}
+    results.forEach(({ key, data }) => {
+      map[key] = data
     })
-  }, [])
+    setContent(map)
+  }
 
   const getContent = useCallback(
     (key) => {
@@ -63,16 +93,13 @@ export function ContentProvider({ children }) {
 
   const updateContent = useCallback(async (key, newData) => {
     const cloned = deepClone(newData)
-    // Optimistic update
     setContent((prev) => {
       if (!prev) return prev
       return { ...prev, [key]: cloned }
     })
-    // Persist to server
     try {
       await apiPut(`/content/${key}`, { data: cloned })
     } catch {
-      // Revert on failure — reload from server
       const res = await apiGet(`/content/${key}`).catch(() => ({ data: deepClone(defaults[key]) }))
       setContent((prev) => {
         if (!prev) return prev

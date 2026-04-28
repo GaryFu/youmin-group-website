@@ -52,6 +52,11 @@ router.put('/:key', auth, async (req, res, next) => {
 
     const row = result.rows[0]
     res.json({ key: row.key, data: row.data, updatedAt: row.updated_at })
+
+    // Fire-and-forget: trigger Vercel rebuild for static regeneration
+    if (process.env.DEPLOY_HOOK_URL) {
+      fetch(process.env.DEPLOY_HOOK_URL, { method: 'POST' }).catch(() => {})
+    }
   } catch (err) {
     next(err)
   }
