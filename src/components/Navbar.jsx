@@ -5,6 +5,7 @@ import { Menu, X, ChevronDown } from 'lucide-react'
 const navLinks = [
   { to: '/', label: '首页' },
   { to: '/about', label: '集团简介' },
+  { to: '/culture', label: '企业文化' },
   { to: '/industry', label: '产业布局' },
   { to: '/innovation', label: '科研创新' },
   { to: '/products', label: '产品与服务' },

@@ -1,48 +1,73 @@
 import { createContext, useContext, useState, useCallback, useEffect } from 'react'
+import { post as apiPost, put as apiPut, get as apiGet, setAuthToken, clearAuthToken } from '../lib/api'
 
 const AUTH_KEY = 'youmin_admin_auth'
 
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => {
-    try {
-      const stored = localStorage.getItem(AUTH_KEY)
-      return stored ? JSON.parse(stored) : null
-    } catch {
-      return null
-    }
-  })
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (user) {
-      localStorage.setItem(AUTH_KEY, JSON.stringify(user))
-    } else {
+    const stored = localStorage.getItem(AUTH_KEY)
+    if (!stored) {
+      setLoading(false)
+      return
+    }
+
+    try {
+      const { token } = JSON.parse(stored)
+      if (token) {
+        setAuthToken(token)
+        apiGet('/auth/me')
+          .then((data) => setUser(data.user))
+          .catch(() => {
+            localStorage.removeItem(AUTH_KEY)
+            clearAuthToken()
+          })
+          .finally(() => setLoading(false))
+      } else {
+        setLoading(false)
+      }
+    } catch {
       localStorage.removeItem(AUTH_KEY)
+      setLoading(false)
     }
-  }, [user])
+  }, [])
 
-  const login = useCallback(async (email, password) => {
-    // Simple auth: check against env var or default
-    const adminEmail = import.meta.env.VITE_ADMIN_EMAIL || 'admin@youmingroup.com'
-    const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD || 'youmin2024'
-
-    if (email === adminEmail && password === adminPassword) {
-      const userData = { email, role: 'admin', loginAt: Date.now() }
-      setUser(userData)
+  const login = useCallback(async (login, password) => {
+    try {
+      const data = await apiPost('/auth/login', { login, password })
+      setAuthToken(data.token)
+      setUser(data.user)
+      localStorage.setItem(AUTH_KEY, JSON.stringify({ token: data.token }))
       return { success: true }
+    } catch (err) {
+      return { success: false, error: err.message }
     }
-    return { success: false, error: '邮箱或密码错误' }
   }, [])
 
   const logout = useCallback(() => {
+    clearAuthToken()
     setUser(null)
+    localStorage.removeItem(AUTH_KEY)
+  }, [])
+
+  const updateUser = useCallback(async (profileData) => {
+    try {
+      const data = await apiPut('/auth/profile', profileData)
+      setUser(data.user)
+      return { success: true }
+    } catch (err) {
+      return { success: false, error: err.message }
+    }
   }, [])
 
   const isAuthenticated = !!user
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, login, logout, updateUser, loading }}>
       {children}
     </AuthContext.Provider>
   )

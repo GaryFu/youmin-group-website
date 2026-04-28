@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { NavLink, useNavigate, Outlet } from 'react-router-dom'
+import { NavLink, useNavigate, useLocation, Outlet } from 'react-router-dom'
 import {
   LayoutDashboard, Settings, Home, Building2, Factory,
   Microscope, Package, Leaf, Newspaper, Handshake, Phone,
-  LogOut, Menu, X, ChevronRight
+  LogOut, Menu, X, ChevronRight, UserCircle, Heart
 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 
@@ -12,6 +12,7 @@ const navItems = [
   { to: '/admin/site-config', label: '集团信息', icon: Settings },
   { to: '/admin/home', label: '首页内容', icon: Home },
   { to: '/admin/about', label: '集团简介', icon: Building2 },
+  { to: '/admin/culture', label: '企业文化', icon: Heart },
   { to: '/admin/industry', label: '产业布局', icon: Factory },
   { to: '/admin/innovation', label: '科研创新', icon: Microscope },
   { to: '/admin/products', label: '产品与服务', icon: Package },
@@ -24,6 +25,7 @@ const navItems = [
 export default function AdminLayout() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const handleLogout = () => {
@@ -76,13 +78,26 @@ export default function AdminLayout() {
         <div className="absolute bottom-0 left-0 right-0 p-3 border-t border-green-800">
           <div className="flex items-center gap-3 mb-3 px-3">
             <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
-              {user?.email?.charAt(0)?.toUpperCase()}
+              {user?.username?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-xs text-white truncate">{user?.email}</div>
+              <div className="text-xs text-white truncate">{user?.username || user?.email}</div>
               <div className="text-[10px] text-green-400">管理员</div>
             </div>
           </div>
+          <NavLink
+            to="/admin/profile"
+            onClick={() => setSidebarOpen(false)}
+            className={({ isActive }) =>
+              `flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm mb-1 transition-colors ${
+                isActive
+                  ? 'bg-green-800 text-white'
+                  : 'text-green-300 hover:bg-green-800 hover:text-white'
+              }`
+            }
+          >
+            <UserCircle size={16} /> 账号设置
+          </NavLink>
           <button
             onClick={handleLogout}
             className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm text-green-300 hover:bg-green-800 hover:text-white transition-colors"

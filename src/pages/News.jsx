@@ -6,11 +6,10 @@ import { useContent } from '../context/ContentContext'
 
 const PAGE_SIZE = 6
 
-const allCategories = ['全部', ...new Set(newsContent.articles.map((a) => a.category))]
-
 export default function News() {
   const { getContent } = useContent()
   const newsContent = getContent('news')
+  const allCategories = ['全部', ...new Set(newsContent.articles.map((a) => a.category))]
   const [filter, setFilter] = useState('全部')
   const [page, setPage] = useState(0)
 

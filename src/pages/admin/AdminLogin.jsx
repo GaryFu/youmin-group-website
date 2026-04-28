@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
-import { Shield, Mail, Lock, Eye, EyeOff } from 'lucide-react'
+import { Shield, User, Lock, Eye, EyeOff } from 'lucide-react'
 
 export default function AdminLogin() {
-  const [email, setEmail] = useState('')
+  const [loginName, setLoginName] = useState('')
   const [password, setPassword] = useState('')
   const [showPwd, setShowPwd] = useState(false)
   const [error, setError] = useState('')
@@ -22,7 +22,7 @@ export default function AdminLogin() {
     setError('')
     setLoading(true)
 
-    const result = await login(email, password)
+    const result = await login(loginName, password)
     if (result.success) {
       navigate('/admin/dashboard', { replace: true })
     } else {
@@ -34,7 +34,6 @@ export default function AdminLogin() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-800 to-green-950 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Logo */}
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-2xl shadow-green-500/30">
             <Shield size={32} className="text-white" />
@@ -43,7 +42,6 @@ export default function AdminLogin() {
           <p className="text-green-300 text-sm">后台管理系统</p>
         </div>
 
-        {/* Card */}
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-2xl p-8">
           <h2 className="text-xl font-bold text-gray-900 mb-6">管理员登录</h2>
 
@@ -55,16 +53,17 @@ export default function AdminLogin() {
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">邮箱</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">用户名 / 邮箱</label>
               <div className="relative">
-                <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  type="text"
+                  value={loginName}
+                  onChange={(e) => setLoginName(e.target.value)}
                   required
+                  autoComplete="username"
                   className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                  placeholder="admin@youmingroup.com"
+                  placeholder="admin"
                 />
               </div>
             </div>
@@ -78,6 +77,7 @@ export default function AdminLogin() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  autoComplete="current-password"
                   className="w-full pl-10 pr-10 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   placeholder="请输入密码"
                 />
@@ -92,10 +92,16 @@ export default function AdminLogin() {
             </div>
           </div>
 
+          <div className="text-right mt-2">
+            <Link to="/admin/forgot-password" className="text-xs text-green-600 hover:text-green-800 transition-colors">
+              忘记密码？
+            </Link>
+          </div>
+
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-6 bg-green-600 text-white py-2.5 rounded-lg font-medium text-sm hover:bg-green-700 disabled:opacity-50 transition-colors"
+            className="w-full mt-4 bg-green-600 text-white py-2.5 rounded-lg font-medium text-sm hover:bg-green-700 disabled:opacity-50 transition-colors"
           >
             {loading ? '登录中...' : '登录'}
           </button>
