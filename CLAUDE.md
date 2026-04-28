@@ -40,4 +40,4 @@ All user-facing content is Chinese (zh-CN). Section titles throughout the public
 
 ## Skill Guide
 
-For detailed development patterns, architecture decisions, and common pitfalls, refer to the skill at `.claude/skills/youmin-dev-guide.md`. Invoke with `/youmin-dev-guide`.
+For detailed development patterns, architecture decisions, and common pitfalls, refer to the skill at `.claude/skills/website-dev-guide.md`. Invoke with `/website-dev-guide`.

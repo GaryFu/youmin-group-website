@@ -1,5 +1,5 @@
 ---
-name: youmin-dev-guide
+name: website-dev-guide
 description: 企业官网全栈开发经验包 — React + Vite + Express + PostgreSQL + Vercel 部署。覆盖 CMS 内容管理、Admin 后台、SSG 静态生成、Serverless 数据库连接等模式。
 ---
 

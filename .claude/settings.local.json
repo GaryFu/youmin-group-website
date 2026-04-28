@@ -39,11 +39,13 @@
       "Bash(kill %1 %2)",
       "Bash(vercel logs *)",
       "Bash(lsof -ti:4173)",
-      "Bash(xargs kill *)"
+      "Bash(xargs kill *)",
+      "Bash(npm run *)",
+      "Bash(lsof -ti:4174)"
     ]
   },
   "sandbox": {
-    "enabled": true,
-    "autoAllowBashIfSandboxed": true
+    "enabled": false,
+    "autoAllowBashIfSandboxed": false
   }
 }
