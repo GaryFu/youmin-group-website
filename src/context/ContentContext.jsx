@@ -53,7 +53,8 @@ export function ContentProvider({ children }) {
 
   async function loadStatic() {
     try {
-      const res = await fetch('/content.json')
+      // Cache-bust to avoid stale CDN/browser cache after redeploy
+      const res = await fetch(`/content.json?t=${Date.now()}`)
       if (!res.ok) throw new Error('not found')
       const data = await res.json()
       // Merge with defaults for any missing keys

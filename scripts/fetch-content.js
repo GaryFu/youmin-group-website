@@ -37,9 +37,11 @@ async function fetchContent() {
       }
     }
 
+    content._generatedAt = new Date().toISOString()
+
     const outputPath = path.resolve(__dirname, '..', 'public', 'content.json')
     fs.writeFileSync(outputPath, JSON.stringify(content))
-    console.log(`Content written to ${outputPath} (${Object.keys(content).length} keys)`)
+    console.log(`Content written to ${outputPath} (${Object.keys(content).length} keys, generated at ${content._generatedAt})`)
   } finally {
     await pool.end()
   }
