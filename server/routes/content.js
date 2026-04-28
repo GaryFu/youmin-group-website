@@ -51,6 +51,7 @@ router.put('/:key', auth, async (req, res, next) => {
     )
 
     const row = result.rows[0]
+    console.log(`Content saved: key=${key}, updatedAt=${row.updated_at}`)
     res.json({ key: row.key, data: row.data, updatedAt: row.updated_at })
 
     // Fire-and-forget: trigger Vercel rebuild for static regeneration

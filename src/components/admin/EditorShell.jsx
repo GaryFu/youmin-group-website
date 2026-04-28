@@ -10,20 +10,24 @@ export default function EditorShell({ contentKey, title, subtitle, renderForm, o
 
   const currentData = getContent(contentKey)
 
-  const handleSave = useCallback((formData) => {
+  const handleSave = useCallback(async (formData) => {
     try {
       const extracted = onDataExtract ? onDataExtract(formData) : formData
-      updateContent(contentKey, extracted)
+      await updateContent(contentKey, extracted)
       setToast({ message: '保存成功', type: 'success' })
-    } catch {
-      setToast({ message: '保存失败，请检查数据格式', type: 'error' })
+    } catch (err) {
+      setToast({ message: err.message || '保存失败', type: 'error' })
     }
   }, [contentKey, updateContent, onDataExtract])
 
-  const handleReset = useCallback(() => {
-    resetContent(contentKey)
-    setResetKey((k) => k + 1)
-    setToast({ message: '已恢复默认内容', type: 'success' })
+  const handleReset = useCallback(async () => {
+    try {
+      await resetContent(contentKey)
+      setResetKey((k) => k + 1)
+      setToast({ message: '已恢复默认内容', type: 'success' })
+    } catch (err) {
+      setToast({ message: err.message || '重置失败', type: 'error' })
+    }
   }, [contentKey, resetContent])
 
   return (
