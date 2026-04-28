@@ -16,7 +16,7 @@ app.use(express.json({ limit: '5mb' }))
 app.use('/api/auth', authRoutes)
 app.use('/api/content', contentRoutes)
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
   const distPath = path.resolve(__dirname, '..', 'dist')
   app.use(express.static(distPath))
   app.get(/^\/(?!api).*/, (req, res) => {
@@ -26,6 +26,11 @@ if (process.env.NODE_ENV === 'production') {
 
 app.use(errorHandler)
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
+// Only listen when not on Vercel (Vercel uses serverless export)
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`)
+  })
+}
+
+export default app
