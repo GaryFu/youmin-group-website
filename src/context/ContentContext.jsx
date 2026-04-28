@@ -69,17 +69,16 @@ export function ContentProvider({ children }) {
   }
 
   async function loadFromAPI() {
-    const results = await Promise.all(
-      ALL_KEYS.map((key) =>
-        apiGet(`/content/${key}`)
-          .then((d) => ({ key, data: d.data }))
-          .catch(() => ({ key, data: deepClone(defaults[key]) }))
-      )
-    )
     const map = {}
-    results.forEach(({ key, data }) => {
-      map[key] = data
-    })
+    // Fetch sequentially to avoid overwhelming the serverless DB pool
+    for (const key of ALL_KEYS) {
+      try {
+        const d = await apiGet(`/content/${key}`)
+        map[key] = d.data
+      } catch {
+        map[key] = deepClone(defaults[key])
+      }
+    }
     setContent(map)
   }
 
