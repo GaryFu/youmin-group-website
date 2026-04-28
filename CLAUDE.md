@@ -37,3 +37,7 @@ Custom `green` (50-950) and `gold` (50-900) color scales. Custom `fontFamily.san
 ## Language
 
 All user-facing content is Chinese (zh-CN). Section titles throughout the public pages include both Chinese title and English subtitle.
+
+## Skill Guide
+
+For detailed development patterns, architecture decisions, and common pitfalls, refer to the skill at `.claude/skills/youmin-dev-guide.md`. Invoke with `/youmin-dev-guide`.
