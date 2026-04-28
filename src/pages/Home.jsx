@@ -9,6 +9,7 @@ const advantageIcons = { FlaskConical, Layers, Leaf, Shield }
 
 export default function Home() {
   const { getContent } = useContent()
+  const site = getContent('site')
   const homeContent = getContent('home')
   const newsContent = getContent('news')
   return (
@@ -28,7 +29,7 @@ export default function Home() {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 text-center">
           <ScrollReveal>
             <p className="text-green-300 text-sm font-semibold tracking-[0.3em] uppercase mb-6">
-              佑民集团 · YOU MIN GROUP
+              {site.shortName} · {site.englishName}
             </p>
           </ScrollReveal>
           <ScrollReveal>
@@ -70,7 +71,7 @@ export default function Home() {
       <section className="py-20 lg:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle subtitle={homeContent.intro.subtitle} title={homeContent.intro.title}>
-            以绿色农业与现代畜牧科技为核心，构建研发、农牧、贸易协同发展的全产业链集团。
+            {site.description}
           </SectionTitle>
           <ScrollReveal>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
@@ -141,7 +142,7 @@ export default function Home() {
       <section className="py-20 lg:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle subtitle="NEWS" title="新闻动态">
-            了解天佑农牧集团最新动态与发展成果。
+            了解{site.shortName}最新动态与发展成果。
           </SectionTitle>
           <ScrollReveal>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
@@ -173,7 +174,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <ScrollReveal>
             <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
-              携手天佑，共创绿色农牧未来
+              携手{site.shortName}，共创绿色农牧未来
             </h2>
             <p className="text-green-100 text-lg mb-8 leading-relaxed">
               如果您对产品合作、技术服务或业务咨询感兴趣，欢迎与我们联系

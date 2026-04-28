@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { Shield, User, Lock, Eye, EyeOff } from 'lucide-react'
+import { useContent } from '../../context/ContentContext'
 
 export default function AdminLogin() {
   const [loginName, setLoginName] = useState('')
@@ -10,6 +11,8 @@ export default function AdminLogin() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const { login, isAuthenticated } = useAuth()
+  const { getContent } = useContent()
+  const site = getContent('site')
   const navigate = useNavigate()
 
   if (isAuthenticated) {
@@ -38,7 +41,7 @@ export default function AdminLogin() {
           <div className="w-16 h-16 bg-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-2xl shadow-green-500/30">
             <Shield size={32} className="text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-white mb-1">佑民集团</h1>
+          <h1 className="text-2xl font-bold text-white mb-1">{site.shortName}</h1>
           <p className="text-green-300 text-sm">后台管理系统</p>
         </div>
 

@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom'
 import { MapPin, Phone, Mail, ArrowRight } from 'lucide-react'
+import { useContent } from '../context/ContentContext'
 
 const footerLinks = [
   {
     title: '集团概况',
     links: [
       { to: '/about', label: '集团简介' },
+      { to: '/culture', label: '企业文化' },
       { to: '/industry', label: '产业布局' },
       { to: '/innovation', label: '科研创新' },
     ],
@@ -28,6 +30,8 @@ const footerLinks = [
 ]
 
 export default function Footer() {
+  const { getContent } = useContent()
+  const site = getContent('site')
   return (
     <footer className="bg-gray-900 text-gray-300">
       {/* Top bar */}
@@ -50,25 +54,25 @@ export default function Footer() {
             <Link to="/" className="inline-block mb-4">
               <img
                 src="/images/logo-default.png"
-                alt="佑民集团"
+                alt={site.shortName}
                 className="h-12 w-auto object-contain brightness-110"
               />
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed mb-6 max-w-sm">
-              以绿色农业与现代畜牧科技为核心，构建研发、农牧、贸易协同发展的全产业链集团。打造世界一流农牧企业，做农民信得过的品牌。
+              {site.description}
             </p>
             <div className="space-y-2.5 text-sm text-gray-400">
               <div className="flex items-start gap-2">
                 <MapPin size={16} className="mt-0.5 shrink-0 text-green-500" />
-                <span>河南省郑州市</span>
+                <span>{site.address}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone size={16} className="shrink-0 text-green-500" />
-                <span>400-XXX-XXXX</span>
+                <span>{site.phone}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail size={16} className="shrink-0 text-green-500" />
-                <span>contact@tianyouagri.com</span>
+                <span>{site.email}</span>
               </div>
             </div>
           </div>
@@ -96,9 +100,9 @@ export default function Footer() {
 
         {/* Bottom */}
         <div className="mt-10 pt-8 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
-          <p>© {new Date().getFullYear()} 天佑农牧发展（河南）集团 版权所有</p>
+          <p>© {new Date().getFullYear()} {site.name} 版权所有</p>
           <p>
-            诚信立企 · 科技兴农 · 品质为本 · 服务为心
+            {site.tagline}
           </p>
         </div>
       </div>

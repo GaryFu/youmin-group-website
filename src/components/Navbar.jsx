@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Menu, X, ChevronDown } from 'lucide-react'
+import { useContent } from '../context/ContentContext'
 
 const navLinks = [
   { to: '/', label: '首页' },
@@ -19,6 +20,8 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const location = useLocation()
+  const { getContent } = useContent()
+  const site = getContent('site')
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
@@ -48,7 +51,7 @@ export default function Navbar() {
                   ? '/images/logo-white-v2.png'
                   : '/images/logo-default.png'
               }
-              alt="佑民集团"
+              alt={site.shortName}
               className="h-10 lg:h-12 w-auto object-contain transition-all duration-300"
             />
           </Link>
