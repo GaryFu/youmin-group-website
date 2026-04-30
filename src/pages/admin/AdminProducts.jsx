@@ -76,10 +76,21 @@ function ProductsForm({ data, onSave, resetKey }) {
               <Plus size={16} /> 添加子项
             </button>
           </div>
-          <div className="grid grid-cols-3 gap-3 mb-4">
+          <div className="grid grid-cols-4 gap-3 mb-4">
             <input type="text" value={cat.name} onChange={updateCategory(ci, 'name')} className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="分类名称" />
             <input type="text" value={cat.icon} onChange={updateCategory(ci, 'icon')} className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="图标代码" />
-            <input type="text" value={cat.desc} onChange={updateCategory(ci, 'desc')} className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="描述" />
+            <input type="text" value={cat.slug || ''} onChange={updateCategory(ci, 'slug')} className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="URL 标识 (slug)" />
+            <input type="text" value={cat.desc} onChange={updateCategory(ci, 'desc')} className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="简述" />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">详情内容（每行一段）</label>
+            <textarea
+              value={cat.detailDescription || ''}
+              onChange={updateCategory(ci, 'detailDescription')}
+              rows={5}
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              placeholder="详情页面的内容描述..."
+            />
           </div>
           <div className="flex flex-wrap gap-2">
             {cat.items?.map((item, ii) => (

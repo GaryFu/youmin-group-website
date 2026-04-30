@@ -8,6 +8,7 @@ import About from './pages/About'
 import Industry from './pages/Industry'
 import Innovation from './pages/Innovation'
 import Products from './pages/Products'
+import ProductDetail from './pages/ProductDetail'
 import Green from './pages/Green'
 import News from './pages/News'
 import Partners from './pages/Partners'
@@ -75,6 +76,7 @@ export default function App() {
         <Route path="/industry" element={<Industry />} />
         <Route path="/innovation" element={<Innovation />} />
         <Route path="/products" element={<Products />} />
+        <Route path="/products/:slug" element={<ProductDetail />} />
         <Route path="/green" element={<Green />} />
         <Route path="/news" element={<News />} />
         <Route path="/culture" element={<Culture />} />
