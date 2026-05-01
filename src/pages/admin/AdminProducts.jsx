@@ -179,16 +179,12 @@ function ProductList({ data, onSave, resetKey }) {
 
   const handleProductSave = (updatedProduct) => {
     const { _ci, _si, _pi, ...product } = updatedProduct
-    setForm((f) => {
-      const copy = deepClone(f)
-      copy.categories[_ci].subCategories[_si].products[_pi] = product
-      return copy
-    })
+    const newForm = deepClone(form)
+    newForm.categories[_ci].subCategories[_si].products[_pi] = product
+    setForm(newForm)
     setEditing(null)
-  }
-
-  const handleSaveAll = () => {
-    onSave(form)
+    // Persist immediately to database
+    onSave(newForm)
   }
 
   const openEditor = (product) => {
