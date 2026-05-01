@@ -119,7 +119,7 @@ export default function ProductPage() {
                       <img
                         src={product.image}
                         alt={product.name}
-                        className="w-full h-64 object-cover rounded-xl"
+                        className="w-full h-64 object-contain rounded-xl"
                       />
                     ) : (
                       <div className="w-full h-64 bg-gradient-to-br from-green-50 to-green-100 rounded-xl flex items-center justify-center">
@@ -230,7 +230,7 @@ export default function ProductPage() {
               <img
                 src={product.image}
                 alt={product.name}
-                className="w-full rounded-2xl shadow-lg object-cover max-h-96"
+                className="w-full rounded-2xl shadow-lg object-contain max-h-96"
               />
             </ScrollReveal>
           </div>

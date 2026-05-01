@@ -79,7 +79,7 @@ function ProductEditor({ product, categoryName, subCategoryName, onSave, onCance
                 <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleImageUpload(f); e.target.value = '' }} />
               </label>
             </div>
-            {form.image && <img src={form.image} alt="" className="mt-2 h-24 rounded-lg object-cover" />}
+            {form.image && <img src={form.image} alt="" className="mt-2 h-24 rounded-lg object-contain" />}
           </div>
 
           {/* Features */}
@@ -230,7 +230,7 @@ function ProductList({ data, onSave, resetKey }) {
                 {/* Thumbnail */}
                 <div className="w-10 h-10 rounded-lg bg-gray-100 shrink-0 overflow-hidden">
                   {product.image ? (
-                    <img src={product.image} alt="" className="w-full h-full object-cover" />
+                    <img src={product.image} alt="" className="w-full h-full object-contain" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-gray-300"><Package size={18} /></div>
                   )}
