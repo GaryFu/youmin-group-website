@@ -4,6 +4,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import authRoutes from './routes/auth.js'
 import contentRoutes from './routes/content.js'
+import productsRoutes from './routes/products.js'
 import uploadRoutes from './routes/upload.js'
 import { errorHandler } from './middleware/errorHandler.js'
 
@@ -28,11 +29,13 @@ app.use((req, res, next) => {
 
 app.use('/api/auth', authRoutes)
 app.use('/api/content', contentRoutes)
+app.use('/api/products', productsRoutes)
 app.use('/api/upload', uploadRoutes)
 
 // Also mount without /api prefix — fallback if Vercel strips the prefix
 app.use('/auth', authRoutes)
 app.use('/content', contentRoutes)
+app.use('/products', productsRoutes)
 
 if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
   const distPath = path.resolve(__dirname, '..', 'dist')
