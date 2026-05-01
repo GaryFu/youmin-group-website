@@ -164,7 +164,7 @@ function ProductsForm({ data, onSave, resetKey }) {
                           return copy
                         })
                       }}
-                      className="w-28 px-2 py-1 border border-gray-200 rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="w-24 px-2 py-1 border border-gray-200 rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500"
                       placeholder="产品名"
                     />
                     <input
@@ -179,6 +179,19 @@ function ProductsForm({ data, onSave, resetKey }) {
                       }}
                       className="flex-1 px-2 py-1 border border-gray-200 rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500"
                       placeholder="描述"
+                    />
+                    <input
+                      type="text"
+                      value={prod.url || ''}
+                      onChange={(e) => {
+                        setForm((f) => {
+                          const copy = deepClone(f)
+                          copy.categories[ci].subCategories[si].products[pi].url = e.target.value
+                          return copy
+                        })
+                      }}
+                      className="w-32 px-2 py-1 border border-gray-200 rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500"
+                      placeholder="链接 (URL)"
                     />
                     <button
                       type="button"
