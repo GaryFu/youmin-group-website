@@ -41,7 +41,12 @@
       "Bash(lsof -ti:4173)",
       "Bash(xargs kill *)",
       "Bash(npm run *)",
-      "Bash(lsof -ti:4174)"
+      "Bash(lsof -ti:4174)",
+      "Bash(mkdir -p ~/.claude/skills)",
+      "Bash(cp /Users/minyou/GeneralWorkspace/TestProject/.claude/skills/website-dev-guide.md ~/.claude/skills/website-dev-guide.md)",
+      "Bash(mkdir -p ~/.claude/skills/website-dev-guide)",
+      "Bash(mv ~/.claude/skills/website-dev-guide.md ~/.claude/skills/website-dev-guide/skill.md)",
+      "Read(//Users/minyou/.claude/skills/**)"
     ]
   },
   "sandbox": {
