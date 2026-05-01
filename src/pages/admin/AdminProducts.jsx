@@ -188,10 +188,94 @@ function ProductsForm({ data, onSave, resetKey }) {
                       type="text"
                       value={prod.desc || ''}
                       onChange={(e) => { setForm((f) => { const copy = deepClone(f); copy.categories[ci].subCategories[si].products[pi].desc = e.target.value; return copy; })}}
-                      className="w-full px-2 py-1 border border-gray-200 rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="w-full px-2 py-1 border border-gray-200 rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500 mt-1"
                       placeholder="详细描述"
                     />
-                    <div className="flex justify-end mt-1">
+                    <input
+                      type="text"
+                      value={prod.image || ''}
+                      onChange={(e) => { setForm((f) => { const copy = deepClone(f); copy.categories[ci].subCategories[si].products[pi].image = e.target.value; return copy; })}}
+                      className="w-full px-2 py-1 border border-gray-200 rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500 mt-1"
+                      placeholder="产品图片 URL"
+                    />
+
+                    {/* Features */}
+                    <div className="mt-2 border-t border-gray-100 pt-2">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-[10px] text-gray-400 uppercase tracking-wider">产品特性</span>
+                        <button
+                          type="button"
+                          onClick={() => { setForm((f) => { const copy = deepClone(f); if (!copy.categories[ci].subCategories[si].products[pi].features) copy.categories[ci].subCategories[si].products[pi].features = []; copy.categories[ci].subCategories[si].products[pi].features.push({ icon: 'CheckCircle2', text: '' }); return copy; })}}
+                          className="text-[10px] text-green-500 hover:text-green-600"
+                        >
+                          + 添加
+                        </button>
+                      </div>
+                      {(prod.features || []).map((feat, fi) => (
+                        <div key={fi} className="flex items-center gap-1 mb-0.5">
+                          <select
+                            value={feat.icon || 'CheckCircle2'}
+                            onChange={(e) => { setForm((f) => { const copy = deepClone(f); copy.categories[ci].subCategories[si].products[pi].features[fi].icon = e.target.value; return copy; })}}
+                            className="w-20 px-1 py-0.5 border border-gray-200 rounded text-[10px] focus:outline-none"
+                          >
+                            <option value="Award">🏆 Award</option>
+                            <option value="Zap">⚡ Zap</option>
+                            <option value="Shield">🛡️ Shield</option>
+                            <option value="Star">⭐ Star</option>
+                            <option value="TrendingUp">📈 Up</option>
+                            <option value="CheckCircle2">✅ Check</option>
+                            <option value="Package">📦 Package</option>
+                            <option value="Beaker">🧪 Beaker</option>
+                            <option value="Leaf">🌿 Leaf</option>
+                          </select>
+                          <input
+                            type="text"
+                            value={feat.text}
+                            onChange={(e) => { setForm((f) => { const copy = deepClone(f); copy.categories[ci].subCategories[si].products[pi].features[fi].text = e.target.value; return copy; })}}
+                            className="flex-1 px-1 py-0.5 border border-gray-200 rounded text-[10px] focus:outline-none focus:ring-1 focus:ring-green-500"
+                            placeholder="特性描述"
+                          />
+                          <button type="button" onClick={() => { setForm((f) => { const copy = deepClone(f); copy.categories[ci].subCategories[si].products[pi].features.splice(fi, 1); return copy; })}}
+                            className="text-red-300 hover:text-red-500 shrink-0"><Trash2 size={10} /></button>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Specs */}
+                    <div className="mt-2 border-t border-gray-100 pt-2">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-[10px] text-gray-400 uppercase tracking-wider">技术规格</span>
+                        <button
+                          type="button"
+                          onClick={() => { setForm((f) => { const copy = deepClone(f); if (!copy.categories[ci].subCategories[si].products[pi].specs) copy.categories[ci].subCategories[si].products[pi].specs = []; copy.categories[ci].subCategories[si].products[pi].specs.push({ label: '', value: '' }); return copy; })}}
+                          className="text-[10px] text-green-500 hover:text-green-600"
+                        >
+                          + 添加
+                        </button>
+                      </div>
+                      {(prod.specs || []).map((spec, si) => (
+                        <div key={si} className="flex items-center gap-1 mb-0.5">
+                          <input
+                            type="text"
+                            value={spec.label}
+                            onChange={(e) => { setForm((f) => { const copy = deepClone(f); copy.categories[ci].subCategories[si].products[pi].specs[si].label = e.target.value; return copy; })}}
+                            className="w-20 px-1 py-0.5 border border-gray-200 rounded text-[10px] focus:outline-none focus:ring-1 focus:ring-green-500"
+                            placeholder="规格名"
+                          />
+                          <input
+                            type="text"
+                            value={spec.value}
+                            onChange={(e) => { setForm((f) => { const copy = deepClone(f); copy.categories[ci].subCategories[si].products[pi].specs[si].value = e.target.value; return copy; })}}
+                            className="flex-1 px-1 py-0.5 border border-gray-200 rounded text-[10px] focus:outline-none focus:ring-1 focus:ring-green-500"
+                            placeholder="规格值"
+                          />
+                          <button type="button" onClick={() => { setForm((f) => { const copy = deepClone(f); copy.categories[ci].subCategories[si].products[pi].specs.splice(si, 1); return copy; })}}
+                            className="text-red-300 hover:text-red-500 shrink-0"><Trash2 size={10} /></button>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="flex justify-end mt-2">
                       <button
                         type="button"
                         onClick={() => {
@@ -214,7 +298,7 @@ function ProductsForm({ data, onSave, resetKey }) {
                     setForm((f) => {
                       const copy = deepClone(f)
                       if (!copy.categories[ci].subCategories[si].products) copy.categories[ci].subCategories[si].products = []
-                      copy.categories[ci].subCategories[si].products.push({ name: '', slug: '', tagline: '', desc: '', url: '', features: [], specs: [] })
+                      copy.categories[ci].subCategories[si].products.push({ name: '', slug: '', tagline: '', desc: '', url: '', image: '', features: [], specs: [] })
                       return copy
                     })
                   }}
