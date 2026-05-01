@@ -119,10 +119,10 @@ export default function ProductPage() {
                       <img
                         src={product.image}
                         alt={product.name}
-                        className="w-full h-64 object-contain rounded-xl"
+                        className="w-full object-contain rounded-xl"
                       />
                     ) : (
-                      <div className="w-full h-64 bg-gradient-to-br from-green-50 to-green-100 rounded-xl flex items-center justify-center">
+                      <div className="w-full aspect-video bg-gradient-to-br from-green-50 to-green-100 rounded-xl flex items-center justify-center">
                         <div className="text-center">
                           <Package size={48} className="text-green-300 mx-auto mb-2" />
                           <span className="text-sm text-green-400">{product.name}</span>
@@ -230,7 +230,7 @@ export default function ProductPage() {
               <img
                 src={product.image}
                 alt={product.name}
-                className="w-full rounded-2xl shadow-lg object-contain max-h-96"
+                className="w-full rounded-2xl shadow-lg object-contain"
               />
             </ScrollReveal>
           </div>

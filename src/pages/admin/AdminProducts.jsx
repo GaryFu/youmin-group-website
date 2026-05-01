@@ -79,7 +79,7 @@ function ProductEditor({ product, categoryName, subCategoryName, onSave, onCance
                 <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleImageUpload(f); e.target.value = '' }} />
               </label>
             </div>
-            {form.image && <img src={form.image} alt="" className="mt-2 h-24 rounded-lg object-contain" />}
+            {form.image && <img src={form.image} alt="" className="mt-2 w-full rounded-lg object-contain" />}
           </div>
 
           {/* Features */}
