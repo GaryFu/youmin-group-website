@@ -153,41 +153,23 @@ function ProductList({ data, onSave, resetKey }) {
     const list = []
     for (let ci = 0; ci < (form.categories || []).length; ci++) {
       const cat = form.categories[ci]
-      // Support both new relational structure (subCategories) and old (items)
-      if (cat.subCategories && cat.subCategories.length > 0) {
-        for (let si = 0; si < cat.subCategories.length; si++) {
-          const sub = cat.subCategories[si]
-          for (let pi = 0; pi < (sub.products || []).length; pi++) {
-            list.push({
-              ...sub.products[pi],
-              _ci: ci, _si: si, _pi: pi,
-              _catName: cat.name,
-              _subName: sub.name,
-            })
-          }
-        }
-      }
-      // Fallback: old items array (from defaults)
-      if (cat.items && cat.items.length > 0) {
-        for (let ii = 0; ii < cat.items.length; ii++) {
+      for (let si = 0; si < (cat.subCategories || []).length; si++) {
+        const sub = cat.subCategories[si]
+        for (let pi = 0; pi < (sub.products || []).length; pi++) {
           list.push({
-            name: cat.items[ii],
-            desc: cat.desc || '',
-            slug: cat.slug + '-' + ii,
-            tagline: '',
-            url: '',
-            image: '',
-            features: [],
-            specs: [],
-            _ci: ci, _si: -1, _pi: ii,
+            ...sub.products[pi],
+            _ci: ci, _si: si, _pi: pi,
             _catName: cat.name,
-            _subName: '默认',
+            _subName: sub.name,
           })
         }
       }
     }
     return list
   }, [form])
+
+  // Check if data has loaded (subCategories present) or still on defaults
+  const hasData = (form.categories || []).some(c => (c.subCategories || []).length > 0)
 
   // Filter
   const filtered = useMemo(() => {
@@ -237,7 +219,8 @@ function ProductList({ data, onSave, resetKey }) {
         {filtered.length === 0 ? (
           <div className="px-6 py-16 text-center text-gray-400">
             <Package size={40} className="mx-auto mb-3 opacity-30" />
-            <p className="text-sm">没有找到产品</p>
+            <p className="text-sm">{hasData ? '没有找到匹配的产品' : '加载中...'}</p>
+            {!hasData && <p className="text-xs text-gray-300 mt-1">正在从服务器获取产品数据</p>}
           </div>
         ) : (
           <div className="divide-y divide-gray-50">
