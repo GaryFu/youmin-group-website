@@ -153,59 +153,59 @@ function ProductsForm({ data, onSave, resetKey }) {
                   </button>
                 </div>
                 {(sub.products || []).map((prod, pi) => (
-                  <div key={pi} className="flex items-center gap-1.5 ml-2 mb-1">
-                    <input
-                      type="text"
-                      value={prod.name}
-                      onChange={(e) => {
-                        setForm((f) => {
-                          const copy = deepClone(f)
-                          copy.categories[ci].subCategories[si].products[pi].name = e.target.value
-                          return copy
-                        })
-                      }}
-                      className="w-24 px-2 py-1 border border-gray-200 rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500"
-                      placeholder="产品名"
-                    />
+                  <div key={pi} className="ml-2 mb-2 bg-white rounded-lg border border-gray-100 p-2">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <input
+                        type="text"
+                        value={prod.name}
+                        onChange={(e) => { setForm((f) => { const copy = deepClone(f); copy.categories[ci].subCategories[si].products[pi].name = e.target.value; return copy; })}}
+                        className="w-24 px-2 py-1 border border-gray-200 rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="产品名"
+                      />
+                      <input
+                        type="text"
+                        value={prod.slug || ''}
+                        onChange={(e) => { setForm((f) => { const copy = deepClone(f); copy.categories[ci].subCategories[si].products[pi].slug = e.target.value; return copy; })}}
+                        className="w-20 px-2 py-1 border border-gray-200 rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="slug"
+                      />
+                      <input
+                        type="text"
+                        value={prod.tagline || ''}
+                        onChange={(e) => { setForm((f) => { const copy = deepClone(f); copy.categories[ci].subCategories[si].products[pi].tagline = e.target.value; return copy; })}}
+                        className="w-28 px-2 py-1 border border-gray-200 rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="标语"
+                      />
+                      <input
+                        type="text"
+                        value={prod.url || ''}
+                        onChange={(e) => { setForm((f) => { const copy = deepClone(f); copy.categories[ci].subCategories[si].products[pi].url = e.target.value; return copy; })}}
+                        className="w-32 px-2 py-1 border border-gray-200 rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="微信链接"
+                      />
+                    </div>
                     <input
                       type="text"
                       value={prod.desc || ''}
-                      onChange={(e) => {
-                        setForm((f) => {
-                          const copy = deepClone(f)
-                          copy.categories[ci].subCategories[si].products[pi].desc = e.target.value
-                          return copy
-                        })
-                      }}
-                      className="flex-1 px-2 py-1 border border-gray-200 rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500"
-                      placeholder="描述"
+                      onChange={(e) => { setForm((f) => { const copy = deepClone(f); copy.categories[ci].subCategories[si].products[pi].desc = e.target.value; return copy; })}}
+                      className="w-full px-2 py-1 border border-gray-200 rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500"
+                      placeholder="详细描述"
                     />
-                    <input
-                      type="text"
-                      value={prod.url || ''}
-                      onChange={(e) => {
-                        setForm((f) => {
-                          const copy = deepClone(f)
-                          copy.categories[ci].subCategories[si].products[pi].url = e.target.value
-                          return copy
-                        })
-                      }}
-                      className="w-32 px-2 py-1 border border-gray-200 rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500"
-                      placeholder="链接 (URL)"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setForm((f) => {
-                          const copy = deepClone(f)
-                          copy.categories[ci].subCategories[si].products.splice(pi, 1)
-                          return copy
-                        })
-                      }}
-                      className="text-red-300 hover:text-red-500 shrink-0"
-                    >
-                      <Trash2 size={12} />
-                    </button>
+                    <div className="flex justify-end mt-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setForm((f) => {
+                            const copy = deepClone(f)
+                            copy.categories[ci].subCategories[si].products.splice(pi, 1)
+                            return copy
+                          })
+                        }}
+                        className="text-red-300 hover:text-red-500 text-xs"
+                      >
+                        <Trash2 size={12} />
+                      </button>
+                    </div>
                   </div>
                 ))}
                 <button
@@ -214,7 +214,7 @@ function ProductsForm({ data, onSave, resetKey }) {
                     setForm((f) => {
                       const copy = deepClone(f)
                       if (!copy.categories[ci].subCategories[si].products) copy.categories[ci].subCategories[si].products = []
-                      copy.categories[ci].subCategories[si].products.push({ name: '', desc: '', url: '' })
+                      copy.categories[ci].subCategories[si].products.push({ name: '', slug: '', tagline: '', desc: '', url: '', features: [], specs: [] })
                       return copy
                     })
                   }}

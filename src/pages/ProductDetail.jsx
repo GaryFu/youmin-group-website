@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { ArrowLeft, ChevronRight, ExternalLink, Calendar } from 'lucide-react'
+import { ArrowLeft, ChevronRight, Calendar, ExternalLink } from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
 import { useContent } from '../context/ContentContext'
 
@@ -83,10 +83,8 @@ export default function ProductDetail() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {currentProducts.map((product, i) => (
                 <ScrollReveal key={i}>
-                  <a
-                    href={product.url || '#'}
-                    target={product.url ? '_blank' : undefined}
-                    rel="noopener noreferrer"
+                  <Link
+                    to={product.slug ? `/products/${category.slug}/${product.slug}` : `#`}
                     className="block bg-white rounded-xl border border-gray-100 p-6 shadow-md hover:shadow-lg hover:border-green-200 transition-all group h-full"
                   >
                     <h3 className="text-lg font-bold text-gray-900 group-hover:text-green-700 transition-colors mb-3 leading-snug">
@@ -98,7 +96,7 @@ export default function ProductDetail() {
                     <div className="flex items-center gap-1 mt-4 text-green-600 text-sm font-medium">
                       查看详情 <ExternalLink size={13} />
                     </div>
-                  </a>
+                  </Link>
                 </ScrollReveal>
               ))}
             </div>
