@@ -1,10 +1,35 @@
 import { deepClone } from '../../utils/deepClone'
 import { useState, useEffect } from 'react'
 import EditorShell from '../../components/admin/EditorShell'
-import { Plus, Trash2 } from 'lucide-react'
+import { Plus, Trash2, Upload } from 'lucide-react'
 
 function ProductsForm({ data, onSave, resetKey }) {
   const [form, setForm] = useState(deepClone(data))
+  const [uploading, setUploading] = useState({}) // { productKey: true }
+
+  const handleImageUpload = async (ci, si, pi, file) => {
+    const key = `${ci}-${si}-${pi}`
+    setUploading((prev) => ({ ...prev, [key]: true }))
+    try {
+      const reader = new FileReader()
+      const base64 = await new Promise((resolve) => {
+        reader.onload = () => resolve(reader.result)
+        reader.readAsDataURL(file)
+      })
+      const res = await fetch('/api/upload/image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('youmin_admin_auth') ? JSON.parse(localStorage.getItem('youmin_admin_auth')).token : ''}` },
+        body: JSON.stringify({ image: base64, filename: file.name }),
+      })
+      const data = await res.json()
+      if (data.url) {
+        setForm((f) => { const copy = deepClone(f); copy.categories[ci].subCategories[si].products[pi].image = data.url; return copy })
+      }
+    } catch (err) {
+      console.error('Upload failed:', err)
+    }
+    setUploading((prev) => ({ ...prev, [key]: false }))
+  }
 
   useEffect(() => { setForm(deepClone(data)) }, [data, resetKey])
 
@@ -191,13 +216,29 @@ function ProductsForm({ data, onSave, resetKey }) {
                       className="w-full px-2 py-1 border border-gray-200 rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500 mt-1"
                       placeholder="详细描述"
                     />
-                    <input
-                      type="text"
-                      value={prod.image || ''}
-                      onChange={(e) => { setForm((f) => { const copy = deepClone(f); copy.categories[ci].subCategories[si].products[pi].image = e.target.value; return copy; })}}
-                      className="w-full px-2 py-1 border border-gray-200 rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500 mt-1"
-                      placeholder="产品图片 URL"
-                    />
+                    <div className="flex items-center gap-1 mt-1">
+                      <input
+                        type="text"
+                        value={prod.image || ''}
+                        onChange={(e) => { setForm((f) => { const copy = deepClone(f); copy.categories[ci].subCategories[si].products[pi].image = e.target.value; return copy; })}}
+                        className="flex-1 px-2 py-1 border border-gray-200 rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="产品图片 URL"
+                      />
+                      <label className="shrink-0 cursor-pointer px-2 py-1 bg-gray-100 hover:bg-green-50 rounded text-xs text-gray-500 hover:text-green-600 transition-colors flex items-center gap-1">
+                        <Upload size={12} />
+                        {uploading[`${ci}-${si}-${pi}`] ? '...' : '上传'}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0]
+                            if (file) handleImageUpload(ci, si, pi, file)
+                            e.target.value = ''
+                          }}
+                        />
+                      </label>
+                    </div>
 
                     {/* Features */}
                     <div className="mt-2 border-t border-gray-100 pt-2">
