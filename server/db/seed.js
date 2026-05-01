@@ -56,10 +56,15 @@ async function seed() {
   const entries = Object.entries(defaults).filter(([, v]) => v && typeof v === 'object')
 
   for (const [key, data] of entries) {
+    // For news and products, only seed metadata (data lives in relational tables)
+    const seedData = (key === 'news' || key === 'products')
+      ? { title: data.title, subtitle: data.subtitle }
+      : data
+
     await pool.query(
       `INSERT INTO content (key, data) VALUES ($1, $2)
        ON CONFLICT (key) DO NOTHING`,
-      [key, JSON.stringify(data)]
+      [key, JSON.stringify(seedData)]
     )
     console.log(`Content seeded: ${key}`)
   }
