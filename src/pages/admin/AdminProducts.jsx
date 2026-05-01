@@ -153,14 +153,35 @@ function ProductList({ data, onSave, resetKey }) {
     const list = []
     for (let ci = 0; ci < (form.categories || []).length; ci++) {
       const cat = form.categories[ci]
-      for (let si = 0; si < (cat.subCategories || []).length; si++) {
-        const sub = cat.subCategories[si]
-        for (let pi = 0; pi < (sub.products || []).length; pi++) {
+      // Support both new relational structure (subCategories) and old (items)
+      if (cat.subCategories && cat.subCategories.length > 0) {
+        for (let si = 0; si < cat.subCategories.length; si++) {
+          const sub = cat.subCategories[si]
+          for (let pi = 0; pi < (sub.products || []).length; pi++) {
+            list.push({
+              ...sub.products[pi],
+              _ci: ci, _si: si, _pi: pi,
+              _catName: cat.name,
+              _subName: sub.name,
+            })
+          }
+        }
+      }
+      // Fallback: old items array (from defaults)
+      if (cat.items && cat.items.length > 0) {
+        for (let ii = 0; ii < cat.items.length; ii++) {
           list.push({
-            ...sub.products[pi],
-            _ci: ci, _si: si, _pi: pi,
+            name: cat.items[ii],
+            desc: cat.desc || '',
+            slug: cat.slug + '-' + ii,
+            tagline: '',
+            url: '',
+            image: '',
+            features: [],
+            specs: [],
+            _ci: ci, _si: -1, _pi: ii,
             _catName: cat.name,
-            _subName: sub.name,
+            _subName: '默认',
           })
         }
       }
