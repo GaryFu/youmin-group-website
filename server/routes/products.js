@@ -66,7 +66,18 @@ router.get('/', auth, async (req, res, next) => {
   }
 })
 
-// GET /api/products/:id — single product with features and specs
+// GET /api/products/subcategories — list all subcategories with parent names
+router.get('/subcategories', async (req, res, next) => {
+  try {
+    const result = await pool.query(
+      `SELECT ps.id, ps.name, pc.name as cat_name
+       FROM product_subcategories ps
+       JOIN product_categories pc ON ps.category_id = pc.id
+       ORDER BY pc.sort_order, ps.sort_order`
+    )
+    res.json(result.rows)
+  } catch (err) { next(err) }
+})
 router.get('/:id', auth, async (req, res, next) => {
   try {
     const { id } = req.params
@@ -120,6 +131,55 @@ router.put('/:id', auth, async (req, res, next) => {
       }
     }
 
+    res.json({ success: true })
+  } catch (err) {
+    next(err)
+  }
+})
+
+// POST /api/products — create new product
+router.post('/', auth, async (req, res, next) => {
+  try {
+    const { name, slug, tagline, desc, image, url, subcategory_id, features, specs } = req.body
+
+    if (!name || !subcategory_id) {
+      return res.status(400).json({ error: '产品名和子分类为必填项' })
+    }
+
+    const result = await pool.query(
+      `INSERT INTO product_items (subcategory_id, name, slug, tagline, "desc", image, url, sort_order)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,0) RETURNING *`,
+      [subcategory_id, name, slug || '', tagline || '', desc || '', image || '', url || '']
+    )
+    const prodId = result.rows[0].id
+
+    if (Array.isArray(features)) {
+      for (let i = 0; i < features.length; i++) {
+        await pool.query('INSERT INTO product_features (product_id, icon, text, sort_order) VALUES ($1,$2,$3,$4)',
+          [prodId, features[i].icon || 'CheckCircle2', features[i].text, i])
+      }
+    }
+    if (Array.isArray(specs)) {
+      for (let i = 0; i < specs.length; i++) {
+        await pool.query('INSERT INTO product_specs (product_id, label, value, sort_order) VALUES ($1,$2,$3,$4)',
+          [prodId, specs[i].label, specs[i].value, i])
+      }
+    }
+
+    res.json({ ...result.rows[0], features: features || [], specs: specs || [] })
+  } catch (err) {
+    next(err)
+  }
+})
+
+// DELETE /api/products/:id
+router.delete('/:id', auth, async (req, res, next) => {
+  try {
+    const { id } = req.params
+    // CASCADE handles features and specs
+    await pool.query('DELETE FROM product_specs WHERE product_id = $1', [id])
+    await pool.query('DELETE FROM product_features WHERE product_id = $1', [id])
+    await pool.query('DELETE FROM product_items WHERE id = $1', [id])
     res.json({ success: true })
   } catch (err) {
     next(err)

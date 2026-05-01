@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react'
 import EditorShell from '../../components/admin/EditorShell'
-import { Search, X, Plus, Trash2, Upload, Edit3, Package, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Search, X, Plus, Trash2, Upload, Edit3, Package, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, PlusCircle } from 'lucide-react'
 
 const PAGE_SIZE = 20
 
-function ProductEditor({ product, onSave, onCancel }) {
+function ProductEditor({ product, subcategories, onSave, onCancel }) {
   const [form, setForm] = useState({ ...product })
   const [uploading, setUploading] = useState(false)
   const [showFeatures, setShowFeatures] = useState(true)
@@ -49,6 +49,21 @@ function ProductEditor({ product, onSave, onCancel }) {
           <button onClick={onCancel} className="p-2 hover:bg-gray-100 rounded-lg"><X size={18} /></button>
         </div>
         <div className="p-6 space-y-5">
+          {!form.id && (
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1">所属子分类</label>
+              <select
+                value={form.subcategory_id || ''}
+                onChange={(e) => setField('subcategory_id', parseInt(e.target.value))}
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                <option value="">请选择</option>
+                {(subcategories || []).map((s) => (
+                  <option key={s.id} value={s.id}>{s.cat_name} · {s.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
           <div>
             <label className="block text-xs font-medium text-gray-500 mb-1">产品名</label>
             <input type="text" value={form.name || ''} onChange={(e) => setField('name', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
@@ -110,6 +125,7 @@ function ProductEditor({ product, onSave, onCancel }) {
 function ProductList() {
   const [products, setProducts] = useState([])
   const [categories, setCategories] = useState([])
+  const [subcategories, setSubcategories] = useState([])
   const [search, setSearch] = useState('')
   const [filterCat, setFilterCat] = useState('all')
   const [page, setPage] = useState(1)
@@ -144,6 +160,9 @@ function ProductList() {
   }, [])
 
   useEffect(() => { fetchProducts(page, search, filterCat) }, [page])
+  useEffect(() => {
+    fetch('/api/products/subcategories').then(r => r.json()).then(setSubcategories).catch(() => {})
+  }, [])
 
   const handleSearch = (e) => {
     e.preventDefault()
@@ -157,20 +176,37 @@ function ProductList() {
     fetchProducts(1, search, cat)
   }
 
-  const handleProductSave = async (updatedProduct) => {
+  const handleProductSave = async (formData) => {
     const token = JSON.parse(localStorage.getItem('youmin_admin_auth') || '{}').token
-    const res = await fetch(`/api/products/${updatedProduct.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token || ''}` },
-      body: JSON.stringify(updatedProduct),
+    const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${token || ''}` }
+    const isNew = !formData.id
+    const res = await fetch(isNew ? '/api/products' : `/api/products/${formData.id}`, {
+      method: isNew ? 'POST' : 'PUT',
+      headers,
+      body: JSON.stringify(formData),
     })
     if (res.ok) {
       setEditing(null)
-      setToast({ message: '保存成功', type: 'success' })
+      setToast({ message: isNew ? '创建成功' : '保存成功', type: 'success' })
       fetchProducts(page, search, filterCat)
     } else {
       const d = await res.json()
       setToast({ message: d.error || '保存失败', type: 'error' })
+    }
+  }
+
+  const handleDelete = async (product) => {
+    if (!confirm(`确定删除「${product.name}」吗？此操作不可撤销。`)) return
+    const token = JSON.parse(localStorage.getItem('youmin_admin_auth') || '{}').token
+    const res = await fetch(`/api/products/${product.id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token || ''}` },
+    })
+    if (res.ok) {
+      setToast({ message: '已删除', type: 'success' })
+      fetchProducts(page, search, filterCat)
+    } else {
+      setToast({ message: '删除失败', type: 'error' })
     }
   }
 
@@ -193,6 +229,12 @@ function ProductList() {
           {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
         <span className="text-xs text-gray-400">共 {total} 个产品</span>
+        <button
+          onClick={() => setEditing({ name: '', slug: '', tagline: '', desc: '', image: '', url: '', features: [], specs: [], cat_name: '', sub_name: '', subcategory_id: '' })}
+          className="ml-auto px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors flex items-center gap-1.5"
+        >
+          <PlusCircle size={16} /> 新增产品
+        </button>
       </div>
 
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
@@ -219,6 +261,7 @@ function ProductList() {
                 </div>
                 <span className="text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded shrink-0">{product.cat_name} · {product.sub_name}</span>
                 <button onClick={() => setEditing(product)} className="shrink-0 p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"><Edit3 size={16} /></button>
+                <button onClick={() => handleDelete(product)} className="shrink-0 p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={16} /></button>
               </div>
             ))}
           </div>
@@ -238,7 +281,7 @@ function ProductList() {
       )}
 
       {editing && (
-        <ProductEditor product={editing} onSave={handleProductSave} onCancel={() => setEditing(null)} />
+        <ProductEditor product={editing} subcategories={subcategories} onSave={handleProductSave} onCancel={() => setEditing(null)} />
       )}
     </div>
   )
