@@ -177,8 +177,6 @@ function ProductList({ data, onSave, resetKey }) {
     })
   }, [allProducts, search, filterCat])
 
-  const handleSaveAll = () => onSave(form)
-
   const handleProductSave = (updatedProduct) => {
     const { _ci, _si, _pi, ...product } = updatedProduct
     const newForm = deepClone(form)
@@ -211,7 +209,6 @@ function ProductList({ data, onSave, resetKey }) {
           <option value="all">全部分类</option>
           {(form.categories || []).map((cat, i) => <option key={i} value={i}>{cat.name}</option>)}
         </select>
-        <button onClick={handleSaveAll} className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors">保存全部</button>
       </div>
 
       {/* Product Table */}
