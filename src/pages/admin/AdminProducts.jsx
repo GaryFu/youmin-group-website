@@ -177,6 +177,8 @@ function ProductList({ data, onSave, resetKey }) {
     })
   }, [allProducts, search, filterCat])
 
+  const handleSaveAll = () => onSave(form)
+
   const handleProductSave = (updatedProduct) => {
     const { _ci, _si, _pi, ...product } = updatedProduct
     const newForm = deepClone(form)
