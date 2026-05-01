@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Calendar, Tag, ChevronRight } from 'lucide-react'
+import { Calendar, ExternalLink } from 'lucide-react'
 import SectionTitle from '../components/SectionTitle'
 import ScrollReveal from '../components/ScrollReveal'
 import { useContent } from '../context/ContentContext'
@@ -35,6 +35,13 @@ export default function News() {
 
       <section className="py-20 lg:py-28 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Stats */}
+          <div className="text-center mb-8">
+            <span className="text-sm text-gray-500">
+              共 {filtered.length} 篇文章
+            </span>
+          </div>
+
           {/* Filter */}
           <div className="flex flex-wrap justify-center gap-2 mb-12">
             {allCategories.map((cat) => (
@@ -56,7 +63,12 @@ export default function News() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {paged.map((article, i) => (
               <ScrollReveal key={i}>
-                <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-md hover:shadow-lg hover:border-green-200 transition-all group cursor-pointer">
+                <a
+                  href={article.url || '#'}
+                  target={article.url ? '_blank' : undefined}
+                  rel="noopener noreferrer"
+                  className="block bg-white rounded-xl border border-gray-100 p-6 shadow-md hover:shadow-lg hover:border-green-200 transition-all group"
+                >
                   <div className="flex items-center gap-3 mb-3">
                     <span className="text-xs font-medium bg-green-50 text-green-600 px-2.5 py-1 rounded-full">
                       {article.category}
@@ -69,10 +81,15 @@ export default function News() {
                   <h3 className="text-lg font-bold text-gray-900 group-hover:text-green-700 transition-colors leading-snug mb-3">
                     {article.title}
                   </h3>
+                  {article.digest && (
+                    <p className="text-sm text-gray-500 leading-relaxed mb-3 line-clamp-2">
+                      {article.digest}
+                    </p>
+                  )}
                   <div className="flex items-center gap-1 text-green-600 text-sm font-medium">
-                    阅读详情 <ChevronRight size={14} />
+                    阅读详情 <ExternalLink size={14} />
                   </div>
-                </div>
+                </a>
               </ScrollReveal>
             ))}
           </div>
@@ -80,19 +97,25 @@ export default function News() {
           {/* Pagination */}
           {totalPages > 1 && (
             <div className="flex justify-center gap-2 mt-12">
-              {Array.from({ length: totalPages }, (_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setPage(i)}
-                  className={`w-10 h-10 rounded-lg text-sm font-medium transition-all ${
-                    page === i
-                      ? 'bg-green-600 text-white'
-                      : 'bg-gray-50 text-gray-600 hover:bg-green-50'
-                  }`}
-                >
-                  {i + 1}
-                </button>
-              ))}
+              {Array.from({ length: Math.min(totalPages, 10) }, (_, i) => {
+                // Show pages around current page
+                const start = Math.max(0, Math.min(page - 5, totalPages - 10))
+                const pageNum = start + i
+                if (pageNum >= totalPages) return null
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => setPage(pageNum)}
+                    className={`w-10 h-10 rounded-lg text-sm font-medium transition-all ${
+                      page === pageNum
+                        ? 'bg-green-600 text-white'
+                        : 'bg-gray-50 text-gray-600 hover:bg-green-50'
+                    }`}
+                  >
+                    {pageNum + 1}
+                  </button>
+                )
+              })}
             </div>
           )}
         </div>
