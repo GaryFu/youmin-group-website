@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom'
-import { ArrowLeft, ChevronRight } from 'lucide-react'
+import { ArrowLeft, ChevronRight, ExternalLink, Calendar } from 'lucide-react'
 import SectionTitle from '../components/SectionTitle'
 import ScrollReveal from '../components/ScrollReveal'
 import { useContent } from '../context/ContentContext'
@@ -71,6 +71,35 @@ export default function ProductDetail() {
                       <div className="w-2 h-2 bg-green-500 rounded-full shrink-0" />
                       {item}
                     </div>
+                  ))}
+                </div>
+              </div>
+            </ScrollReveal>
+          )}
+
+          {/* Related Articles */}
+          {category.relatedArticles && category.relatedArticles.length > 0 && (
+            <ScrollReveal>
+              <div className="mt-16">
+                <SectionTitle subtitle="UPDATES" title="相关动态" />
+                <div className="mt-8 grid grid-cols-1 gap-3">
+                  {category.relatedArticles.map((article, i) => (
+                    <a
+                      key={i}
+                      href={article.url || '#'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-start gap-4 bg-gray-50 hover:bg-green-50 rounded-xl p-4 border border-gray-100 hover:border-green-200 transition-all"
+                    >
+                      <span className="text-xs text-gray-400 whitespace-nowrap mt-0.5 flex items-center gap-1">
+                        <Calendar size={12} />
+                        {article.date?.slice(0, 7)}
+                      </span>
+                      <span className="text-sm text-gray-700 group-hover:text-green-700 transition-colors leading-snug flex-1">
+                        {article.title}
+                      </span>
+                      <ExternalLink size={14} className="text-gray-300 group-hover:text-green-500 shrink-0 mt-0.5" />
+                    </a>
                   ))}
                 </div>
               </div>
