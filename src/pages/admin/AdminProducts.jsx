@@ -188,8 +188,22 @@ function CategoryManager({ onRefresh }) {
 
   const addCat = async () => { await api('/categories', 'POST', newCat); setNewCat({ name: '', slug: '', icon: 'Package', desc: '' }); load(); onRefresh() }
   const delCat = async (id) => { if (confirm('删除分类将同时删除其下子分类和产品，确定？')) { await api('/categories/' + id, 'DELETE'); load(); onRefresh() } }
+  const moveCat = async (idx, dir) => {
+    if (idx + dir < 0 || idx + dir >= cats.length) return
+    const a = cats[idx], b = cats[idx + dir]
+    await api('/categories/' + a.id, 'PUT', { sort_order: b.sort_order })
+    await api('/categories/' + b.id, 'PUT', { sort_order: a.sort_order })
+    load(); onRefresh()
+  }
   const addSub = async () => { await api('/subcategories', 'POST', newSub); setNewSub({ name: '', category_id: '' }); load(); onRefresh() }
   const delSub = async (id) => { if (confirm('删除子分类将同时删除其下产品，确定？')) { await api('/subcategories/' + id, 'DELETE'); load(); onRefresh() } }
+  const moveSub = async (idx, dir) => {
+    if (idx + dir < 0 || idx + dir >= subs.length) return
+    const a = subs[idx], b = subs[idx + dir]
+    await api('/subcategories/' + a.id, 'PUT', { sort_order: b.sort_order, category_id: a.category_id, name: a.name })
+    await api('/subcategories/' + b.id, 'PUT', { sort_order: a.sort_order, category_id: b.category_id, name: b.name })
+    load(); onRefresh()
+  }
 
   if (!open) return <button onClick={() => setOpen(true)} className="text-sm text-green-600 hover:text-green-700 mb-4 flex items-center gap-1"><PlusCircle size={14} /> 管理分类</button>
 
@@ -207,8 +221,12 @@ function CategoryManager({ onRefresh }) {
           <input value={newCat.slug} onChange={e => setNewCat(p => ({ ...p, slug: e.target.value }))} placeholder="slug" className="w-24 px-2 py-1.5 border rounded text-xs" />
           <button onClick={addCat} className="px-3 py-1.5 bg-green-600 text-white rounded text-xs">添加</button>
         </div>
-        {cats.map(c => (
-          <div key={c.id} className="flex items-center gap-2 py-1 text-sm">
+        {cats.map((c, i) => (
+          <div key={c.id} className="flex items-center gap-1 py-1 text-sm">
+            <div className="flex flex-col gap-0 mr-1">
+              <button onClick={() => moveCat(i, -1)} disabled={i === 0} className="text-gray-300 hover:text-gray-500 disabled:opacity-20 leading-none"><ChevronUp size={12} /></button>
+              <button onClick={() => moveCat(i, 1)} disabled={i === cats.length - 1} className="text-gray-300 hover:text-gray-500 disabled:opacity-20 leading-none"><ChevronDown size={12} /></button>
+            </div>
             <span className="flex-1 text-gray-700">{c.name} <span className="text-gray-400 text-xs">({c.slug})</span></span>
             <button onClick={() => delCat(c.id)} className="text-red-400 hover:text-red-600"><Trash2 size={12} /></button>
           </div>
@@ -225,8 +243,12 @@ function CategoryManager({ onRefresh }) {
           </select>
           <button onClick={addSub} className="px-3 py-1.5 bg-green-600 text-white rounded text-xs">添加</button>
         </div>
-        {subs.map(s => (
-          <div key={s.id} className="flex items-center gap-2 py-1 text-sm">
+        {subs.map((s, i) => (
+          <div key={s.id} className="flex items-center gap-1 py-1 text-sm">
+            <div className="flex flex-col gap-0 mr-1">
+              <button onClick={() => moveSub(i, -1)} disabled={i === 0} className="text-gray-300 hover:text-gray-500 disabled:opacity-20 leading-none"><ChevronUp size={12} /></button>
+              <button onClick={() => moveSub(i, 1)} disabled={i === subs.length - 1} className="text-gray-300 hover:text-gray-500 disabled:opacity-20 leading-none"><ChevronDown size={12} /></button>
+            </div>
             <span className="flex-1 text-gray-700">{s.name} <span className="text-gray-400 text-xs">({s.cat_name})</span></span>
             <button onClick={() => delSub(s.id)} className="text-red-400 hover:text-red-600"><Trash2 size={12} /></button>
           </div>

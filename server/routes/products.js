@@ -96,7 +96,7 @@ router.post('/categories', auth, async (req, res, next) => {
 router.put('/categories/:id', auth, async (req, res, next) => {
   try {
     const { name, slug, icon, desc } = req.body
-    await pool.query('UPDATE product_categories SET name=$1, slug=$2, icon=$3, "desc"=$4 WHERE id=$5', [name, slug, icon, desc, req.params.id])
+    await pool.query('UPDATE product_categories SET name=$1, slug=$2, icon=$3, "desc"=$4, sort_order=$5 WHERE id=$6', [name, slug, icon, desc, sort_order ?? 0, req.params.id])
     res.json({ success: true })
   } catch (err) { next(err) }
 })
@@ -117,7 +117,7 @@ router.post('/subcategories', auth, async (req, res, next) => {
 router.put('/subcategories/:id', auth, async (req, res, next) => {
   try {
     const { name, category_id } = req.body
-    await pool.query('UPDATE product_subcategories SET name=$1, category_id=$2 WHERE id=$3', [name, category_id, req.params.id])
+    await pool.query('UPDATE product_subcategories SET name=$1, category_id=$2, sort_order=$3 WHERE id=$4', [name, category_id, sort_order ?? 0, req.params.id])
     res.json({ success: true })
   } catch (err) { next(err) }
 })
