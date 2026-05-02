@@ -12,12 +12,22 @@ export default function CompanyDetail() {
   const tab = industryContent.tabs?.find((t) => t.id === tabId)
   const company = tab?.companies?.find((c) => String(c.id) === companyId)
 
-  if (!tab || !company) {
+  if (!tab) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">未找到该单位</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">未找到该板块</h1>
           <Link to="/industry" className="text-green-600 hover:text-green-700 font-medium">返回产业布局</Link>
+        </div>
+      </div>
+    )
+  }
+  if (!company) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-500">加载公司信息...</p>
         </div>
       </div>
     )
