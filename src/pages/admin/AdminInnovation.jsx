@@ -114,13 +114,22 @@ function InnovationForm({ data, onSave, resetKey }) {
                 <input type="text" value={ach.label} onChange={(e) => { setForm((f) => { const copy = deepClone(f); copy.achievements[ai].label = e.target.value; return copy }) }} className="w-32 px-2 py-1.5 border border-gray-200 rounded text-sm font-bold focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="名称" />
                 <input type="text" value={ach.value} onChange={(e) => { setForm((f) => { const copy = deepClone(f); copy.achievements[ai].value = e.target.value; return copy }) }} className="w-16 px-2 py-1.5 border border-gray-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="值" />
               </div>
-              <button type="button" onClick={() => { setForm((f) => { const copy = deepClone(f); if (!copy.achievements[ai].items) copy.achievements[ai].items = []; copy.achievements[ai].items.push({ title: '', desc: '' }); return copy }) }} className="text-xs text-green-600 flex items-center gap-1"><Plus size={12} /> 添加条目</button>
+              <button type="button" onClick={() => { setForm((f) => { const copy = deepClone(f); if (!copy.achievements[ai].items) copy.achievements[ai].items = []; copy.achievements[ai].items.push({ title: '', desc: '', images: [] }); return copy }) }} className="text-xs text-green-600 flex items-center gap-1"><Plus size={12} /> 添加条目</button>
             </div>
             {(ach.items || []).map((item, ii) => (
-              <div key={ii} className="flex items-center gap-2 mb-1.5 ml-4">
-                <input type="text" value={item.title} onChange={(e) => { setForm((f) => { const copy = deepClone(f); copy.achievements[ai].items[ii].title = e.target.value; return copy }) }} className="w-40 px-2 py-1.5 border border-gray-200 rounded text-xs focus:outline-none" placeholder="标题" />
-                <input type="text" value={item.desc || ''} onChange={(e) => { setForm((f) => { const copy = deepClone(f); copy.achievements[ai].items[ii].desc = e.target.value; return copy }) }} className="flex-1 px-2 py-1.5 border border-gray-200 rounded text-xs focus:outline-none" placeholder="描述" />
-                <button type="button" onClick={() => { setForm((f) => { const copy = deepClone(f); copy.achievements[ai].items.splice(ii, 1); return copy }) }} className="text-red-300"><Trash2 size={12} /></button>
+              <div key={ii} className="mb-3 ml-4 p-2 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <input type="text" value={item.title} onChange={(e) => { setForm((f) => { const copy = deepClone(f); copy.achievements[ai].items[ii].title = e.target.value; return copy }) }} className="w-40 px-2 py-1.5 border border-gray-200 rounded text-xs focus:outline-none" placeholder="标题" />
+                  <input type="text" value={item.desc || ''} onChange={(e) => { setForm((f) => { const copy = deepClone(f); copy.achievements[ai].items[ii].desc = e.target.value; return copy }) }} className="flex-1 px-2 py-1.5 border border-gray-200 rounded text-xs focus:outline-none" placeholder="描述" />
+                  <button type="button" onClick={() => { setForm((f) => { const copy = deepClone(f); copy.achievements[ai].items.splice(ii, 1); return copy }) }} className="text-red-300"><Trash2 size={12} /></button>
+                </div>
+                {(item.images || []).map((img, ji) => (
+                  <div key={ji} className="flex items-center gap-1 ml-2 mb-1">
+                    <input type="text" value={img} onChange={(e) => { setForm((f) => { const copy = deepClone(f); copy.achievements[ai].items[ii].images[ji] = e.target.value; return copy }) }} className="flex-1 px-2 py-1 border border-gray-200 rounded text-xs focus:outline-none" placeholder={`图片 ${ji + 1} URL`} />
+                    <button type="button" onClick={() => { setForm((f) => { const copy = deepClone(f); copy.achievements[ai].items[ii].images.splice(ji, 1); return copy }) }} className="text-red-300"><Trash2 size={10} /></button>
+                  </div>
+                ))}
+                <button type="button" onClick={() => { setForm((f) => { const copy = deepClone(f); if (!copy.achievements[ai].items[ii].images) copy.achievements[ai].items[ii].images = []; copy.achievements[ai].items[ii].images.push(''); return copy }) }} className="text-xs text-green-500 ml-2 flex items-center gap-0.5"><Plus size={10} /> 添加图片</button>
               </div>
             ))}
           </div>

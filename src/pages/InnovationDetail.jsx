@@ -57,16 +57,25 @@ export default function InnovationDetail() {
               <p>暂无详细内容，敬请期待</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {items.map((item, i) => (
                 <ScrollReveal key={i}>
-                  <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm hover:shadow-md hover:border-green-200 transition-all flex gap-4">
-                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
-                      <span className="text-xs font-bold text-green-600">{String(i + 1).padStart(2, '0')}</span>
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-gray-900 mb-1">{item.title}</h3>
-                      {item.desc && <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>}
+                  <div className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-green-200 transition-all overflow-hidden">
+                    {(item.images || []).length > 0 && (
+                      <div className={`grid gap-0.5 ${item.images.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
+                        {item.images.map((img, j) => (
+                          <img key={j} src={img} alt="" className="w-full h-40 object-contain bg-gray-50" />
+                        ))}
+                      </div>
+                    )}
+                    <div className="p-5 flex gap-4">
+                      <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                        <span className="text-xs font-bold text-green-600">{String(i + 1).padStart(2, '0')}</span>
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-gray-900 mb-1">{item.title}</h3>
+                        {item.desc && <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>}
+                      </div>
                     </div>
                   </div>
                 </ScrollReveal>
