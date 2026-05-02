@@ -26,6 +26,7 @@ import AdminSiteConfig from './pages/admin/AdminSiteConfig'
 import AdminHomePage from './pages/admin/AdminHome'
 import AdminAboutPage from './pages/admin/AdminAbout'
 import AdminIndustryPage from './pages/admin/AdminIndustry'
+import AdminCompanyEdit from './pages/admin/AdminCompanyEdit'
 import AdminInnovationPage from './pages/admin/AdminInnovation'
 import AdminProductsPage from './pages/admin/AdminProducts'
 import AdminGreenPage from './pages/admin/AdminGreen'
@@ -57,6 +58,7 @@ export default function App() {
           <Route path="site-config" element={<AdminSiteConfig />} />
           <Route path="home" element={<AdminHomePage />} />
           <Route path="about" element={<AdminAboutPage />} />
+          <Route path="industry/:tabId/:companyId" element={<AdminCompanyEdit />} />
           <Route path="industry" element={<AdminIndustryPage />} />
           <Route path="innovation" element={<AdminInnovationPage />} />
           <Route path="products" element={<AdminProductsPage />} />
