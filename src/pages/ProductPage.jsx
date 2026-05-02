@@ -36,7 +36,8 @@ export default function ProductPage() {
     .filter((p) => p.slug !== productSlug)
     .slice(0, 4)
 
-  const hasImage = !!product.image
+  const images = product.images?.length > 0 ? product.images : (product.image ? [product.image] : [])
+  const hasImagess = images.length > 0
 
   return (
     <div>
@@ -115,9 +116,9 @@ export default function ProductPage() {
                 <div className="relative">
                   <div className="absolute -inset-4 bg-gradient-to-br from-gold-400/20 via-green-400/10 to-transparent rounded-3xl blur-xl" />
                   <div className="relative bg-white rounded-2xl p-3 shadow-2xl">
-                    {hasImage ? (
+                    {hasImages ? (
                       <img
-                        src={product.image}
+                        src={images[0]}
                         alt={product.name}
                         className="w-full object-contain rounded-xl"
                       />
@@ -222,17 +223,26 @@ export default function ProductPage() {
         </div>
       </section>
 
-      {/* ── Image Gallery or Single Image ── */}
-      {hasImage && (
+      {/* ── Image Gallery ── */}
+      {hasImages && (
         <section className="py-16 bg-white">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <ScrollReveal>
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-full rounded-2xl shadow-lg object-contain"
-              />
+              <p className="text-green-600 text-sm font-semibold tracking-widest uppercase mb-3 text-center">GALLERY</p>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">产品图集</h2>
+              <div className="w-10 h-1 mx-auto bg-gold-400 rounded-full mb-10" />
             </ScrollReveal>
+            <div className={`grid gap-4 ${images.length === 1 ? 'grid-cols-1 max-w-2xl mx-auto' : images.length === 2 ? 'grid-cols-2' : 'grid-cols-2 lg:grid-cols-3'}`}>
+              {images.map((img, i) => (
+                <ScrollReveal key={i}>
+                  <img
+                    src={img}
+                    alt={`${product.name} - ${i + 1}`}
+                    className="w-full rounded-2xl shadow-lg object-contain bg-gray-50"
+                  />
+                </ScrollReveal>
+              ))}
+            </div>
           </div>
         </section>
       )}

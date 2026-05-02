@@ -108,11 +108,12 @@ router.get('/:id', auth, async (req, res, next) => {
 router.put('/:id', auth, async (req, res, next) => {
   try {
     const { id } = req.params
-    const { name, slug, tagline, desc, image, url, features, specs } = req.body
+    const { name, slug, tagline, desc, image, images, url, features, specs } = req.body
+    const imageArray = images?.length > 0 ? images : (image ? [image] : [])
 
     await pool.query(
-      `UPDATE product_items SET name=$1, slug=$2, tagline=$3, "desc"=$4, image=$5, url=$6 WHERE id=$7`,
-      [name, slug, tagline, desc, image, url, id]
+      `UPDATE product_items SET name=$1, slug=$2, tagline=$3, "desc"=$4, image=$5, images=$6, url=$7 WHERE id=$8`,
+      [name, slug, tagline, desc, imageArray[0] || null, JSON.stringify(imageArray), url, id]
     )
 
     if (Array.isArray(features)) {
@@ -140,16 +141,17 @@ router.put('/:id', auth, async (req, res, next) => {
 // POST /api/products — create new product
 router.post('/', auth, async (req, res, next) => {
   try {
-    const { name, slug, tagline, desc, image, url, subcategory_id, features, specs } = req.body
+    const { name, slug, tagline, desc, image, images, url, subcategory_id, features, specs } = req.body
+    const imageArray = images?.length > 0 ? images : (image ? [image] : [])
 
     if (!name || !subcategory_id) {
       return res.status(400).json({ error: '产品名和子分类为必填项' })
     }
 
     const result = await pool.query(
-      `INSERT INTO product_items (subcategory_id, name, slug, tagline, "desc", image, url, sort_order)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,0) RETURNING *`,
-      [subcategory_id, name, slug || '', tagline || '', desc || '', image || '', url || '']
+      `INSERT INTO product_items (subcategory_id, name, slug, tagline, "desc", image, images, url, sort_order)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,0) RETURNING *`,
+      [subcategory_id, name, slug || '', tagline || '', desc || '', imageArray[0] || null, JSON.stringify(imageArray), url || '']
     )
     const prodId = result.rows[0].id
 

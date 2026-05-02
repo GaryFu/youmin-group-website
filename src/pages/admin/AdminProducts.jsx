@@ -74,12 +74,22 @@ function ProductEditor({ product, subcategories, onSave, onCancel }) {
           </div>
           <div><label className="block text-xs font-medium text-gray-500 mb-1">详细描述</label><textarea value={form.desc || ''} onChange={(e) => setField('desc', e.target.value)} rows={4} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" /></div>
           <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1">产品图片</label>
+            <label className="block text-xs font-medium text-gray-500 mb-1">产品图片（多张）</label>
+            {(form.images || (form.image ? [form.image] : [])).map((img, i) => (
+              <div key={i} className="flex gap-2 mb-2">
+                <input type="text" value={img} onChange={(e) => { const imgs = [...(form.images || (form.image ? [form.image] : []))]; imgs[i] = e.target.value; setField('images', imgs) }} className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-green-500" placeholder={`图片 ${i + 1} URL`} />
+                <button onClick={() => { const imgs = [...(form.images || (form.image ? [form.image] : []))]; imgs.splice(i, 1); setField('images', imgs) }} className="text-red-400 hover:text-red-600"><Trash2 size={14} /></button>
+              </div>
+            ))}
             <div className="flex gap-2">
-              <input type="text" value={form.image || ''} onChange={(e) => setField('image', e.target.value)} className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="图片 URL" />
-              <label className="shrink-0 cursor-pointer px-3 py-2 bg-gray-100 hover:bg-green-50 rounded-lg text-sm text-gray-500 hover:text-green-600 flex items-center gap-1"><Upload size={14} />{uploading ? '...' : '上传'}<input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleImageUpload(f); e.target.value = '' }} /></label>
+              <button onClick={() => { const imgs = [...(form.images || (form.image ? [form.image] : []))]; imgs.push(''); setField('images', imgs) }} className="text-xs text-green-600 hover:text-green-700 flex items-center gap-1"><Plus size={12} /> 添加图片</button>
+              <label className="cursor-pointer px-2 py-0.5 bg-gray-100 hover:bg-green-50 rounded text-xs text-gray-500 hover:text-green-600 flex items-center gap-1"><Upload size={12} />{uploading ? '...' : '上传'}<input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleImageUpload(f); e.target.value = '' }} /></label>
             </div>
-            {form.image && <img src={form.image} alt="" className="mt-2 w-full rounded-lg object-contain" />}
+            {form.images && form.images.length > 0 && (
+              <div className="flex gap-2 mt-2 overflow-x-auto">
+                {form.images.map((img, i) => img && <img key={i} src={img} alt="" className="h-16 rounded-lg object-contain border border-gray-100" />)}
+              </div>
+            )}
           </div>
           <div>
             <button type="button" onClick={() => setShowFeatures(!showFeatures)} className="flex items-center gap-1 text-xs font-medium text-gray-500 mb-2">{showFeatures ? <ChevronUp size={14} /> : <ChevronDown size={14} />}产品特性 ({(form.features || []).length})</button>
@@ -267,7 +277,7 @@ function ProductList() {
             {products.map((product) => (
               <div key={product.id} className="flex items-center gap-4 px-6 py-3 hover:bg-gray-50 transition-colors">
                 <div className="w-10 h-10 rounded-lg bg-gray-100 shrink-0 overflow-hidden">
-                  {product.image ? <img src={product.image} alt="" className="w-full h-full object-contain" /> : <div className="w-full h-full flex items-center justify-center text-gray-300"><Package size={18} /></div>}
+                  {product.images?.[0] || product.image ? <img src={product.images?.[0] || product.image} alt="" className="w-full h-full object-contain" /> : <div className="w-full h-full flex items-center justify-center text-gray-300"><Package size={18} /></div>}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate">{product.name}</p>
