@@ -11,6 +11,7 @@ import Products from './pages/Products'
 import ProductDetail from './pages/ProductDetail'
 import ProductPage from './pages/ProductPage'
 import CompanyDetail from './pages/CompanyDetail'
+import InnovationDetail from './pages/InnovationDetail'
 import Green from './pages/Green'
 import News from './pages/News'
 import Partners from './pages/Partners'
@@ -79,6 +80,7 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/industry/:tabId/:companyId" element={<CompanyDetail />} />
         <Route path="/industry" element={<Industry />} />
+        <Route path="/innovation/:index" element={<InnovationDetail />} />
         <Route path="/innovation" element={<Innovation />} />
         <Route path="/products" element={<Products />} />
         <Route path="/products/:categorySlug/:productId" element={<ProductPage />} />

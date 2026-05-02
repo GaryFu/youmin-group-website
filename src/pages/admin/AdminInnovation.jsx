@@ -103,6 +103,30 @@ function InnovationForm({ data, onSave, resetKey }) {
         </div>
       ))}
 
+      {/* Achievement Detail Items */}
+      <div className="border-t border-gray-200 pt-6">
+        <h3 className="font-bold text-gray-900 text-sm uppercase tracking-wider mb-4">成果详情（点击数字卡片后的展示内容）</h3>
+        {(form.achievements || []).map((ach, ai) => (
+          <div key={ai} className="border border-gray-200 rounded-xl p-4 mb-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-bold text-gray-400">#{ai + 1}</span>
+                <input type="text" value={ach.label} onChange={(e) => { setForm((f) => { const copy = deepClone(f); copy.achievements[ai].label = e.target.value; return copy }) }} className="w-32 px-2 py-1.5 border border-gray-200 rounded text-sm font-bold focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="名称" />
+                <input type="text" value={ach.value} onChange={(e) => { setForm((f) => { const copy = deepClone(f); copy.achievements[ai].value = e.target.value; return copy }) }} className="w-16 px-2 py-1.5 border border-gray-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="值" />
+              </div>
+              <button type="button" onClick={() => { setForm((f) => { const copy = deepClone(f); if (!copy.achievements[ai].items) copy.achievements[ai].items = []; copy.achievements[ai].items.push({ title: '', desc: '' }); return copy }) }} className="text-xs text-green-600 flex items-center gap-1"><Plus size={12} /> 添加条目</button>
+            </div>
+            {(ach.items || []).map((item, ii) => (
+              <div key={ii} className="flex items-center gap-2 mb-1.5 ml-4">
+                <input type="text" value={item.title} onChange={(e) => { setForm((f) => { const copy = deepClone(f); copy.achievements[ai].items[ii].title = e.target.value; return copy }) }} className="w-40 px-2 py-1.5 border border-gray-200 rounded text-xs focus:outline-none" placeholder="标题" />
+                <input type="text" value={item.desc || ''} onChange={(e) => { setForm((f) => { const copy = deepClone(f); copy.achievements[ai].items[ii].desc = e.target.value; return copy }) }} className="flex-1 px-2 py-1.5 border border-gray-200 rounded text-xs focus:outline-none" placeholder="描述" />
+                <button type="button" onClick={() => { setForm((f) => { const copy = deepClone(f); copy.achievements[ai].items.splice(ii, 1); return copy }) }} className="text-red-300"><Trash2 size={12} /></button>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+
       <button type="submit" className="inline-flex items-center gap-2 bg-green-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors">
         保存修改
       </button>

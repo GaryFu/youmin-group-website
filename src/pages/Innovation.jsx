@@ -1,22 +1,19 @@
-import { Microscope, Beaker, Atom, Award, BookOpen, GraduationCap } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { Microscope, Beaker, Atom, Award, BookOpen, GraduationCap, ArrowRight } from 'lucide-react'
 import SectionTitle from '../components/SectionTitle'
 import ScrollReveal from '../components/ScrollReveal'
 import { useContent } from '../context/ContentContext'
 
 const centerIcons = { Microscope, Beaker, Atom }
-
-const achievements = [
-  { icon: Award, label: '省级科研项目', value: '10+' },
-  { icon: BookOpen, label: '专利成果', value: '30+' },
-  { icon: GraduationCap, label: '科研人员', value: '50+' },
-]
+const achievementIcons = { Award, BookOpen, GraduationCap }
 
 export default function Innovation() {
   const { getContent } = useContent()
   const innovationContent = getContent('innovation')
+  const achievements = innovationContent.achievements || []
+
   return (
     <div>
-      {/* Page Header */}
       <section className="bg-gradient-to-r from-green-800 to-green-900 pt-28 pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <ScrollReveal>
@@ -27,7 +24,6 @@ export default function Innovation() {
         </div>
       </section>
 
-      {/* Intro */}
       <section className="py-20 lg:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
@@ -36,24 +32,27 @@ export default function Innovation() {
             </p>
           </ScrollReveal>
 
-          {/* Stats */}
           <div className="grid grid-cols-3 gap-6 max-w-2xl mx-auto mt-14">
-            {achievements.map((item, i) => (
-              <ScrollReveal key={i}>
-                <div className="text-center">
-                  <div className="w-14 h-14 bg-green-50 rounded-xl flex items-center justify-center mx-auto mb-3">
-                    <item.icon size={24} className="text-green-600" />
-                  </div>
-                  <div className="text-3xl font-extrabold text-green-700">{item.value}</div>
-                  <div className="text-sm text-gray-500 mt-1">{item.label}</div>
-                </div>
-              </ScrollReveal>
-            ))}
+            {achievements.map((item, i) => {
+              const Icon = achievementIcons[item.icon] || Award
+              return (
+                <ScrollReveal key={i}>
+                  <Link to={`/innovation/${i}`} className="block text-center group">
+                    <div className="w-14 h-14 bg-green-50 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:bg-green-100 transition-colors">
+                      <Icon size={24} className="text-green-600" />
+                    </div>
+                    <div className="text-3xl font-extrabold text-green-700 group-hover:text-green-800 transition-colors">{item.value}</div>
+                    <div className="text-sm text-gray-500 mt-1 group-hover:text-gray-700 transition-colors flex items-center justify-center gap-1">
+                      {item.label} <ArrowRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                  </Link>
+                </ScrollReveal>
+              )
+            })}
           </div>
         </div>
       </section>
 
-      {/* Research Centers */}
       <section className="py-20 lg:py-28 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle subtitle="RESEARCH CENTERS" title="科研平台" />
