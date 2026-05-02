@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Building2, Factory, Ship } from 'lucide-react'
 import SectionTitle from '../components/SectionTitle'
 import ScrollReveal from '../components/ScrollReveal'
@@ -56,16 +57,17 @@ export default function Industry() {
               {industryContent.tabs
                 .find((t) => t.id === activeTab)
                 ?.companies.map((company, i) => (
-                  <div
+                  <Link
                     key={i}
-                    className="bg-gray-50 rounded-xl p-6 lg:p-8 border border-gray-100 hover:border-green-200 hover:shadow-md transition-all group"
+                    to={`/industry/${activeTab}/${company.id}`}
+                    className="block bg-gray-50 rounded-xl p-6 lg:p-8 border border-gray-100 hover:border-green-200 hover:shadow-md transition-all group"
                   >
                     <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-green-700 font-bold text-sm mb-4 group-hover:bg-green-600 group-hover:text-white transition-colors">
                       {String(i + 1).padStart(2, '0')}
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">{company.name}</h3>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-green-700 transition-colors">{company.name}</h3>
                     <p className="text-sm text-gray-500 leading-relaxed">{company.desc}</p>
-                  </div>
+                  </Link>
                 ))}
             </div>
           </ScrollReveal>
