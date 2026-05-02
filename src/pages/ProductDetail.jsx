@@ -54,7 +54,7 @@ export default function ProductDetail() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
             <p className="text-green-600 text-sm font-semibold tracking-widest uppercase mb-2 text-center">CATALOG</p>
-            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2 text-center">产品目录</h2>
+            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2 text-center">目录</h2>
             <div className="w-12 h-1 mx-auto bg-gold-400 rounded-full mb-10" />
           </ScrollReveal>
 
