@@ -1,12 +1,18 @@
 import { deepClone } from '../../utils/deepClone'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import EditorShell from '../../components/admin/EditorShell'
 import { Plus, Trash2 } from 'lucide-react'
 
 function PartnersForm({ data, onSave, resetKey }) {
   const [form, setForm] = useState(deepClone(data))
+  const initialized = useRef(false)
 
-  useEffect(() => { setForm(deepClone(data)) }, [data, resetKey])
+  useEffect(() => {
+    if (!initialized.current || resetKey > 0) {
+      setForm(deepClone(data))
+      initialized.current = true
+    }
+  }, [data, resetKey])
 
   const handleSubmit = (e) => { e.preventDefault(); onSave(form) }
 
@@ -53,6 +59,22 @@ function PartnersForm({ data, onSave, resetKey }) {
     })
   }
 
+  const addCategory = () => {
+    setForm((f) => {
+      const copy = deepClone(f)
+      copy.categories.push({ name: '', partners: [] })
+      return copy
+    })
+  }
+
+  const removeCategory = (ci) => {
+    setForm((f) => {
+      const copy = deepClone(f)
+      copy.categories.splice(ci, 1)
+      return copy
+    })
+  }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       <div className="border border-gray-200 rounded-xl p-6">
@@ -72,12 +94,16 @@ function PartnersForm({ data, onSave, resetKey }) {
         </div>
       </div>
 
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="font-bold text-gray-900 text-sm uppercase tracking-wider">合作方分类 ({form.categories?.length || 0})</h3>
+        <button type="button" onClick={addCategory} className="flex items-center gap-1 text-sm text-green-600 hover:text-green-700"><Plus size={16} /> 添加分类</button>
+      </div>
       {form.categories?.map((cat, ci) => (
         <div key={ci} className="border border-gray-200 rounded-xl p-6">
           <div className="flex items-center justify-between mb-4">
-            <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">分类名称</label>
-              <input type="text" value={cat.name} onChange={updateCatName(ci)} className="w-48 px-3 py-2 border border-gray-200 rounded-lg text-sm font-bold focus:outline-none focus:ring-2 focus:ring-green-500" />
+            <div className="flex items-center gap-3">
+              <input type="text" value={cat.name} onChange={updateCatName(ci)} className="w-48 px-3 py-2 border border-gray-200 rounded-lg text-sm font-bold focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="分类名称" />
+              <button type="button" onClick={() => removeCategory(ci)} className="text-red-400 hover:text-red-600" title="删除分类"><Trash2 size={16} /></button>
             </div>
             <button type="button" onClick={() => addPartner(ci)} className="flex items-center gap-1 text-sm text-green-600 hover:text-green-700">
               <Plus size={16} /> 添加合作方
