@@ -37,7 +37,7 @@ export default function ProductPage() {
     .slice(0, 4)
 
   const images = product.images?.length > 0 ? product.images : (product.image ? [product.image] : [])
-  const hasImagess = images.length > 0
+  const hasImages = images.length > 0
 
   return (
     <div>
