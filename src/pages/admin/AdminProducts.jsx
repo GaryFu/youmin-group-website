@@ -6,17 +6,21 @@ const PAGE_SIZE = 20
 
 function ProductEditor({ product, subcategories, onSave, onCancel }) {
   const [form, setForm] = useState({ ...product })
-  const [uploading, setUploading] = useState(false)
+  const [uploading, setUploading] = useState(-1) // index of uploading slot, -1 = none
   const [showFeatures, setShowFeatures] = useState(true)
   const [showSpecs, setShowSpecs] = useState(true)
 
   useEffect(() => { setForm({ ...product }) }, [product])
 
-  const handleImageUpload = async (file) => {
-    setUploading(true)
+  const handleImageUpload = async (file, slotIndex) => {
+    setUploading(slotIndex)
     try {
-      const reader = new FileReader()
-      const base64 = await new Promise((r) => { reader.onload = () => r(reader.result); reader.readAsDataURL(file) })
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => resolve(reader.result)
+        reader.onerror = reject
+        reader.readAsDataURL(file)
+      })
       const token = JSON.parse(localStorage.getItem('youmin_admin_auth') || '{}').token
       const res = await fetch('/api/upload/image', {
         method: 'POST',
@@ -24,9 +28,17 @@ function ProductEditor({ product, subcategories, onSave, onCancel }) {
         body: JSON.stringify({ image: base64, filename: file.name }),
       })
       const d = await res.json()
-      if (d.url) setForm((f) => { const imgs = [...(f.images || (f.image ? [f.image] : []))]; imgs.push(d.url); return { ...f, images: imgs, image: imgs[0] } })
-    } catch (err) { console.error('Upload failed:', err) }
-    setUploading(false)
+      if (!res.ok) throw new Error(d.error || '上传失败')
+      if (!d.url) throw new Error('服务器未返回图片地址')
+      setForm((f) => {
+        const imgs = [...(f.images || (f.image ? [f.image] : []))]
+        imgs[slotIndex] = d.url
+        return { ...f, images: imgs, image: imgs[0] || null }
+      })
+    } catch (err) {
+      alert('图片上传失败: ' + err.message)
+    }
+    setUploading(-1)
   }
 
   const setField = (f, v) => setForm((p) => ({ ...p, [f]: v }))
@@ -78,7 +90,7 @@ function ProductEditor({ product, subcategories, onSave, onCancel }) {
             {(form.images || (form.image ? [form.image] : [])).map((img, i) => (
               <div key={i} className="flex gap-2 mb-2">
                 <input type="text" value={img} onChange={(e) => { const imgs = [...(form.images || (form.image ? [form.image] : []))]; imgs[i] = e.target.value; setField('images', imgs) }} className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-green-500" placeholder={`图片 ${i + 1} URL`} />
-                <label className="cursor-pointer px-2 py-1 bg-gray-100 hover:bg-green-50 rounded text-xs text-gray-500 hover:text-green-600 flex items-center"><Upload size={12} />{uploading ? '...' : ''}<input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) { const reader = new FileReader(); reader.onload = async () => { const base64 = reader.result; const token = JSON.parse(localStorage.getItem('youmin_admin_auth')||'{}').token; const res = await fetch('/api/upload/image',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token||''}`},body:JSON.stringify({image:base64,filename:f.name})}); const d = await res.json(); if(d.url){ const imgs = [...(form.images||(form.image?[form.image]:[]))]; imgs[i] = d.url; setField('images',imgs) } }; reader.readAsDataURL(f); } e.target.value='' }} /></label>
+                <label className={`cursor-pointer px-2 py-1 rounded text-xs flex items-center ${uploading === i ? 'bg-green-100 text-green-600' : 'bg-gray-100 hover:bg-green-50 text-gray-500 hover:text-green-600'}`}><Upload size={12} />{uploading === i ? '...' : ''}<input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleImageUpload(f, i); e.target.value = '' }} /></label>
                 <button onClick={() => { const imgs = [...(form.images || (form.image ? [form.image] : []))]; imgs.splice(i, 1); setField('images', imgs) }} className="text-red-400 hover:text-red-600"><Trash2 size={14} /></button>
               </div>
             ))}
