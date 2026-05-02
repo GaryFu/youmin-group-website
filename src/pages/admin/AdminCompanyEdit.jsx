@@ -18,10 +18,16 @@ export default function AdminCompanyEdit() {
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(-1)
 
-  // Re-initialize form when navigating to a different company or when data loads
+  // Re-initialize form only when companyId changes or company data becomes richer
+  const prevDataRef = useRef('')
   useEffect(() => {
-    if (company) setForm(deepClone(company))
-  }, [companyId, !!company])
+    if (!company) return
+    const key = JSON.stringify({ milestones: company.milestones?.length, images: company.images?.length, features: company.features?.length })
+    if (key !== prevDataRef.current) {
+      prevDataRef.current = key
+      setForm(deepClone(company))
+    }
+  }, [company])
 
   if (!company || !form) {
     return <div className="p-8 text-center text-gray-400">未找到该公司</div>
