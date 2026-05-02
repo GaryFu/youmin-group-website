@@ -132,14 +132,16 @@ function PartnersForm({ data, onSave, resetKey }) {
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {cat.partners.map((partner, pi) => (
-                  <div key={`p-${ci}-${pi}`} className="relative group bg-gray-50 rounded-xl p-4 border border-gray-100 hover:border-green-200 transition-all">
+                  <div key={`p-${ci}-${pi}`} className="relative group bg-gray-100 rounded-xl p-4 border border-gray-200 hover:border-green-200 transition-all">
                     <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 flex gap-1 transition-opacity">
                       <button type="button" onClick={() => setEditing({ ci, pi, partner })} className="p-1 bg-white rounded shadow text-gray-400 hover:text-green-600"><Edit3 size={12} /></button>
                       <button type="button" onClick={() => removePartner(ci, pi)} className="p-1 bg-white rounded shadow text-gray-400 hover:text-red-500"><Trash2 size={12} /></button>
                     </div>
                     <div className="flex flex-col items-center text-center">
                       {partner.logo ? (
-                        <img src={partner.logo} alt={partner.name} className="h-12 mb-2 object-contain" />
+                        <div className="w-full bg-white rounded-lg p-2 mb-2 flex items-center justify-center" style={{ minHeight: '40px' }}>
+                          <img src={partner.logo} alt={partner.name} className="max-h-8 object-contain" />
+                        </div>
                       ) : (
                         <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mb-2"><Image size={20} className="text-gray-300" /></div>
                       )}
