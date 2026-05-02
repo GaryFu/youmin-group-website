@@ -70,7 +70,7 @@ router.get('/', auth, async (req, res, next) => {
 router.get('/subcategories', async (req, res, next) => {
   try {
     const result = await pool.query(
-      `SELECT ps.id, ps.name, ps.category_id, pc.name as cat_name
+      `SELECT ps.id, ps.name, pc.name as cat_name
        FROM product_subcategories ps
        JOIN product_categories pc ON ps.category_id = pc.id
        ORDER BY pc.sort_order, ps.sort_order`
@@ -78,21 +78,42 @@ router.get('/subcategories', async (req, res, next) => {
     res.json(result.rows)
   } catch (err) { next(err) }
 })
-
-// POST /api/products/subcategories — create subcategory
-router.post('/subcategories', auth, async (req, res, next) => {
+// ── Category Management ──
+router.get('/categories', auth, async (req, res, next) => {
   try {
-    const { name, category_id } = req.body
-    if (!name || !category_id) return res.status(400).json({ error: '名称和分类为必填项' })
-    const result = await pool.query(
-      'INSERT INTO product_subcategories (category_id, name, sort_order) VALUES ($1,$2,0) RETURNING *',
-      [category_id, name]
-    )
+    const result = await pool.query('SELECT * FROM product_categories ORDER BY sort_order')
+    res.json(result.rows)
+  } catch (err) { next(err) }
+})
+router.post('/categories', auth, async (req, res, next) => {
+  try {
+    const { name, slug, icon, desc } = req.body
+    if (!name || !slug) return res.status(400).json({ error: '名称和 slug 为必填项' })
+    const result = await pool.query('INSERT INTO product_categories (name, slug, icon, "desc", sort_order) VALUES ($1,$2,$3,$4,0) RETURNING *', [name, slug, icon || 'Package', desc || ''])
     res.json(result.rows[0])
   } catch (err) { next(err) }
 })
-
-// PUT /api/products/subcategories/:id — update subcategory
+router.put('/categories/:id', auth, async (req, res, next) => {
+  try {
+    const { name, slug, icon, desc } = req.body
+    await pool.query('UPDATE product_categories SET name=$1, slug=$2, icon=$3, "desc"=$4 WHERE id=$5', [name, slug, icon, desc, req.params.id])
+    res.json({ success: true })
+  } catch (err) { next(err) }
+})
+router.delete('/categories/:id', auth, async (req, res, next) => {
+  try {
+    await pool.query('DELETE FROM product_categories WHERE id = $1', [req.params.id])
+    res.json({ success: true })
+  } catch (err) { next(err) }
+})
+router.post('/subcategories', auth, async (req, res, next) => {
+  try {
+    const { name, category_id } = req.body
+    if (!name || !category_id) return res.status(400).json({ error: '名称和所属分类为必填项' })
+    const result = await pool.query('INSERT INTO product_subcategories (category_id, name, sort_order) VALUES ($1,$2,0) RETURNING *', [category_id, name])
+    res.json(result.rows[0])
+  } catch (err) { next(err) }
+})
 router.put('/subcategories/:id', auth, async (req, res, next) => {
   try {
     const { name, category_id } = req.body
@@ -100,14 +121,13 @@ router.put('/subcategories/:id', auth, async (req, res, next) => {
     res.json({ success: true })
   } catch (err) { next(err) }
 })
-
-// DELETE /api/products/subcategories/:id — delete subcategory
 router.delete('/subcategories/:id', auth, async (req, res, next) => {
   try {
-    await pool.query('DELETE FROM product_subcategories WHERE id=$1', [req.params.id])
+    await pool.query('DELETE FROM product_subcategories WHERE id = $1', [req.params.id])
     res.json({ success: true })
   } catch (err) { next(err) }
 })
+
 router.get('/:id', auth, async (req, res, next) => {
   try {
     const { id } = req.params
@@ -217,6 +237,8 @@ router.delete('/:id', auth, async (req, res, next) => {
     next(err)
   }
 })
+
+// ── Publish ──
 
 // POST /api/publish — manually trigger Vercel redeploy
 router.post('/publish', auth, async (req, res) => {

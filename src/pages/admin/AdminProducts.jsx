@@ -82,19 +82,21 @@ function ProductEditor({ product, subcategories, onSave, onCancel }) {
           <button onClick={onCancel} className="p-2 hover:bg-gray-100 rounded-lg"><X size={18} /></button>
         </div>
         <div className="p-6 space-y-5">
-          <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1">所属子分类</label>
-            <select
-              value={form.subcategory_id || ''}
-              onChange={(e) => setField('subcategory_id', parseInt(e.target.value))}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-            >
-              <option value="">请选择</option>
-              {(subcategories || []).map((s) => (
-                <option key={s.id} value={s.id}>{s.cat_name} · {s.name}</option>
-              ))}
-            </select>
-          </div>
+          {!form.id && (
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1">所属子分类</label>
+              <select
+                value={form.subcategory_id || ''}
+                onChange={(e) => setField('subcategory_id', parseInt(e.target.value))}
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                <option value="">请选择</option>
+                {(subcategories || []).map((s) => (
+                  <option key={s.id} value={s.id}>{s.cat_name} · {s.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
           <div>
             <label className="block text-xs font-medium text-gray-500 mb-1">产品名</label>
             <input type="text" value={form.name || ''} onChange={(e) => setField('name', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
@@ -155,6 +157,80 @@ function ProductEditor({ product, subcategories, onSave, onCancel }) {
             <button onClick={onCancel} className="px-6 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50">取消</button>
           </div>
         </div>
+      </div>
+    </div>
+  )
+}
+
+function CategoryManager({ onRefresh }) {
+  const [cats, setCats] = useState([])
+  const [subs, setSubs] = useState([])
+  const [open, setOpen] = useState(false)
+  const [newCat, setNewCat] = useState({ name: '', slug: '', icon: 'Package', desc: '' })
+  const [newSub, setNewSub] = useState({ name: '', category_id: '' })
+
+  const api = async (path, method = 'GET', body) => {
+    const token = JSON.parse(localStorage.getItem('youmin_admin_auth') || '{}').token
+    const opts = { method, headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token || ''}` } }
+    if (body) opts.body = JSON.stringify(body)
+    const res = await fetch(`/api/products${path}`, opts)
+    if (!res.ok) throw new Error((await res.json()).error || 'failed')
+    return res.json()
+  }
+
+  const load = async () => {
+    const c = await api('/categories')
+    const s = await fetch('/api/products/subcategories').then(r => r.json())
+    setCats(Array.isArray(c) ? c : (c.categories || []))
+    setSubs(Array.isArray(s) ? s : [])
+  }
+  useEffect(() => { load() }, [])
+
+  const addCat = async () => { await api('/categories', 'POST', newCat); setNewCat({ name: '', slug: '', icon: 'Package', desc: '' }); load(); onRefresh() }
+  const delCat = async (id) => { if (confirm('删除分类将同时删除其下子分类和产品，确定？')) { await api('/categories/' + id, 'DELETE'); load(); onRefresh() } }
+  const addSub = async () => { await api('/subcategories', 'POST', newSub); setNewSub({ name: '', category_id: '' }); load(); onRefresh() }
+  const delSub = async (id) => { if (confirm('删除子分类将同时删除其下产品，确定？')) { await api('/subcategories/' + id, 'DELETE'); load(); onRefresh() } }
+
+  if (!open) return <button onClick={() => setOpen(true)} className="text-sm text-green-600 hover:text-green-700 mb-4 flex items-center gap-1"><PlusCircle size={14} /> 管理分类</button>
+
+  return (
+    <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">分类管理</h3>
+        <button onClick={() => setOpen(false)} className="text-gray-400 hover:text-gray-600"><X size={16} /></button>
+      </div>
+      {/* Categories */}
+      <div className="mb-4">
+        <h4 className="text-xs font-medium text-gray-500 mb-2">产品分类</h4>
+        <div className="flex gap-2 mb-2">
+          <input value={newCat.name} onChange={e => setNewCat(p => ({ ...p, name: e.target.value }))} placeholder="名称" className="flex-1 px-2 py-1.5 border rounded text-xs" />
+          <input value={newCat.slug} onChange={e => setNewCat(p => ({ ...p, slug: e.target.value }))} placeholder="slug" className="w-24 px-2 py-1.5 border rounded text-xs" />
+          <button onClick={addCat} className="px-3 py-1.5 bg-green-600 text-white rounded text-xs">添加</button>
+        </div>
+        {cats.map(c => (
+          <div key={c.id} className="flex items-center gap-2 py-1 text-sm">
+            <span className="flex-1 text-gray-700">{c.name} <span className="text-gray-400 text-xs">({c.slug})</span></span>
+            <button onClick={() => delCat(c.id)} className="text-red-400 hover:text-red-600"><Trash2 size={12} /></button>
+          </div>
+        ))}
+      </div>
+      {/* Subcategories */}
+      <div>
+        <h4 className="text-xs font-medium text-gray-500 mb-2">产品子分类</h4>
+        <div className="flex gap-2 mb-2">
+          <input value={newSub.name} onChange={e => setNewSub(p => ({ ...p, name: e.target.value }))} placeholder="名称" className="flex-1 px-2 py-1.5 border rounded text-xs" />
+          <select value={newSub.category_id} onChange={e => setNewSub(p => ({ ...p, category_id: e.target.value }))} className="w-32 px-2 py-1.5 border rounded text-xs">
+            <option value="">选择分类</option>
+            {cats.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+          </select>
+          <button onClick={addSub} className="px-3 py-1.5 bg-green-600 text-white rounded text-xs">添加</button>
+        </div>
+        {subs.map(s => (
+          <div key={s.id} className="flex items-center gap-2 py-1 text-sm">
+            <span className="flex-1 text-gray-700">{s.name} <span className="text-gray-400 text-xs">({s.cat_name})</span></span>
+            <button onClick={() => delSub(s.id)} className="text-red-400 hover:text-red-600"><Trash2 size={12} /></button>
+          </div>
+        ))}
       </div>
     </div>
   )
@@ -263,6 +339,8 @@ function ProductList() {
     <div>
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
 
+      <CategoryManager onRefresh={() => { fetchProducts(page, search, filterCat); fetch('/api/products/subcategories').then(r => r.json()).then(setSubcategories).catch(() => {}) }} />
+
       <div className="flex flex-wrap items-center gap-3 mb-6">
         <form onSubmit={handleSearch} className="relative flex-1 min-w-[200px] max-w-sm">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -331,47 +409,6 @@ function ProductList() {
           <button onClick={() => fetchProducts(page + 1, search, filterCat)} disabled={page >= totalPages} className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-30"><ChevronRight size={18} /></button>
         </div>
       )}
-
-      {/* Subcategory Management */}
-      <div className="mt-8 bg-white rounded-xl border border-gray-200 p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">子分类管理</h3>
-          <button onClick={async () => {
-            const name = prompt('新子分类名称:')
-            if (!name) return
-            const cats = await fetch('/api/products?limit=1').then(r => r.json()).then(d => d.categories || [])
-            const catId = prompt('所属分类:\n' + cats.map((c, i) => `${c.id} - ${c.name}`).join('\n'), cats[0]?.id || '')
-            if (!catId) return
-            const token = JSON.parse(localStorage.getItem('youmin_admin_auth') || '{}').token
-            const res = await fetch('/api/products/subcategories', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token || ''}` }, body: JSON.stringify({ name, category_id: parseInt(catId) }) })
-            if (res.ok) { fetch('/api/products/subcategories').then(r => r.json()).then(setSubcategories); setToast({ message: '子分类已添加', type: 'success' }) }
-          }} className="text-xs text-green-600 flex items-center gap-1"><Plus size={12} /> 添加子分类</button>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {subcategories.map((s) => (
-            <div key={s.id} className="flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5">
-              <span className="text-xs text-gray-400">{s.cat_name} ·</span>
-              <span className="text-xs font-medium text-gray-700">{s.name}</span>
-              <button onClick={async () => {
-                const name = prompt('修改子分类名称:', s.name)
-                if (!name) return
-                const token = JSON.parse(localStorage.getItem('youmin_admin_auth') || '{}').token
-                await fetch(`/api/products/subcategories/${s.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token || ''}` }, body: JSON.stringify({ name, category_id: s.category_id }) })
-                fetch('/api/products/subcategories').then(r => r.json()).then(setSubcategories)
-                setToast({ message: '已更新', type: 'success' })
-              }} className="text-gray-400 hover:text-green-600"><Edit3 size={10} /></button>
-              <button onClick={async () => {
-                if (!confirm(`确定删除「${s.name}」？子分类下的产品也会被删除。`)) return
-                const token = JSON.parse(localStorage.getItem('youmin_admin_auth') || '{}').token
-                await fetch(`/api/products/subcategories/${s.id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token || ''}` } })
-                fetch('/api/products/subcategories').then(r => r.json()).then(setSubcategories)
-                fetchProducts(page, search, filterCat)
-                setToast({ message: '已删除', type: 'success' })
-              }} className="text-gray-400 hover:text-red-500"><Trash2 size={10} /></button>
-            </div>
-          ))}
-        </div>
-      </div>
 
       {editing && (
         <ProductEditor product={editing} subcategories={subcategories} onSave={handleProductSave} onCancel={() => setEditing(null)} />
