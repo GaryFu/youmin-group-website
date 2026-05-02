@@ -9,7 +9,7 @@ export default function Toast({ message, type = 'success', onClose }) {
     const timer = setTimeout(() => {
       setVisible(false)
       setTimeout(onClose, 300)
-    }, 2000)
+    }, 3000)
     return () => clearTimeout(timer)
   }, [onClose])
 

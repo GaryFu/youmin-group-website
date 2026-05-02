@@ -15,6 +15,7 @@ export default function AdminCompanyEdit() {
 
   const [form, setForm] = useState(null)
   const [toast, setToast] = useState(null)
+  const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(-1)
 
   useEffect(() => {
@@ -58,6 +59,7 @@ export default function AdminCompanyEdit() {
   const removeMilestone = (i) => setForm((f) => ({ ...f, milestones: (f.milestones || []).filter((_, j) => j !== i) }))
 
   const handleSave = async () => {
+    setSaving(true)
     const data = deepClone(industryData)
     const t = data.tabs.find((t) => t.id === tabId)
     const ci = t.companies.findIndex((c) => String(c.id) === companyId)
@@ -68,6 +70,7 @@ export default function AdminCompanyEdit() {
     } catch (err) {
       setToast({ message: err.message || '保存失败', type: 'error' })
     }
+    setSaving(false)
   }
 
   return (
@@ -82,7 +85,9 @@ export default function AdminCompanyEdit() {
             <p className="text-sm text-gray-400">{tab.label} · 编辑</p>
           </div>
         </div>
-        <button onClick={handleSave} className="flex items-center gap-2 bg-green-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-green-700"><Save size={16} /> 保存</button>
+        <button onClick={handleSave} disabled={saving} className="flex items-center gap-2 bg-green-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-green-700 disabled:opacity-50 transition-all">
+          {saving ? '保存中...' : <><Save size={16} /> 保存</>}
+        </button>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8">
