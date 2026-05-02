@@ -84,9 +84,8 @@ function ProductEditor({ product, subcategories, onSave, onCancel }) {
             <label className="block text-xs font-medium text-gray-500 mb-1">产品名</label>
             <input type="text" value={form.name || ''} onChange={(e) => setField('name', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div><label className="block text-xs font-medium text-gray-500 mb-1">英文缩略标识</label><input type="text" value={form.slug || ''} onChange={(e) => setField('slug', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" /></div>
-            <div><label className="block text-xs font-medium text-gray-500 mb-1">标语</label><input type="text" value={form.tagline || ''} onChange={(e) => setField('tagline', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" /></div>
+          <div>
+            <label className="block text-xs font-medium text-gray-500 mb-1">标语</label><input type="text" value={form.tagline || ''} onChange={(e) => setField('tagline', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
           </div>
           <div><label className="block text-xs font-medium text-gray-500 mb-1">详细描述</label><textarea value={form.desc || ''} onChange={(e) => setField('desc', e.target.value)} rows={4} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" /></div>
           <div>
@@ -263,7 +262,7 @@ function ProductList() {
           <Rocket size={16} /> 发布到网站
         </button>
         <button
-          onClick={() => setEditing({ name: '', slug: '', tagline: '', desc: '', image: '', url: '', features: [], specs: [], cat_name: '', sub_name: '', subcategory_id: '' })}
+          onClick={() => setEditing({ name: '', tagline: '', desc: '', image: '', url: '', features: [], specs: [], cat_name: '', sub_name: '', subcategory_id: '' })}
           className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors flex items-center gap-1.5"
         >
           <PlusCircle size={16} /> 新增产品

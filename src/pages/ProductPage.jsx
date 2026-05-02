@@ -6,7 +6,7 @@ import { useContent } from '../context/ContentContext'
 const featureIcons = { Award, Zap, Shield, Star, TrendingUp, CheckCircle2, Package, Beaker, Leaf }
 
 export default function ProductPage() {
-  const { categorySlug, productSlug } = useParams()
+  const { categorySlug, productId } = useParams()
   const { getContent } = useContent()
   const productsContent = getContent('products')
   const category = productsContent.categories.find((c) => c.slug === categorySlug)
@@ -15,7 +15,7 @@ export default function ProductPage() {
   let subCategoryName = ''
   if (category?.subCategories) {
     for (const sub of category.subCategories) {
-      const found = sub.products?.find((p) => p.slug === productSlug)
+      const found = sub.products?.find((p) => String(p.id) === productId)
       if (found) { product = found; subCategoryName = sub.name; break }
     }
   }
@@ -33,7 +33,7 @@ export default function ProductPage() {
 
   const relatedProducts = (category.subCategories || [])
     .flatMap((s) => s.products || [])
-    .filter((p) => p.slug !== productSlug)
+    .filter((p) => String(p.id) !== productId)
     .slice(0, 4)
 
   const images = product.images?.length > 0 ? product.images : (product.image ? [product.image] : [])
@@ -282,7 +282,7 @@ export default function ProductPage() {
               {relatedProducts.map((rp, i) => (
                 <ScrollReveal key={i}>
                   <Link
-                    to={`/products/${category.slug}/${rp.slug}`}
+                    to={`/products/${category.slug}/${rp.id}`}
                     className="block bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-lg hover:border-green-200 transition-all group"
                   >
                     <div className="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-green-100 transition-colors">

@@ -84,7 +84,7 @@ export default function ProductDetail() {
               {currentProducts.map((product, i) => (
                 <ScrollReveal key={i}>
                   <Link
-                    to={product.slug ? `/products/${category.slug}/${product.slug}` : `#`}
+                    to={product.id ? `/products/${category.slug}/${product.id}` : `#`}
                     className="block bg-white rounded-xl border border-gray-100 p-6 shadow-md hover:shadow-lg hover:border-green-200 transition-all group h-full"
                   >
                     <h3 className="text-lg font-bold text-gray-900 group-hover:text-green-700 transition-colors mb-3 leading-snug">
