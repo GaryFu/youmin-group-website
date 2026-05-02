@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { ArrowLeft, Plus, Trash2, Upload, Save } from 'lucide-react'
 import { deepClone } from '../../utils/deepClone'
@@ -18,8 +18,12 @@ export default function AdminCompanyEdit() {
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(-1)
 
+  const initialized = useRef(false)
   useEffect(() => {
-    if (company) setForm(deepClone(company))
+    if (company && !initialized.current) {
+      setForm(deepClone(company))
+      initialized.current = true
+    }
   }, [company])
 
   if (!company || !form) {
