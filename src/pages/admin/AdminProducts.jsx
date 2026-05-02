@@ -16,24 +16,27 @@ function ProductEditor({ product, subcategories, onSave, onCancel }) {
   const handleImageUpload = async (file, slotIndex) => {
     setUploading(slotIndex)
     try {
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => resolve(reader.result)
+        reader.onerror = reject
+        reader.readAsDataURL(file)
+      })
+      // Sanitize filename: keep only ASCII, numbers, dots, dashes, underscores
       const ext = file.name.split('.').pop() || 'jpg'
       const safeName = Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext
-      // Upload directly to Supabase Storage (bypass Vercel 4.5MB limit)
-      const supabaseUrl = 'https://tkkmksnzqmfaljimooac.supabase.co'
-      const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRra21rc256cW1mYWxqaW1vb2FjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyOTU5MTUsImV4cCI6MjA5Mjg3MTkxNX0.pcJaTkWHDQFOehmrM5rAIDX4PKi2Phb0Ri2kAF7Y7PM'
-      const res = await fetch(`${supabaseUrl}/storage/v1/object/products/${safeName}`, {
+      const token = JSON.parse(localStorage.getItem('youmin_admin_auth') || '{}').token
+      const res = await fetch('/api/upload/image', {
         method: 'POST',
-        headers: { Authorization: `Bearer ${anonKey}` },
-        body: file,
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token || ''}` },
+        body: JSON.stringify({ image: base64, filename: safeName }),
       })
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}))
-        throw new Error(errData.message || errData.error || `上传失败 (${res.status})`)
-      }
-      const publicUrl = `${supabaseUrl}/storage/v1/object/public/products/${safeName}`
+      const d = await res.json()
+      if (!res.ok) throw new Error(d.error || '上传失败')
+      if (!d.url) throw new Error('服务器未返回图片地址')
       setForm((f) => {
         const imgs = [...(f.images || (f.image ? [f.image] : []))]
-        imgs[slotIndex] = publicUrl
+        imgs[slotIndex] = d.url
         return { ...f, images: imgs, image: imgs[0] || null }
       })
     } catch (err) {

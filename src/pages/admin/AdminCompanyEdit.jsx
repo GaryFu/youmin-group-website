@@ -35,22 +35,17 @@ export default function AdminCompanyEdit() {
   const handleImageUpload = async (file, slotIndex) => {
     setUploading(slotIndex)
     try {
+      const base64 = await new Promise((resolve) => { const r = new FileReader(); r.onload = () => resolve(r.result); r.readAsDataURL(file) })
       const ext = file.name.split('.').pop() || 'jpg'
       const safeName = Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext
-      // Upload directly to Supabase Storage (bypass Vercel 4.5MB limit)
-      const supabaseUrl = 'https://tkkmksnzqmfaljimooac.supabase.co'
-      const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRra21rc256cW1mYWxqaW1vb2FjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyOTU5MTUsImV4cCI6MjA5Mjg3MTkxNX0.pcJaTkWHDQFOehmrM5rAIDX4PKi2Phb0Ri2kAF7Y7PM'
-      const res = await fetch(`${supabaseUrl}/storage/v1/object/products/${safeName}`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${anonKey}` },
-        body: file,
+      const token = JSON.parse(localStorage.getItem('youmin_admin_auth') || '{}').token
+      const res = await fetch('/api/upload/image', {
+        method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token || ''}` },
+        body: JSON.stringify({ image: base64, filename: safeName }),
       })
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}))
-        throw new Error(errData.message || errData.error || `上传失败 (${res.status})`)
-      }
-      const publicUrl = `${supabaseUrl}/storage/v1/object/public/products/${safeName}`
-      setForm((f) => { const imgs = [...(f.images || [])]; imgs[slotIndex] = publicUrl; return { ...f, images: imgs } })
+      const d = await res.json()
+      if (!res.ok) throw new Error(d.error || 'upload failed')
+      if (d.url) setForm((f) => { const imgs = [...(f.images || [])]; imgs[slotIndex] = d.url; return { ...f, images: imgs } })
     } catch (err) { alert('上传失败: ' + err.message) }
     setUploading(-1)
   }
