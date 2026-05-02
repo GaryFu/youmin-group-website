@@ -51,12 +51,10 @@ export default function Partners() {
                       {cat.partners.map((partner, j) => (
                         <div
                           key={j}
-                          className="bg-gray-100 border border-gray-200 rounded-xl p-6 text-center hover:border-green-200 hover:shadow-md transition-all group cursor-default"
+                          className="border border-gray-100 rounded-xl p-6 text-center hover:border-green-200 hover:shadow-md transition-all group cursor-default"
                         >
                           {partner.logo ? (
-                            <div className="w-full bg-white rounded-lg p-2 mb-3 flex items-center justify-center" style={{ minHeight: '48px' }}>
-                              <img src={partner.logo} alt={partner.name} className="max-h-10 object-contain" />
-                            </div>
+                            <img src={partner.logo} alt={partner.name} className="h-12 mx-auto mb-3 object-contain" />
                           ) : (
                             <Building2 size={28} className="text-gray-300 group-hover:text-green-400 transition-colors mx-auto mb-3" />
                           )}
