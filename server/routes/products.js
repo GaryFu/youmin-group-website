@@ -132,7 +132,6 @@ router.put('/:id', auth, async (req, res, next) => {
     }
 
     res.json({ success: true })
-    if (process.env.DEPLOY_HOOK_URL) fetch(process.env.DEPLOY_HOOK_URL, { method: 'POST' }).catch(() => {})
   } catch (err) {
     next(err)
   }
@@ -168,7 +167,6 @@ router.post('/', auth, async (req, res, next) => {
     }
 
     res.json({ ...result.rows[0], features: features || [], specs: specs || [] })
-    if (process.env.DEPLOY_HOOK_URL) fetch(process.env.DEPLOY_HOOK_URL, { method: 'POST' }).catch(() => {})
   } catch (err) {
     next(err)
   }
@@ -183,9 +181,21 @@ router.delete('/:id', auth, async (req, res, next) => {
     await pool.query('DELETE FROM product_features WHERE product_id = $1', [id])
     await pool.query('DELETE FROM product_items WHERE id = $1', [id])
     res.json({ success: true })
-    if (process.env.DEPLOY_HOOK_URL) fetch(process.env.DEPLOY_HOOK_URL, { method: 'POST' }).catch(() => {})
   } catch (err) {
     next(err)
+  }
+})
+
+// POST /api/publish — manually trigger Vercel redeploy
+router.post('/publish', auth, async (req, res) => {
+  if (!process.env.DEPLOY_HOOK_URL) {
+    return res.status(400).json({ error: '未配置 DEPLOY_HOOK_URL' })
+  }
+  try {
+    await fetch(process.env.DEPLOY_HOOK_URL, { method: 'POST' })
+    res.json({ message: '部署已触发，约1分钟后生效' })
+  } catch (err) {
+    res.status(500).json({ error: '触发部署失败' })
   }
 })
 

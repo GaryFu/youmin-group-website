@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import EditorShell from '../../components/admin/EditorShell'
-import { Search, X, Plus, Trash2, Upload, Edit3, Package, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, PlusCircle } from 'lucide-react'
+import { Search, X, Plus, Trash2, Upload, Edit3, Package, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, PlusCircle, Rocket } from 'lucide-react'
 
 const PAGE_SIZE = 20
 
@@ -195,6 +195,17 @@ function ProductList() {
     }
   }
 
+  const handlePublish = async () => {
+    if (!confirm('确定要发布更改到网站吗？这将触发 Vercel 重新部署，约 1 分钟后生效。')) return
+    const token = JSON.parse(localStorage.getItem('youmin_admin_auth') || '{}').token
+    const res = await fetch('/api/products/publish', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token || ''}` },
+    })
+    const d = await res.json()
+    setToast({ message: d.message || d.error || '操作完成', type: res.ok ? 'success' : 'error' })
+  }
+
   const handleDelete = async (product) => {
     if (!confirm(`确定删除「${product.name}」吗？此操作不可撤销。`)) return
     const token = JSON.parse(localStorage.getItem('youmin_admin_auth') || '{}').token
@@ -229,9 +240,12 @@ function ProductList() {
           {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
         <span className="text-xs text-gray-400">共 {total} 个产品</span>
+        <button onClick={handlePublish} className="px-4 py-2 bg-gold-500 text-white rounded-lg text-sm font-medium hover:bg-gold-600 transition-colors flex items-center gap-1.5">
+          <Rocket size={16} /> 发布到网站
+        </button>
         <button
           onClick={() => setEditing({ name: '', slug: '', tagline: '', desc: '', image: '', url: '', features: [], specs: [], cat_name: '', sub_name: '', subcategory_id: '' })}
-          className="ml-auto px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors flex items-center gap-1.5"
+          className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors flex items-center gap-1.5"
         >
           <PlusCircle size={16} /> 新增产品
         </button>
