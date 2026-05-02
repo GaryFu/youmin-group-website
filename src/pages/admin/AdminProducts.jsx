@@ -293,7 +293,12 @@ function ProductList() {
                   <p className="text-xs text-gray-400 truncate">{product.tagline || product.desc?.slice(0, 40)}</p>
                 </div>
                 <span className="text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded shrink-0">{product.cat_name} · {product.sub_name}</span>
-                <button onClick={() => setEditing(product)} className="shrink-0 p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"><Edit3 size={16} /></button>
+                <button onClick={async () => {
+                  const token = JSON.parse(localStorage.getItem('youmin_admin_auth') || '{}').token
+                  const res = await fetch(`/api/products/${product.id}`, { headers: token ? { Authorization: `Bearer ${token}` } : {} })
+                  if (res.ok) setEditing(await res.json())
+                  else setEditing(product)
+                }} className="shrink-0 p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"><Edit3 size={16} /></button>
                 <button onClick={() => handleDelete(product)} className="shrink-0 p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={16} /></button>
               </div>
             ))}
