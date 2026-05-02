@@ -1,12 +1,37 @@
 import { deepClone } from '../../utils/deepClone'
 import { useState, useEffect } from 'react'
 import EditorShell from '../../components/admin/EditorShell'
-import { Plus, Trash2 } from 'lucide-react'
+import { Plus, Trash2, Upload } from 'lucide-react'
 
 function InnovationForm({ data, onSave, resetKey }) {
   const [form, setForm] = useState(deepClone(data))
+  const [uploading, setUploading] = useState('') // key like 'ai-ii-ji'
 
   useEffect(() => { setForm(deepClone(data)) }, [data, resetKey])
+
+  const handleImageUpload = async (file, ai, ii, ji) => {
+    const key = `${ai}-${ii}-${ji}`
+    setUploading(key)
+    try {
+      let blob = file
+      if (file.size > 500 * 1024) {
+        blob = await new Promise((resolve) => {
+          const img = new Image(); img.onload = () => { const c = document.createElement('canvas'); const s = Math.min(1, 1600 / Math.max(img.width, img.height)); c.width = img.width * s; c.height = img.height * s; c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); c.toBlob((b) => resolve(b || file), 'image/jpeg', 0.75) }; img.src = URL.createObjectURL(file)
+        })
+      }
+      const base64 = await new Promise((r) => { const reader = new FileReader(); reader.onload = () => r(reader.result); reader.readAsDataURL(blob) })
+      const ext = file.name.split('.').pop() || 'jpg'
+      const safeName = Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext
+      const token = JSON.parse(localStorage.getItem('youmin_admin_auth') || '{}').token
+      const res = await fetch('/api/upload/image', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token || ''}` }, body: JSON.stringify({ image: base64, filename: safeName }) })
+      const d = await res.json()
+      if (!res.ok) throw new Error(d.error || 'upload failed')
+      if (d.url) {
+        setForm((f) => { const copy = deepClone(f); if (!copy.achievements[ai].items[ii].images) copy.achievements[ai].items[ii].images = []; copy.achievements[ai].items[ii].images[ji] = d.url; return copy })
+      }
+    } catch (err) { alert('上传失败: ' + err.message) }
+    setUploading('')
+  }
 
   const handleSubmit = (e) => { e.preventDefault(); onSave(form) }
 
@@ -126,6 +151,7 @@ function InnovationForm({ data, onSave, resetKey }) {
                 {(item.images || []).map((img, ji) => (
                   <div key={ji} className="flex items-center gap-1 ml-2 mb-1">
                     <input type="text" value={img} onChange={(e) => { setForm((f) => { const copy = deepClone(f); copy.achievements[ai].items[ii].images[ji] = e.target.value; return copy }) }} className="flex-1 px-2 py-1 border border-gray-200 rounded text-xs focus:outline-none" placeholder={`图片 ${ji + 1} URL`} />
+                    <label className={`cursor-pointer px-1.5 py-0.5 rounded text-xs flex items-center ${uploading === `${ai}-${ii}-${ji}` ? 'bg-green-100 text-green-600' : 'bg-gray-100 hover:bg-green-50 text-gray-500'}`}><Upload size={10} />{uploading === `${ai}-${ii}-${ji}` ? '...' : ''}<input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleImageUpload(f, ai, ii, ji); e.target.value = '' }} /></label>
                     <button type="button" onClick={() => { setForm((f) => { const copy = deepClone(f); copy.achievements[ai].items[ii].images.splice(ji, 1); return copy }) }} className="text-red-300"><Trash2 size={10} /></button>
                   </div>
                 ))}
