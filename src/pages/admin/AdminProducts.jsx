@@ -24,7 +24,7 @@ function ProductEditor({ product, subcategories, onSave, onCancel }) {
         body: JSON.stringify({ image: base64, filename: file.name }),
       })
       const d = await res.json()
-      if (d.url) setForm((f) => ({ ...f, image: d.url }))
+      if (d.url) setForm((f) => { const imgs = [...(f.images || (f.image ? [f.image] : []))]; imgs.push(d.url); return { ...f, images: imgs, image: imgs[0] } })
     } catch (err) { console.error('Upload failed:', err) }
     setUploading(false)
   }
@@ -78,13 +78,11 @@ function ProductEditor({ product, subcategories, onSave, onCancel }) {
             {(form.images || (form.image ? [form.image] : [])).map((img, i) => (
               <div key={i} className="flex gap-2 mb-2">
                 <input type="text" value={img} onChange={(e) => { const imgs = [...(form.images || (form.image ? [form.image] : []))]; imgs[i] = e.target.value; setField('images', imgs) }} className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-green-500" placeholder={`图片 ${i + 1} URL`} />
+                <label className="cursor-pointer px-2 py-1 bg-gray-100 hover:bg-green-50 rounded text-xs text-gray-500 hover:text-green-600 flex items-center"><Upload size={12} />{uploading ? '...' : ''}<input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) { const reader = new FileReader(); reader.onload = async () => { const base64 = reader.result; const token = JSON.parse(localStorage.getItem('youmin_admin_auth')||'{}').token; const res = await fetch('/api/upload/image',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token||''}`},body:JSON.stringify({image:base64,filename:f.name})}); const d = await res.json(); if(d.url){ const imgs = [...(form.images||(form.image?[form.image]:[]))]; imgs[i] = d.url; setField('images',imgs) } }; reader.readAsDataURL(f); } e.target.value='' }} /></label>
                 <button onClick={() => { const imgs = [...(form.images || (form.image ? [form.image] : []))]; imgs.splice(i, 1); setField('images', imgs) }} className="text-red-400 hover:text-red-600"><Trash2 size={14} /></button>
               </div>
             ))}
-            <div className="flex gap-2">
-              <button onClick={() => { const imgs = [...(form.images || (form.image ? [form.image] : []))]; imgs.push(''); setField('images', imgs) }} className="text-xs text-green-600 hover:text-green-700 flex items-center gap-1"><Plus size={12} /> 添加图片</button>
-              <label className="cursor-pointer px-2 py-0.5 bg-gray-100 hover:bg-green-50 rounded text-xs text-gray-500 hover:text-green-600 flex items-center gap-1"><Upload size={12} />{uploading ? '...' : '上传'}<input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleImageUpload(f); e.target.value = '' }} /></label>
-            </div>
+            <button onClick={() => { const imgs = [...(form.images || (form.image ? [form.image] : []))]; imgs.push(''); setField('images', imgs) }} className="text-xs text-green-600 hover:text-green-700 flex items-center gap-1"><Plus size={12} /> 添加图片</button>
             {form.images && form.images.length > 0 && (
               <div className="flex gap-2 mt-2 overflow-x-auto">
                 {form.images.map((img, i) => img && <img key={i} src={img} alt="" className="h-16 rounded-lg object-contain border border-gray-100" />)}
