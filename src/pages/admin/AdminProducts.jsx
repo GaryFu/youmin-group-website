@@ -16,11 +16,28 @@ function ProductEditor({ product, subcategories, onSave, onCancel }) {
   const handleImageUpload = async (file, slotIndex) => {
     setUploading(slotIndex)
     try {
+      // Compress large images client-side before upload
+      let blob = file
+      if (file.size > 500 * 1024) { // >500KB, compress via canvas
+        blob = await new Promise((resolve) => {
+          const img = new Image()
+          img.onload = () => {
+            const canvas = document.createElement('canvas')
+            const scale = Math.min(1, 1600 / Math.max(img.width, img.height))
+            canvas.width = img.width * scale
+            canvas.height = img.height * scale
+            const ctx = canvas.getContext('2d')
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+            canvas.toBlob((b) => resolve(b || file), 'image/jpeg', 0.75)
+          }
+          img.src = URL.createObjectURL(file)
+        })
+      }
       const base64 = await new Promise((resolve, reject) => {
         const reader = new FileReader()
         reader.onload = () => resolve(reader.result)
         reader.onerror = reject
-        reader.readAsDataURL(file)
+        reader.readAsDataURL(blob)
       })
       // Sanitize filename: keep only ASCII, numbers, dots, dashes, underscores
       const ext = file.name.split('.').pop() || 'jpg'

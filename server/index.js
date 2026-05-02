@@ -13,7 +13,7 @@ const app = express()
 const PORT = process.env.PORT || 3001
 
 app.use(cors())
-app.use(express.json({ limit: '5mb' }))
+app.use(express.json({ limit: '25mb' }))
 
 // On Vercel, the rewrite /api/(.*) → /api may strip the sub-path.
 // Restore the original URL so Express routing works correctly.

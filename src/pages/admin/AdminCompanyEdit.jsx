@@ -35,7 +35,15 @@ export default function AdminCompanyEdit() {
   const handleImageUpload = async (file, slotIndex) => {
     setUploading(slotIndex)
     try {
-      const base64 = await new Promise((resolve) => { const r = new FileReader(); r.onload = () => resolve(r.result); r.readAsDataURL(file) })
+      let blob = file
+      if (file.size > 500 * 1024) {
+        blob = await new Promise((resolve) => {
+          const img = new Image()
+          img.onload = () => { const c = document.createElement('canvas'); const s = Math.min(1, 1600 / Math.max(img.width, img.height)); c.width = img.width * s; c.height = img.height * s; c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); c.toBlob((b) => resolve(b || file), 'image/jpeg', 0.75) }
+          img.src = URL.createObjectURL(file)
+        })
+      }
+      const base64 = await new Promise((resolve) => { const r = new FileReader(); r.onload = () => resolve(r.result); r.readAsDataURL(blob) })
       const ext = file.name.split('.').pop() || 'jpg'
       const safeName = Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext
       const token = JSON.parse(localStorage.getItem('youmin_admin_auth') || '{}').token
