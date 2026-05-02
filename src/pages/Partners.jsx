@@ -53,9 +53,13 @@ export default function Partners() {
                           key={j}
                           className="bg-gray-50 border border-gray-100 rounded-xl p-6 text-center hover:border-green-200 hover:shadow-md transition-all group cursor-default"
                         >
-                          <Building2 size={28} className="text-gray-300 group-hover:text-green-400 transition-colors mx-auto mb-3" />
+                          {partner.logo ? (
+                            <img src={partner.logo} alt={partner.name} className="h-12 mx-auto mb-3 object-contain" />
+                          ) : (
+                            <Building2 size={28} className="text-gray-300 group-hover:text-green-400 transition-colors mx-auto mb-3" />
+                          )}
                           <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors">
-                            {partner}
+                            {partner.name || partner}
                           </span>
                         </div>
                       ))}

@@ -299,19 +299,19 @@ export const partnersContent = {
   categories: [
     {
       name: '科研合作',
-      partners: ['中国农业大学', '河南农业大学', '中国农科院', '河南省农科院'],
+      partners: [{ name: '中国农业大学', logo: '' }, { name: '河南农业大学', logo: '' }, { name: '中国农科院', logo: '' }, { name: '河南省农科院', logo: '' }],
     },
     {
       name: '产业合作',
-      partners: ['正大集团', '新希望六和', '温氏股份', '牧原股份'],
+      partners: [{ name: '正大集团', logo: '' }, { name: '新希望六和', logo: '' }, { name: '温氏股份', logo: '' }, { name: '牧原股份', logo: '' }],
     },
     {
       name: '供应链合作',
-      partners: ['中粮集团', '中储粮', '嘉吉中国', '邦吉中国'],
+      partners: [{ name: '中粮集团', logo: '' }, { name: '中储粮', logo: '' }, { name: '嘉吉中国', logo: '' }, { name: '邦吉中国', logo: '' }],
     },
     {
       name: '金融合作',
-      partners: ['中国农业银行', '中国农业发展银行', '河南省农村信用社'],
+      partners: [{ name: '中国农业银行', logo: '' }, { name: '中国农业发展银行', logo: '' }, { name: '河南省农村信用社', logo: '' }],
     },
   ],
 }
