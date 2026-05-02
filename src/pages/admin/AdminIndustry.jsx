@@ -75,9 +75,9 @@ function IndustryForm({ data, onSave, resetKey }) {
                     <p className="text-xs text-gray-400 truncate">{company.desc?.slice(0, 50)}</p>
                   </div>
                   <Link
-                    to={`/admin/industry/${tab.id}/${company.id}`}
-                    className="shrink-0 p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                    title="编辑"
+                    to={company.id ? `/admin/industry/${tab.id}/${company.id}` : '#'}
+                    className={`shrink-0 p-2 rounded-lg transition-colors ${company.id ? 'text-gray-400 hover:text-green-600 hover:bg-green-50' : 'text-gray-300 cursor-not-allowed'}`}
+                    title={company.id ? '编辑' : '请先保存后再编辑'}
                   >
                     <Edit3 size={16} />
                   </Link>
