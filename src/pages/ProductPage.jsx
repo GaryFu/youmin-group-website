@@ -7,7 +7,7 @@ const featureIcons = { Award, Zap, Shield, Star, TrendingUp, CheckCircle2, Packa
 
 export default function ProductPage() {
   const { categorySlug, productId } = useParams()
-  const { getContent } = useContent()
+  const { getContent, content } = useContent()
   const productsContent = getContent('products')
   const category = productsContent.categories.find((c) => c.slug === categorySlug)
 
@@ -24,8 +24,11 @@ export default function ProductPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">未找到该分类</h1>
-          <Link to="/products" className="text-green-600 hover:text-green-700 font-medium">返回产品与服务</Link>
+          {content ? (
+            <><h1 className="text-2xl font-bold text-gray-900 mb-4">未找到该分类</h1><Link to="/products" className="text-green-600 hover:text-green-700 font-medium">返回产品与服务</Link></>
+          ) : (
+            <div className="w-8 h-8 border-2 border-green-500 border-t-transparent rounded-full animate-spin mx-auto" />
+          )}
         </div>
       </div>
     )

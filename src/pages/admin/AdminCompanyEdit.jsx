@@ -8,7 +8,7 @@ import Toast from '../../components/admin/Toast'
 export default function AdminCompanyEdit() {
   const { tabId, companyId } = useParams()
   const navigate = useNavigate()
-  const { getContent, updateContent } = useContent()
+  const { getContent, updateContent, content } = useContent()
   const industryData = getContent('industry')
   const tab = industryData.tabs?.find((t) => t.id === tabId)
   const company = tab?.companies?.find((c) => String(c.id) === companyId)
@@ -30,7 +30,7 @@ export default function AdminCompanyEdit() {
   }, [company])
 
   if (!company || !form) {
-    return <div className="p-8 text-center text-gray-400">未找到该公司</div>
+    return <div className="p-8 text-center text-gray-400">{content ? '未找到该公司' : <span className="inline-block w-6 h-6 border-2 border-green-500 border-t-transparent rounded-full animate-spin align-middle" />}</div>
   }
 
   const setField = (f, v) => setForm((p) => ({ ...p, [f]: v }))
