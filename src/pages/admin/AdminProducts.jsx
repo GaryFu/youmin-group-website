@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import EditorShell from '../../components/admin/EditorShell'
+import Toast from '../../components/admin/Toast'
 import { Search, X, Plus, Trash2, Upload, Edit3, Package, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, PlusCircle, Rocket } from 'lucide-react'
 
 const PAGE_SIZE = 20
@@ -246,12 +247,7 @@ function ProductList() {
 
   return (
     <div>
-      {toast && (
-        <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-lg text-sm font-medium shadow-lg ${toast.type === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`}>
-          {toast.message}
-          <button onClick={() => setToast(null)} className="ml-3 opacity-70 hover:opacity-100"><X size={14} /></button>
-        </div>
-      )}
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
 
       <div className="flex flex-wrap items-center gap-3 mb-6">
         <form onSubmit={handleSearch} className="relative flex-1 min-w-[200px] max-w-sm">
