@@ -68,7 +68,7 @@ async function fetchContent() {
             const specs = await pool.query('SELECT label, value FROM product_specs WHERE product_id = $1 ORDER BY sort_order', [item.id])
             products.push({
               name: item.name, slug: item.slug, tagline: item.tagline,
-              desc: item.desc, image: item.image, url: item.url,
+              desc: item.desc, image: item.image, images: item.images, url: item.url,
               features: features.rows, specs: specs.rows,
             })
           }
