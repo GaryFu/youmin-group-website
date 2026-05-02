@@ -21,11 +21,14 @@ function ProductEditor({ product, subcategories, onSave, onCancel }) {
         reader.onerror = reject
         reader.readAsDataURL(file)
       })
+      // Sanitize filename: keep only ASCII, numbers, dots, dashes, underscores
+      const ext = file.name.split('.').pop() || 'jpg'
+      const safeName = Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext
       const token = JSON.parse(localStorage.getItem('youmin_admin_auth') || '{}').token
       const res = await fetch('/api/upload/image', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token || ''}` },
-        body: JSON.stringify({ image: base64, filename: file.name }),
+        body: JSON.stringify({ image: base64, filename: safeName }),
       })
       const d = await res.json()
       if (!res.ok) throw new Error(d.error || '上传失败')
