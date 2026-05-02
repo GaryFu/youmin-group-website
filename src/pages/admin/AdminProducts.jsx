@@ -85,7 +85,7 @@ function ProductEditor({ product, subcategories, onSave, onCancel }) {
             <input type="text" value={form.name || ''} onChange={(e) => setField('name', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <div><label className="block text-xs font-medium text-gray-500 mb-1">Slug</label><input type="text" value={form.slug || ''} onChange={(e) => setField('slug', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" /></div>
+            <div><label className="block text-xs font-medium text-gray-500 mb-1">英文缩略标识</label><input type="text" value={form.slug || ''} onChange={(e) => setField('slug', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" /></div>
             <div><label className="block text-xs font-medium text-gray-500 mb-1">标语</label><input type="text" value={form.tagline || ''} onChange={(e) => setField('tagline', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" /></div>
           </div>
           <div><label className="block text-xs font-medium text-gray-500 mb-1">详细描述</label><textarea value={form.desc || ''} onChange={(e) => setField('desc', e.target.value)} rows={4} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" /></div>
@@ -329,7 +329,7 @@ export default function AdminProducts() {
   return (
     <EditorShell
       contentKey="products"
-      title="产品管理"
+      title="产品（服务）管理"
       subtitle="搜索、筛选和编辑所有产品"
       renderForm={() => <ProductList />}
       onDataExtract={(data) => data}
