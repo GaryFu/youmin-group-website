@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Building2, Factory, Ship } from 'lucide-react'
+import { Building2, Factory, Ship, Phone } from 'lucide-react'
 import SectionTitle from '../components/SectionTitle'
 import ScrollReveal from '../components/ScrollReveal'
 import { useContent } from '../context/ContentContext'
@@ -108,6 +108,18 @@ export default function Industry() {
                 三大板块协同发展，形成研发驱动、农牧支撑、贸易赋能的产业生态闭环
               </p>
             </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      <section className="py-16 bg-gradient-to-r from-green-800 to-green-900">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <ScrollReveal>
+            <h2 className="text-3xl font-bold text-white mb-4">产业合作</h2>
+            <p className="text-green-200 text-lg mb-8">欢迎咨询产业布局、业务合作相关事宜</p>
+            <Link to="/contact" className="inline-flex items-center gap-2 bg-gold-500 text-white px-8 py-4 rounded-xl font-bold hover:bg-gold-600 transition-colors shadow-xl shadow-gold-500/30">
+              <Phone size={20} /> 立即咨询
+            </Link>
           </ScrollReveal>
         </div>
       </section>

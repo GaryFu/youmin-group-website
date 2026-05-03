@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Microscope, Beaker, Atom, Award, BookOpen, GraduationCap, ArrowRight } from 'lucide-react'
+import { Microscope, Beaker, Atom, Award, BookOpen, GraduationCap, ArrowRight, Phone } from 'lucide-react'
 import SectionTitle from '../components/SectionTitle'
 import ScrollReveal from '../components/ScrollReveal'
 import { useContent } from '../context/ContentContext'
@@ -79,6 +79,18 @@ export default function Innovation() {
               )
             })}
           </div>
+        </div>
+      </section>
+
+      <section className="py-16 bg-gradient-to-r from-green-800 to-green-900">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <ScrollReveal>
+            <h2 className="text-3xl font-bold text-white mb-4">科研合作</h2>
+            <p className="text-green-200 text-lg mb-8">欢迎联系我们，探讨科研创新与技术合作</p>
+            <Link to="/contact" className="inline-flex items-center gap-2 bg-gold-500 text-white px-8 py-4 rounded-xl font-bold hover:bg-gold-600 transition-colors shadow-xl shadow-gold-500/30">
+              <Phone size={20} /> 立即咨询
+            </Link>
+          </ScrollReveal>
         </div>
       </section>
     </div>
