@@ -255,16 +255,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ═══ CTA ═══ */}
-      <section className="py-20 lg:py-28 bg-gradient-to-r from-green-700 to-green-800">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <ScrollReveal>
-            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">携手{site.shortName}，共创绿色农牧未来</h2>
-            <p className="text-green-100 text-lg mb-8 leading-relaxed">如果您对产品合作、技术服务或业务咨询感兴趣，欢迎与我们联系</p>
-            <Link to="/contact" className="inline-flex items-center gap-2 bg-gold-500 text-white px-8 py-4 rounded-lg font-bold text-base hover:bg-gold-600 transition-colors shadow-xl shadow-gold-500/30">立即咨询 <ArrowRight size={20} /></Link>
-          </ScrollReveal>
-        </div>
-      </section>
     </div>
   )
 }
