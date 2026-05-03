@@ -69,20 +69,16 @@ export default function Home() {
 
       {/* Intro — synced with About page */}
       <section className="py-20 lg:py-28 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionTitle subtitle={aboutContent.subtitle} title={aboutContent.title}>
-            {site.description}
-          </SectionTitle>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionTitle subtitle={aboutContent.subtitle} title={aboutContent.title} />
           <ScrollReveal>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-              {aboutContent.overview.paragraphs.slice(0, 4).map((p, i) => (
-                <div key={i} className="bg-green-50/50 rounded-xl p-8 border border-green-100">
-                  <p className="text-gray-600 leading-relaxed text-base">{p}</p>
-                </div>
+            <div className="space-y-5">
+              {aboutContent.overview.paragraphs.slice(0, 2).map((p, i) => (
+                <p key={i} className="text-gray-600 leading-relaxed text-base lg:text-lg">{p}</p>
               ))}
             </div>
           </ScrollReveal>
-          <div className="text-center mt-8">
+          <div className="text-center mt-6">
             <Link to="/about" className="inline-flex items-center gap-1 text-green-600 hover:text-green-700 font-medium text-sm">
               了解更多 <ArrowRight size={16} />
             </Link>
