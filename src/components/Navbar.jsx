@@ -5,13 +5,13 @@ import { useContent } from '../context/ContentContext'
 
 const navLinks = [
   { to: '/', hash: '', label: '首页' },
+  { to: '/products', hash: 'products', label: '产品与服务' },
+  { to: '/news', hash: 'news', label: '新闻动态' },
   { to: '/about', hash: 'about', label: '集团简介' },
   { to: '/culture', hash: 'culture', label: '企业文化' },
   { to: '/industry', hash: 'industry', label: '产业布局' },
   { to: '/innovation', hash: 'innovation', label: '科研创新' },
-  { to: '/products', hash: 'products', label: '产品与服务' },
   { to: '/green', hash: 'green', label: '绿色发展' },
-  { to: '/news', hash: 'news', label: '新闻动态' },
   { to: '/partners', hash: 'partners', label: '合作伙伴' },
   { to: '/contact', hash: '', label: '联系我们' },
 ]
