@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
-import { ArrowRight } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { ArrowRight, Eye } from 'lucide-react'
 import { useContent } from '../context/ContentContext'
 
 const footerLinkHash = { '/about': 'about', '/culture': 'culture', '/industry': 'industry', '/innovation': 'innovation', '/products': 'products', '/green': 'green', '/partners': 'partners', '/news': 'news' }
@@ -34,8 +35,13 @@ const footerLinks = [
 export default function Footer() {
   const { getContent } = useContent()
   const site = getContent('site')
+  const [visitCount, setVisitCount] = useState(null)
   const { pathname } = useLocation()
   const isHome = pathname === '/'
+
+  useEffect(() => {
+    fetch('/api/content/visitor/count').then(r => r.json()).then(d => setVisitCount(d.count)).catch(() => {})
+  }, [])
 
   const scrollTo = (e, to) => {
     const hash = footerLinkHash[to]
@@ -85,9 +91,14 @@ export default function Footer() {
         {/* Bottom */}
         <div className="mt-10 pt-8 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
           <p>© {new Date().getFullYear()} {site.name} 版权所有</p>
-          <p>
-            {site.tagline}
-          </p>
+          <div className="flex items-center gap-4">
+            {visitCount !== null && (
+              <span className="flex items-center gap-1 text-gray-600">
+                <Eye size={12} /> {visitCount.toLocaleString()} 次访问
+              </span>
+            )}
+            <span>{site.tagline}</span>
+          </div>
         </div>
       </div>
     </footer>

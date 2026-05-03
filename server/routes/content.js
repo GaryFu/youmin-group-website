@@ -271,4 +271,15 @@ async function putProducts(req, res, next) {
   } catch (err) { next(err) }
 }
 
+// GET /api/visitor/count — increment and return site visit count
+router.get('/visitor/count', async (req, res) => {
+  try {
+    const r = await pool.query("SELECT data FROM content WHERE key = 'site'")
+    const data = r.rows[0].data
+    data.visitCount = (data.visitCount || 0) + 1
+    await pool.query('UPDATE content SET data = $1 WHERE key = $2', [JSON.stringify(data), 'site'])
+    res.json({ count: data.visitCount })
+  } catch (err) { next(err) }
+})
+
 export default router
