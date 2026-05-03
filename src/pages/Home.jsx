@@ -5,6 +5,7 @@ import ScrollReveal from '../components/ScrollReveal'
 import { useContent } from '../context/ContentContext'
 
 const advantageIcons = { FlaskConical, Layers, Leaf, Shield }
+const advantageLinks = ['/innovation', '/industry', '/green', '/about']
 
 export default function Home() {
   const { getContent } = useContent()
@@ -125,13 +126,13 @@ export default function Home() {
               const IconComp = advantageIcons[item.icon]
               return (
                 <ScrollReveal key={i}>
-                  <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-colors group h-full">
+                  <Link to={advantageLinks[i] || '/about'} className="block bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-colors group h-full">
                     <div className="w-12 h-12 bg-green-400/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-400/30 transition-colors">
                       {IconComp && <IconComp className="text-green-300" size={24} />}
                     </div>
                     <h3 className="text-white font-bold text-lg mb-2">{item.title}</h3>
                     <p className="text-green-200/80 text-sm leading-relaxed">{item.desc}</p>
-                  </div>
+                  </Link>
                 </ScrollReveal>
               )
             })}
