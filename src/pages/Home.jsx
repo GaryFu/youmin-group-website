@@ -15,6 +15,7 @@ export default function Home() {
   const innovationContent = getContent('innovation')
   const productsContent = getContent('products')
   const greenContent = getContent('green')
+  const cultureContent = getContent('culture')
   const partnersContent = getContent('partners')
   const newsContent = getContent('news')
 
@@ -180,8 +181,33 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ═══ 企业文化 ═══ */}
+      <section id="culture" className="py-20 lg:py-28 bg-gray-50 scroll-mt-20">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionTitle subtitle={cultureContent.subtitle} title={cultureContent.title} />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {cultureContent.items.slice(0, 6).map((item, i) => (
+              <ScrollReveal key={i}>
+                <div className="flex items-start gap-3 bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+                  <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-xs font-bold text-green-600">{String(i + 1).padStart(2, '0')}</span>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-gray-900 mb-1">{item.label}</h4>
+                    <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">{item.value}</p>
+                  </div>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+          <div className="text-center mt-6">
+            <Link to="/culture" className="inline-flex items-center gap-1 text-green-600 hover:text-green-700 font-medium text-sm">了解更多 <ArrowRight size={16} /></Link>
+          </div>
+        </div>
+      </section>
+
       {/* ═══ 合作伙伴 ═══ */}
-      <section id="partners" className="py-20 lg:py-28 bg-gray-50 scroll-mt-20">
+      <section id="partners" className="py-20 lg:py-28 bg-white scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle subtitle={partnersContent.subtitle} title={partnersContent.title} />
           <ScrollReveal>

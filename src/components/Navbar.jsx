@@ -6,7 +6,7 @@ import { useContent } from '../context/ContentContext'
 const navLinks = [
   { to: '/', hash: '', label: '首页' },
   { to: '/about', hash: 'about', label: '集团简介' },
-  { to: '/culture', hash: '', label: '企业文化' },
+  { to: '/culture', hash: 'culture', label: '企业文化' },
   { to: '/industry', hash: 'industry', label: '产业布局' },
   { to: '/innovation', hash: 'innovation', label: '科研创新' },
   { to: '/products', hash: 'products', label: '产品与服务' },
