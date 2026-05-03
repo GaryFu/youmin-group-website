@@ -10,6 +10,7 @@ export default function Home() {
   const { getContent } = useContent()
   const site = getContent('site')
   const homeContent = getContent('home')
+  const aboutContent = getContent('about')
   const newsContent = getContent('news')
   return (
     <div>
@@ -66,21 +67,26 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Intro */}
+      {/* Intro — synced with About page */}
       <section className="py-20 lg:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionTitle subtitle={homeContent.intro.subtitle} title={homeContent.intro.title}>
+          <SectionTitle subtitle={aboutContent.subtitle} title={aboutContent.title}>
             {site.description}
           </SectionTitle>
           <ScrollReveal>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-              {homeContent.intro.paragraphs.map((p, i) => (
+              {aboutContent.overview.paragraphs.slice(0, 4).map((p, i) => (
                 <div key={i} className="bg-green-50/50 rounded-xl p-8 border border-green-100">
                   <p className="text-gray-600 leading-relaxed text-base">{p}</p>
                 </div>
               ))}
             </div>
           </ScrollReveal>
+          <div className="text-center mt-8">
+            <Link to="/about" className="inline-flex items-center gap-1 text-green-600 hover:text-green-700 font-medium text-sm">
+              了解更多 <ArrowRight size={16} />
+            </Link>
+          </div>
         </div>
       </section>
 
