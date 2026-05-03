@@ -57,11 +57,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-0 shrink-0">
             <img
-              src={
-                location.pathname === '/' && !scrolled
-                  ? '/images/logo-white-v2.png'
-                  : '/images/logo-default.png'
-              }
+              src="/images/logo-default.png"
               alt={site.shortName}
               className="h-10 lg:h-12 w-auto object-contain transition-all duration-300"
             />
