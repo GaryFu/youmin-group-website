@@ -173,7 +173,7 @@ export default function AdminCompanyEdit() {
           {/* Stats */}
           <div className="bg-white rounded-xl border border-gray-200 p-6">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">基本信息</h3>
+              <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">关键指标</h3>
               <button onClick={addStat} className="text-xs text-green-600 flex items-center gap-1"><Plus size={12} /> 添加</button>
             </div>
             <div className="space-y-2">

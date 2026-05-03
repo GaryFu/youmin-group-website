@@ -31,7 +31,7 @@ export default function Culture() {
           <ScrollReveal>
             <p className="text-green-300 text-sm font-semibold tracking-widest uppercase mb-3">{cultureContent.subtitle}</p>
             <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">{cultureContent.title}</h1>
-            <div className="w-20 h-1 mx-auto bg-gold-400 rounded-full" />
+            <div className="w-16 h-1 mx-auto bg-gold-400 rounded-full" />
           </ScrollReveal>
         </div>
       </section>

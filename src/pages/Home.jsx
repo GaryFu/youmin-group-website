@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, FlaskConical, Layers, Leaf, Shield, ChevronRight } from 'lucide-react'
 import SectionTitle from '../components/SectionTitle'
-import Card from '../components/Card'
 import ScrollReveal from '../components/ScrollReveal'
 import { useContent } from '../context/ContentContext'
 
@@ -28,7 +27,7 @@ export default function Home() {
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 text-center">
           <ScrollReveal>
-            <p className="text-green-300 text-sm font-semibold tracking-[0.3em] uppercase mb-6">
+            <p className="text-green-300 text-sm font-semibold tracking-widest uppercase mb-3">
               {site.shortName} · {site.englishName}
             </p>
           </ScrollReveal>

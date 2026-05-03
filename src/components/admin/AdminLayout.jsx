@@ -29,8 +29,10 @@ export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const handleLogout = () => {
-    logout()
-    navigate('/admin/login')
+    if (confirm('确定要退出登录吗？')) {
+      logout()
+      navigate('/admin/login')
+    }
   }
 
   return (

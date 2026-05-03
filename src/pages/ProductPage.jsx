@@ -156,7 +156,7 @@ export default function ProductPage() {
 
       {/* ── Features Grid ── */}
       {product.features && product.features.length > 0 && (
-        <section className="py-16 lg:py-24 bg-white">
+        <section className="py-20 lg:py-28 bg-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <ScrollReveal>
               <div className="text-center mb-14">
@@ -187,7 +187,7 @@ export default function ProductPage() {
       )}
 
       {/* ── Detail + Specs ── */}
-      <section className="py-16 lg:py-24 bg-gray-50">
+      <section className="py-20 lg:py-28 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-5 gap-12">
             {/* Description */}
@@ -282,7 +282,7 @@ export default function ProductPage() {
 
       {/* ── Related Products ── */}
       {relatedProducts.length > 0 && (
-        <section className="py-16 lg:py-24 bg-white">
+        <section className="py-20 lg:py-28 bg-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <ScrollReveal>
               <div className="text-center mb-12">

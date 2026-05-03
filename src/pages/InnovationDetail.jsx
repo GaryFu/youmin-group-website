@@ -53,7 +53,7 @@ export default function InnovationDetail() {
         </div>
       </section>
 
-      <section className="py-16 lg:py-24 bg-white">
+      <section className="py-20 lg:py-28 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {items.length === 0 ? (
             <div className="text-center py-12 text-gray-400">
