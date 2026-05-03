@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { MapPin, Phone, Mail, ArrowRight } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { useContent } from '../context/ContentContext'
 
 const footerLinkHash = { '/about': 'about', '/culture': 'culture', '/industry': 'industry', '/innovation': 'innovation', '/products': 'products', '/green': 'green', '/partners': 'partners', '/news': 'news' }
@@ -60,36 +60,7 @@ export default function Footer() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
-          {/* Brand */}
-          <div className="lg:col-span-2">
-            <Link to="/" className="inline-block mb-4">
-              <img
-                src="/images/logo-default.png"
-                alt={site.shortName}
-                className="h-12 w-auto object-contain brightness-110"
-              />
-            </Link>
-            <p className="text-sm text-gray-400 leading-relaxed mb-6 max-w-sm">
-              {site.description}
-            </p>
-            <div className="space-y-2.5 text-sm text-gray-400">
-              <div className="flex items-start gap-2">
-                <MapPin size={16} className="mt-0.5 shrink-0 text-green-500" />
-                <span>{site.address}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone size={16} className="shrink-0 text-green-500" />
-                <span>{site.phone}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Mail size={16} className="shrink-0 text-green-500" />
-                <span>{site.email}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Link columns */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
           {footerLinks.map((col) => (
             <div key={col.title}>
               <h4 className="text-white font-semibold mb-4 text-sm">{col.title}</h4>
