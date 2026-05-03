@@ -107,7 +107,7 @@ export default function ProductPage() {
                 <div className="flex flex-wrap gap-3">
                   <Link
                     to="/contact"
-                    className="inline-flex items-center gap-2 bg-gold-500 hover:bg-gold-400 text-gray-900 px-6 py-3 rounded-xl font-bold text-sm transition-all shadow-xl shadow-gold-500/30"
+                    className="inline-flex items-center gap-2 bg-gold-500 text-white hover:bg-gold-600 px-6 py-3 rounded-xl font-bold text-sm transition-all shadow-xl shadow-gold-500/30"
                   >
                     <Phone size={18} /> 立即咨询
                   </Link>
@@ -128,7 +128,7 @@ export default function ProductPage() {
               <div className="lg:col-span-2">
                 <div className="relative">
                   <div className="absolute -inset-4 bg-gradient-to-br from-gold-400/20 via-green-400/10 to-transparent rounded-3xl blur-xl" />
-                  <div className="relative bg-white rounded-2xl p-3 shadow-2xl">
+                  <div className="relative bg-white rounded-xl p-3 shadow-2xl">
                     {hasImages ? (
                       <img
                         src={images[0]}
@@ -171,8 +171,8 @@ export default function ProductPage() {
                 const Icon = featureIcons[feat.icon] || CheckCircle2
                 return (
                   <ScrollReveal key={i}>
-                    <div className="group bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-xl hover:border-green-200 transition-all duration-300 text-center">
-                      <div className="w-16 h-16 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl flex items-center justify-center mx-auto mb-5 group-hover:scale-110 transition-transform duration-300">
+                    <div className="group bg-white rounded-xl p-8 border border-gray-100 shadow-sm hover:shadow-xl hover:border-green-200 transition-all duration-300 text-center">
+                      <div className="w-16 h-16 bg-gradient-to-br from-green-50 to-green-100 rounded-xl flex items-center justify-center mx-auto mb-5 group-hover:scale-110 transition-transform duration-300">
                         <Icon size={28} className="text-green-600" />
                       </div>
                       <h3 className="text-lg font-bold text-gray-900 mb-2">{feat.text}</h3>
@@ -213,7 +213,7 @@ export default function ProductPage() {
               <div className="lg:col-span-2">
                 <ScrollReveal>
                   <p className="text-green-600 text-sm font-semibold tracking-widest uppercase mb-3">技术规格</p>
-                  <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                  <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
                     {product.specs.map((spec, i) => (
                       <div
                         key={i}
@@ -251,7 +251,7 @@ export default function ProductPage() {
                   <img
                     src={img}
                     alt={`${product.name} - ${i + 1}`}
-                    className="w-full rounded-2xl shadow-lg object-contain bg-gray-50"
+                    className="w-full rounded-xl shadow-lg object-contain bg-gray-50"
                   />
                 </ScrollReveal>
               ))}
@@ -272,7 +272,7 @@ export default function ProductPage() {
             </p>
             <Link
               to="/contact"
-              className="inline-flex items-center gap-2 bg-gold-500 hover:bg-gold-400 text-gray-900 px-8 py-4 rounded-xl font-bold text-base transition-all shadow-2xl shadow-gold-500/30 hover:scale-105"
+              className="inline-flex items-center gap-2 bg-gold-500 text-white hover:bg-gold-600 px-8 py-4 rounded-xl font-bold text-base transition-all shadow-2xl shadow-gold-500/30 hover:scale-105"
             >
               <Phone size={20} /> 立即咨询
             </Link>
@@ -296,7 +296,7 @@ export default function ProductPage() {
                 <ScrollReveal key={i}>
                   <Link
                     to={`/products/${category.slug}/${rp.id}`}
-                    className="block bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-lg hover:border-green-200 transition-all group"
+                    className="block bg-white rounded-xl border border-gray-100 p-6 shadow-sm hover:shadow-lg hover:border-green-200 transition-all group"
                   >
                     <div className="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-green-100 transition-colors">
                       <Package size={20} className="text-green-600" />

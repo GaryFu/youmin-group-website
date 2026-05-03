@@ -5,7 +5,8 @@ import { Plus, Trash2, Upload } from 'lucide-react'
 
 function InnovationForm({ data, onSave, resetKey }) {
   const [form, setForm] = useState(deepClone(data))
-  const [uploading, setUploading] = useState('') // key like 'ai-ii-ji'
+  const [uploading, setUploading] = useState('')
+  const [uploadError, setUploadError] = useState('')
 
   useEffect(() => { setForm(deepClone(data)) }, [data, resetKey])
 
@@ -29,7 +30,7 @@ function InnovationForm({ data, onSave, resetKey }) {
       if (d.url) {
         setForm((f) => { const copy = deepClone(f); if (!copy.achievements[ai].items[ii].images) copy.achievements[ai].items[ii].images = []; copy.achievements[ai].items[ii].images[ji] = d.url; return copy })
       }
-    } catch (err) { alert('上传失败: ' + err.message) }
+    } catch (err) { setUploadError('上传失败: ' + err.message); setTimeout(() => setUploadError(''), 3000) }
     setUploading('')
   }
 
@@ -80,6 +81,7 @@ function InnovationForm({ data, onSave, resetKey }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
+      {uploadError && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">{uploadError}</div>}
       <div className="border border-gray-200 rounded-xl p-6">
         <div className="grid grid-cols-2 gap-4">
           <div>

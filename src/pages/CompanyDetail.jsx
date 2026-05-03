@@ -53,7 +53,7 @@ export default function CompanyDetail() {
               <ChevronRight size={14} />
               <Link to="/industry" className="hover:text-white">{industryContent.title}</Link>
               <ChevronRight size={14} />
-              <span className="text-gold-400">{company.name}</span>
+              <span className="text-gold-400">{tab.label}</span>
             </div>
             <span className="inline-flex items-center gap-1.5 text-xs font-medium bg-white/10 text-green-200 border border-white/10 px-3 py-1 rounded-full mb-4">
               <TabIcon size={14} /> {tab.label}

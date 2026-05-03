@@ -57,7 +57,7 @@ export default function AdminCompanyEdit() {
       const d = await res.json()
       if (!res.ok) throw new Error(d.error || 'upload failed')
       if (d.url) setForm((f) => { const imgs = [...(f.images || [])]; imgs[slotIndex] = d.url; return { ...f, images: imgs } })
-    } catch (err) { alert('上传失败: ' + err.message) }
+    } catch (err) { setToast({ message: '上传失败: ' + err.message, type: 'error' }) }
     setUploading(-1)
   }
 

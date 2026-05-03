@@ -6,6 +6,7 @@ import { useContent } from '../../context/ContentContext'
 function PartnerEditor({ partner, onSave, onCancel }) {
   const [form, setForm] = useState({ ...partner })
   const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState('')
 
   useEffect(() => { setForm({ ...partner }) }, [partner])
 
@@ -23,7 +24,7 @@ function PartnerEditor({ partner, onSave, onCancel }) {
       const d = await res.json()
       if (!res.ok) throw new Error(d.error || 'upload failed')
       if (d.url) setForm((f) => ({ ...f, logo: d.url }))
-    } catch (err) { alert('上传失败: ' + err.message) }
+    } catch (err) { setUploadError('上传失败: ' + err.message); setTimeout(() => setUploadError(''), 3000) }
     setUploading(false)
   }
 
@@ -31,6 +32,7 @@ function PartnerEditor({ partner, onSave, onCancel }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/30" onClick={onCancel} />
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+        {uploadError && <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded-lg text-xs mb-3">{uploadError}</div>}
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-bold text-gray-900">{partner.name ? '编辑' : '新增'}合作方</h3>
           <button onClick={onCancel} className="p-1 hover:bg-gray-100 rounded"><X size={18} /></button>

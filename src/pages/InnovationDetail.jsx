@@ -7,7 +7,7 @@ const icons = { Award, BookOpen, GraduationCap }
 
 export default function InnovationDetail() {
   const { index } = useParams()
-  const { getContent } = useContent()
+  const { getContent, content } = useContent()
   const innovationContent = getContent('innovation')
   const achievement = innovationContent.achievements?.[parseInt(index)]
 
@@ -15,8 +15,11 @@ export default function InnovationDetail() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">未找到该内容</h1>
-          <Link to="/innovation" className="text-green-600 hover:text-green-700 font-medium">返回科研创新</Link>
+          {content ? (
+            <><h1 className="text-2xl font-bold text-gray-900 mb-4">未找到该内容</h1><Link to="/innovation" className="text-green-600 hover:text-green-700 font-medium">返回科研创新</Link></>
+          ) : (
+            <div className="w-8 h-8 border-2 border-green-500 border-t-transparent rounded-full animate-spin mx-auto" />
+          )}
         </div>
       </div>
     )
@@ -27,7 +30,7 @@ export default function InnovationDetail() {
 
   return (
     <div>
-      <section className="bg-gradient-to-r from-green-800 to-green-900 pt-28 pb-16">
+      <section className="bg-gradient-to-r from-green-800 to-green-900 pt-28 pb-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
             <div className="flex items-center gap-2 text-sm text-green-300 mb-6">

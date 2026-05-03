@@ -7,9 +7,10 @@ const PAGE_SIZE = 20
 
 function ProductEditor({ product, subcategories, onSave, onCancel }) {
   const [form, setForm] = useState({ ...product })
-  const [uploading, setUploading] = useState(-1) // index of uploading slot, -1 = none
+  const [uploading, setUploading] = useState(-1)
   const [showFeatures, setShowFeatures] = useState(true)
   const [showSpecs, setShowSpecs] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => { setForm({ ...product }) }, [product])
 
@@ -57,7 +58,7 @@ function ProductEditor({ product, subcategories, onSave, onCancel }) {
         return { ...f, images: imgs, image: imgs[0] || null }
       })
     } catch (err) {
-      alert('图片上传失败: ' + err.message)
+      setError('图片上传失败: ' + err.message); setTimeout(() => setError(null), 3000)
     }
     setUploading(-1)
   }
@@ -74,6 +75,7 @@ function ProductEditor({ product, subcategories, onSave, onCancel }) {
     <div className="fixed inset-0 z-50 flex justify-end">
       <div className="absolute inset-0 bg-black/30" onClick={onCancel} />
       <div className="relative w-full max-w-lg bg-white h-full overflow-y-auto shadow-2xl">
+        {error && <div className="fixed top-4 right-4 z-[100] bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl shadow-lg text-sm">{error}</div>}
         <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between z-10">
           <div>
             <h3 className="font-bold text-gray-900">{form.name || '新产品'}</h3>
@@ -168,6 +170,7 @@ function CategoryManager({ onRefresh }) {
   const [open, setOpen] = useState(false)
   const [newCat, setNewCat] = useState({ name: '', slug: '', icon: 'Package', desc: '' })
   const [newSub, setNewSub] = useState({ name: '', category_id: '' })
+  const [err, setErr] = useState('')
 
   const api = async (path, method = 'GET', body) => {
     const token = JSON.parse(localStorage.getItem('youmin_admin_auth') || '{}').token
@@ -186,8 +189,8 @@ function CategoryManager({ onRefresh }) {
   }
   useEffect(() => { load() }, [])
 
-  const addCat = async () => { await api('/categories', 'POST', newCat); setNewCat({ name: '', slug: '', icon: 'Package', desc: '' }); load(); onRefresh() }
-  const delCat = async (id) => { if (confirm('删除分类将同时删除其下子分类和产品，确定？')) { await api('/categories/' + id, 'DELETE'); load(); onRefresh() } }
+  const addCat = async () => { try { await api('/categories', 'POST', newCat); setNewCat({ name: '', slug: '', icon: 'Package', desc: '' }); load(); onRefresh() } catch (e) { setErr(e.message) } }
+  const delCat = async (id) => { if (confirm('删除分类将同时删除其下子分类和产品，确定？')) { try { await api('/categories/' + id, 'DELETE'); load(); onRefresh() } catch (e) { setErr(e.message) } } }
   const moveCat = async (idx, dir) => {
     if (idx + dir < 0 || idx + dir >= cats.length) return
     const a = cats[idx], b = cats[idx + dir]
@@ -195,8 +198,8 @@ function CategoryManager({ onRefresh }) {
     await api('/categories/' + b.id, 'PUT', { sort_order: a.sort_order })
     load(); onRefresh()
   }
-  const addSub = async () => { await api('/subcategories', 'POST', newSub); setNewSub({ name: '', category_id: '' }); load(); onRefresh() }
-  const delSub = async (id) => { if (confirm('删除子分类将同时删除其下产品，确定？')) { await api('/subcategories/' + id, 'DELETE'); load(); onRefresh() } }
+  const addSub = async () => { try { await api('/subcategories', 'POST', newSub); setNewSub({ name: '', category_id: '' }); load(); onRefresh() } catch (e) { setErr(e.message) } }
+  const delSub = async (id) => { if (confirm('删除子分类将同时删除其下产品，确定？')) { try { await api('/subcategories/' + id, 'DELETE'); load(); onRefresh() } catch (e) { setErr(e.message) } } }
   const moveSub = async (idx, dir) => {
     if (idx + dir < 0 || idx + dir >= subs.length) return
     const a = subs[idx], b = subs[idx + dir]
@@ -209,6 +212,7 @@ function CategoryManager({ onRefresh }) {
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      {err && <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded-lg text-xs mb-3">{err} <button onClick={() => setErr('')} className="ml-2 underline">关闭</button></div>}
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">分类管理</h3>
         <button onClick={() => setOpen(false)} className="text-gray-400 hover:text-gray-600"><X size={16} /></button>
@@ -290,7 +294,7 @@ function ProductList() {
         setPage(data.page)
       }
     } catch (err) {
-      console.error('Failed to fetch products:', err)
+      setToast({ message: '加载产品失败: ' + err.message, type: 'error' })
     }
     setLoading(false)
   }, [])

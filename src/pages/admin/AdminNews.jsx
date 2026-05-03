@@ -67,7 +67,7 @@ function NewsList() {
         setTotalPages(data.totalPages)
         setPage(data.page)
       }
-    } catch (err) { console.error('Failed:', err) }
+    } catch (err) { setToast({ message: '加载失败: ' + err.message, type: 'error' }) }
     setLoading(false)
   }, [])
 
