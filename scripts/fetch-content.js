@@ -92,9 +92,40 @@ async function fetchContent() {
     const outputPath = path.resolve(__dirname, '..', 'public', 'content.json')
     fs.writeFileSync(outputPath, JSON.stringify(content))
     console.log(`Content written to ${outputPath} (${Object.keys(content).length} keys)`)
+
+    // Generate sitemap.xml
+    generateSitemap()
   } finally {
     await pool.end()
   }
+}
+
+function generateSitemap() {
+  const siteUrl = process.env.SITE_URL || 'https://youmin-group-website.vercel.app'
+  const pages = [
+    { loc: '/', changefreq: 'weekly', priority: '1.0' },
+    { loc: '/about', changefreq: 'monthly', priority: '0.8' },
+    { loc: '/culture', changefreq: 'monthly', priority: '0.8' },
+    { loc: '/industry', changefreq: 'monthly', priority: '0.8' },
+    { loc: '/innovation', changefreq: 'monthly', priority: '0.8' },
+    { loc: '/products', changefreq: 'weekly', priority: '0.9' },
+    { loc: '/green', changefreq: 'monthly', priority: '0.7' },
+    { loc: '/news', changefreq: 'weekly', priority: '0.9' },
+    { loc: '/partners', changefreq: 'monthly', priority: '0.7' },
+    { loc: '/contact', changefreq: 'monthly', priority: '0.7' },
+  ]
+
+  const today = new Date().toISOString().split('T')[0]
+  let xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
+  xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+  for (const p of pages) {
+    xml += `  <url>\n    <loc>${siteUrl}${p.loc}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${p.changefreq}</changefreq>\n    <priority>${p.priority}</priority>\n  </url>\n`
+  }
+  xml += '</urlset>'
+
+  const sitemapPath = path.resolve(__dirname, '..', 'public', 'sitemap.xml')
+  fs.writeFileSync(sitemapPath, xml)
+  console.log(`Sitemap written to ${sitemapPath}`)
 }
 
 fetchContent().catch((err) => {
