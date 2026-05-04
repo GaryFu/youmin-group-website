@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { Building2, Factory, Ship, Phone } from 'lucide-react'
 import SectionTitle from '../components/SectionTitle'
 import ScrollReveal from '../components/ScrollReveal'
@@ -8,8 +8,14 @@ import { useContent } from '../context/ContentContext'
 const tabIcons = { rd: Building2, agri: Factory, trade: Ship }
 
 export default function Industry() {
-  const [activeTab, setActiveTab] = useState('rd')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'rd')
   const { getContent } = useContent()
+
+  const handleTabChange = (tabId) => {
+    setActiveTab(tabId)
+    setSearchParams({ tab: tabId })
+  }
   const industryContent = getContent('industry')
   return (
     <div>
@@ -37,7 +43,7 @@ export default function Industry() {
               return (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => handleTabChange(tab.id)}
                   className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium text-sm transition-all duration-300 ${
                     active
                       ? 'bg-green-600 text-white shadow-lg shadow-green-600/25'
