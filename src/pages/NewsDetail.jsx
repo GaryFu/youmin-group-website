@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom'
-import { ArrowLeft, ChevronRight, Calendar, ExternalLink, Tag } from 'lucide-react'
+import { ArrowLeft, ChevronRight, Calendar, ExternalLink, ChevronLeft } from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
 import { useContent } from '../context/ContentContext'
 
@@ -7,7 +7,11 @@ export default function NewsDetail() {
   const { articleId } = useParams()
   const { getContent, content } = useContent()
   const newsContent = getContent('news')
-  const article = newsContent.articles?.find((a) => String(a.id) === articleId)
+  const allArticles = newsContent.articles || []
+  const idx = allArticles.findIndex((a) => String(a.id) === articleId)
+  const article = idx >= 0 ? allArticles[idx] : null
+  const prev = idx > 0 ? allArticles[idx - 1] : null
+  const next = idx < allArticles.length - 1 ? allArticles[idx + 1] : null
 
   if (!article) {
     return (
@@ -23,14 +27,16 @@ export default function NewsDetail() {
     )
   }
 
-  const relatedArticles = newsContent.articles
-    ?.filter((a) => String(a.id) !== articleId && a.category === article.category)
-    .slice(0, 4) || []
+  const relatedArticles = allArticles
+    .filter((a) => String(a.id) !== articleId && a.category === article.category)
+    .slice(0, 4)
+
+  const body = (article.content || article.digest || '').split('\n').filter(Boolean)
 
   return (
     <div>
       {/* Hero */}
-      <section className="bg-gradient-to-r from-green-800 to-green-900 pt-28 pb-20">
+      <section className="relative bg-gradient-to-r from-green-800 to-green-900 pt-28 pb-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
             <div className="flex items-center gap-2 text-sm text-green-300 mb-4">
@@ -56,54 +62,75 @@ export default function NewsDetail() {
         </div>
       </section>
 
-      {/* Article body */}
+      {/* Body */}
       <section className="py-16 lg:py-24 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-4 gap-10">
-            {/* Main content */}
-            <div className="lg:col-span-3">
-              {article.cover && (
-                <ScrollReveal>
-                  <img src={article.cover} alt="" className="w-full rounded-xl object-contain bg-gray-50 mb-8" />
-                </ScrollReveal>
-              )}
-              <ScrollReveal>
-                <div className="prose max-w-none">
-                  {(article.content || article.digest)?.split('\n').filter(Boolean).map((p, i) => (
-                    <p key={i} className="text-gray-600 leading-relaxed text-base mb-4">{p}</p>
-                  ))}
-                  {!article.content && !article.digest && (
-                    <p className="text-gray-400">暂无详细内容，请点击"查看原文"阅读完整文章。</p>
-                  )}
-                </div>
-              </ScrollReveal>
-              {article.url && (
-                <div className="mt-8">
-                  <a href={article.url} target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-green-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors">
-                    <ExternalLink size={16} /> 在微信中查看原文
-                  </a>
-                </div>
-              )}
-            </div>
+          {article.cover && (
+            <ScrollReveal>
+              <img src={article.cover} alt="" className="w-full rounded-2xl object-contain bg-gray-50 mb-10 shadow-lg" />
+            </ScrollReveal>
+          )}
 
-            {/* Sidebar */}
-            {relatedArticles.length > 0 && (
-              <div className="lg:col-span-1">
-                <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">相关文章</h3>
-                <div className="space-y-3">
-                  {relatedArticles.map((ra) => (
-                    <Link key={ra.id} to={`/news/${ra.id}`} className="block group">
-                      <p className="text-xs text-gray-400 mb-1">{ra.date}</p>
-                      <p className="text-sm text-gray-700 group-hover:text-green-700 transition-colors leading-snug line-clamp-2">{ra.title}</p>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
+          <ScrollReveal>
+            <article className="prose max-w-none">
+              {body.length > 0 ? (
+                body.map((p, i) => (
+                  <p key={i} className="text-gray-700 leading-relaxed text-base lg:text-lg mb-5">{p}</p>
+                ))
+              ) : (
+                <p className="text-gray-400 text-center py-8">暂无详细内容，请查看原文。</p>
+              )}
+            </article>
+          </ScrollReveal>
+
+          {article.url && (
+            <div className="mt-10 flex justify-center">
+              <a href={article.url} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-xl text-sm font-medium hover:bg-green-700 transition-colors shadow-lg shadow-green-600/20">
+                <ExternalLink size={16} /> 在微信中查看原文
+              </a>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Prev / Next */}
+      <section className="py-12 bg-gray-50 border-t border-gray-100">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 gap-6">
+            {prev ? (
+              <Link to={`/news/${prev.id}`} className="group bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-green-200 transition-all">
+                <span className="flex items-center gap-1 text-xs text-gray-400 mb-2"><ChevronLeft size={14} /> 上一篇</span>
+                <p className="text-sm font-medium text-gray-700 group-hover:text-green-700 transition-colors line-clamp-2">{prev.title}</p>
+              </Link>
+            ) : <div />}
+            {next ? (
+              <Link to={`/news/${next.id}`} className="group bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-green-200 transition-all text-right">
+                <span className="flex items-center justify-end gap-1 text-xs text-gray-400 mb-2">下一篇 <ChevronRight size={14} /></span>
+                <p className="text-sm font-medium text-gray-700 group-hover:text-green-700 transition-colors line-clamp-2">{next.title}</p>
+              </Link>
+            ) : <div />}
           </div>
         </div>
       </section>
+
+      {/* Related */}
+      {relatedArticles.length > 0 && (
+        <section className="py-16 bg-white">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h3 className="text-lg font-bold text-gray-900 mb-6">相关文章</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {relatedArticles.map((ra) => (
+                <Link key={ra.id} to={`/news/${ra.id}`} className="group bg-gray-50 rounded-xl p-4 border border-gray-100 hover:border-green-200 transition-all">
+                  {ra.cover && <img src={ra.cover} alt="" className="w-full h-24 object-contain rounded-lg mb-3" />}
+                  <p className="text-xs text-gray-400 mb-1">{ra.date}</p>
+                  <p className="text-sm font-medium text-gray-700 group-hover:text-green-700 transition-colors line-clamp-2">{ra.title}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <div className="py-8 bg-gray-50 border-t border-gray-100 text-center">
         <Link to="/news" className="inline-flex items-center gap-2 text-green-600 hover:text-green-700 font-medium"><ArrowLeft size={18} /> 返回{newsContent.title}</Link>
