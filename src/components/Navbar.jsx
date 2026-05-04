@@ -55,22 +55,13 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <div className="flex items-center gap-1 shrink-0">
-            <Link to="/" title="返回首页">
-              <img
-                src="/images/logo-default.png"
-                alt={site.shortName}
-                className="h-10 lg:h-12 w-auto object-contain transition-all duration-300"
-              />
-            </Link>
-            <a
-              href="/images/logo-default.png"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="查看大图"
-              className="hidden lg:flex items-center justify-center w-5 h-5 rounded-full bg-gray-200/50 hover:bg-gray-300/50 text-gray-400 hover:text-gray-600 transition-colors text-[10px] shrink-0"
-            >🔍</a>
-          </div>
+          <Link to="/" className="flex items-center gap-0 shrink-0">
+            <img
+              src="/images/logo-default.png"
+              alt={site.shortName}
+              className="h-10 lg:h-12 w-auto object-contain transition-all duration-300"
+            />
+          </Link>
 
           {/* Desktop Nav */}
           <div className="hidden lg:flex items-center gap-0.5">
