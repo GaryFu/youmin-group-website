@@ -42,27 +42,8 @@ export default function CompanyDetail() {
   const related = (tab.companies || []).filter((c) => String(c.id) !== companyId).slice(0, 4)
 
   return (
-    <div>
+    <div className="pt-16">
       {/* Hero */}
-      <section className="relative min-h-[60vh] flex items-end bg-gradient-to-br from-green-950 via-green-900 to-green-800">
-        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 20% 80%, #22c55e 0%, transparent 50%), radial-gradient(circle at 80% 20%, #eab308 0%, transparent 40%)' }} />
-        <div className="relative w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-16">
-          <ScrollReveal>
-            <div className="flex items-center gap-2 text-sm text-green-300/80 mb-6">
-              <Link to="/" className="hover:text-white">首页</Link>
-              <ChevronRight size={14} />
-              <Link to="/industry" className="hover:text-white">{industryContent.title}</Link>
-              <ChevronRight size={14} />
-              <span className="text-gold-400">{tab.label}</span>
-            </div>
-            <span className="inline-flex items-center gap-1.5 text-xs font-medium bg-white/10 text-green-200 border border-white/10 px-3 py-1 rounded-full mb-4">
-              <TabIcon size={14} /> {tab.label}
-            </span>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white mb-4 leading-tight">{company.name}</h1>
-            {company.tagline && <p className="text-xl text-green-200/80 max-w-2xl">{company.tagline}</p>}
-          </ScrollReveal>
-        </div>
-      </section>
 
       {/* Overview + Sidebar */}
       <section className="py-20 lg:py-28 bg-white">

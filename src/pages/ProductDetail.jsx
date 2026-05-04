@@ -35,25 +35,8 @@ export default function ProductDetail() {
   }
 
   return (
-    <div>
+    <div className="pt-16">
       {/* Page Header */}
-      <section className="bg-gradient-to-r from-green-800 to-green-900 pt-20 pb-14">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ScrollReveal>
-            <div className="flex items-center gap-2 text-sm text-green-300 mb-4">
-              <Link to="/" className="hover:text-white transition-colors">首页</Link>
-              <ChevronRight size={14} />
-              <Link to="/products" className="hover:text-white transition-colors">
-                {productsContent.title}
-              </Link>
-              <ChevronRight size={14} />
-              <span className="text-white">{category.name}</span>
-            </div>
-            <h1 className="text-2xl lg:text-3xl font-bold text-white mb-3">{category.name}</h1>
-            <p className="text-green-200/80 max-w-2xl">{category.desc}</p>
-          </ScrollReveal>
-        </div>
-      </section>
 
       {/* Product Catalog */}
       <section className="py-20 lg:py-28 bg-white">

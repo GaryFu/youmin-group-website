@@ -29,29 +29,7 @@ export default function InnovationDetail() {
   const items = achievement.items || []
 
   return (
-    <div>
-      <section className="bg-gradient-to-r from-green-800 to-green-900 pt-20 pb-14">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ScrollReveal>
-            <div className="flex items-center gap-2 text-sm text-green-300 mb-6">
-              <Link to="/" className="hover:text-white">首页</Link>
-              <ChevronRight size={14} />
-              <Link to="/innovation" className="hover:text-white">{innovationContent.title}</Link>
-              <ChevronRight size={14} />
-              <span className="text-gold-400">{achievement.label}</span>
-            </div>
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center">
-                <Icon size={28} className="text-gold-400" />
-              </div>
-              <div>
-                <span className="text-4xl font-extrabold text-white">{achievement.value}</span>
-                <h1 className="text-2xl font-bold text-white mt-1">{achievement.label}</h1>
-              </div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
+    <div className="pt-16">
 
       <section className="py-20 lg:py-28 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
