@@ -22,7 +22,7 @@ export default function Home() {
 
   return (
     <div>
-      {/* ═══ Hero ═══ */}
+      {/* ═══ 1. Hero ═══ */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden" id="hero">
         <div className="absolute inset-0 bg-gradient-to-br from-green-900 via-green-800 to-green-950">
           <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }} />
@@ -48,96 +48,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ═══ 集团简介 ═══ */}
-      <section id="about" className="py-20 lg:py-28 bg-white scroll-mt-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionTitle subtitle={aboutContent.subtitle} title={aboutContent.title} />
-          <ScrollReveal>
-            <div className="space-y-5">
-              {aboutContent.overview.paragraphs.slice(0, 2).map((p, i) => (
-                <p key={i} className="text-gray-600 leading-relaxed text-base lg:text-lg">{p}</p>
-              ))}
-            </div>
-          </ScrollReveal>
-          <div className="text-center mt-6">
-            <Link to="/about" className="inline-flex items-center gap-1 text-green-600 hover:text-green-700 font-medium text-sm">了解更多 <ArrowRight size={16} /></Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══ 核心优势 ═══ */}
-      <section id="advantages" className="py-20 lg:py-28 bg-green-900 scroll-mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionTitle subtitle="CORE ADVANTAGES" title="核心优势" light />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {homeContent.advantages.map((item, i) => {
-              const IconComp = advantageIcons[item.icon]
-              return (
-                <ScrollReveal key={i}>
-                  <Link to={advantageLinks[i] || '/about'} className="block bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-colors group h-full">
-                    <div className="w-12 h-12 bg-green-400/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-400/30 transition-colors">
-                      {IconComp && <IconComp className="text-green-300" size={24} />}
-                    </div>
-                    <h3 className="text-white font-bold text-lg mb-2">{item.title}</h3>
-                    <p className="text-green-200/80 text-sm leading-relaxed">{item.desc}</p>
-                  </Link>
-                </ScrollReveal>
-              )
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══ 产业布局 ═══ */}
-      <section id="industry" className="py-20 lg:py-28 bg-gray-50 scroll-mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionTitle subtitle={industryContent.subtitle} title={industryContent.title} />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {industryContent.tabs.map((tab) => (
-              <ScrollReveal key={tab.id}>
-                <Link to={`/industry?tab=${tab.id}`} className="block bg-white rounded-xl p-8 shadow-sm border border-gray-100 hover:shadow-md hover:border-green-200 transition-all group h-full text-center">
-                  <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center mx-auto mb-4">
-                    <Building2 size={24} className="text-green-600" />
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-3">{tab.label}</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">{tab.companies.length} 家子公司</p>
-                </Link>
-              </ScrollReveal>
-            ))}
-          </div>
-          <div className="text-center mt-6">
-            <Link to="/industry" className="inline-flex items-center gap-1 text-green-600 hover:text-green-700 font-medium text-sm">了解更多 <ArrowRight size={16} /></Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══ 科研创新 ═══ */}
-      <section id="innovation" className="py-20 lg:py-28 bg-white scroll-mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionTitle subtitle={innovationContent.subtitle} title={innovationContent.title} />
-          <ScrollReveal>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto text-center mb-10">{innovationContent.intro}</p>
-          </ScrollReveal>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {innovationContent.centers.slice(0, 3).map((center) => (
-              <ScrollReveal key={center.name}>
-                <Link to="/innovation" className="block bg-gray-50 rounded-xl p-6 border border-gray-100 hover:border-green-200 transition-all">
-                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mb-3">
-                    <Microscope size={20} className="text-green-600" />
-                  </div>
-                  <h3 className="font-bold text-gray-900 mb-2">{center.name}</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed line-clamp-2">{center.description[0]}</p>
-                </Link>
-              </ScrollReveal>
-            ))}
-          </div>
-          <div className="text-center mt-6">
-            <Link to="/innovation" className="inline-flex items-center gap-1 text-green-600 hover:text-green-700 font-medium text-sm">了解更多 <ArrowRight size={16} /></Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══ 产品与服务 ═══ */}
+      {/* ═══ 2. 产品与服务 ═══ */}
       <section id="products" className="py-20 lg:py-28 bg-gray-50 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle subtitle={productsContent.subtitle} title={productsContent.title} />
@@ -159,30 +70,47 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ═══ 绿色发展 ═══ */}
-      <section id="green" className="py-20 lg:py-28 bg-white scroll-mt-20">
+      {/* ═══ 3. 新闻动态 ═══ */}
+      <section id="news" className="py-20 lg:py-28 bg-white scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionTitle subtitle={greenContent.subtitle} title={greenContent.title} />
+          <SectionTitle subtitle="NEWS" title="新闻动态">
+            了解{site.shortName}最新动态与发展成果。
+          </SectionTitle>
           <ScrollReveal>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto text-center mb-10">{greenContent.intro}</p>
-          </ScrollReveal>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
-            {greenContent.practices.map((p) => (
-              <ScrollReveal key={p.title}>
-                <Link to="/green" className="flex items-start gap-3 bg-green-50 rounded-xl p-5 hover:bg-green-100 transition-colors">
-                  <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center shrink-0"><Heart size={16} className="text-green-600" /></div>
-                  <div><h4 className="text-sm font-bold text-gray-900 mb-1">{p.title}</h4><p className="text-xs text-gray-500 line-clamp-2">{p.points[0]}</p></div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+              {newsContent.articles.slice(0, 3).map((article, i) => (
+                <Link key={i} to={`/news/${article.id}`} className="group bg-gray-50 rounded-xl p-6 hover:bg-green-50 transition-colors border border-gray-100 hover:border-green-100">
+                  <span className="text-xs text-green-600 font-medium">{article.category}</span>
+                  <h3 className="text-base font-bold text-gray-900 mt-2 mb-3 group-hover:text-green-700 transition-colors leading-snug">{article.title}</h3>
+                  <span className="text-xs text-gray-400">{article.date}</span>
                 </Link>
-              </ScrollReveal>
-            ))}
-          </div>
-          <div className="text-center mt-6">
-            <Link to="/green" className="inline-flex items-center gap-1 text-green-600 hover:text-green-700 font-medium text-sm">了解更多 <ArrowRight size={16} /></Link>
+              ))}
+            </div>
+          </ScrollReveal>
+          <div className="text-center mt-8">
+            <Link to="/news" className="inline-flex items-center gap-1 text-green-600 hover:text-green-700 font-medium text-sm">查看全部新闻 <ArrowRight size={16} /></Link>
           </div>
         </div>
       </section>
 
-      {/* ═══ 企业文化 ═══ */}
+      {/* ═══ 4. 集团简介 ═══ */}
+      <section id="about" className="py-20 lg:py-28 bg-white scroll-mt-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionTitle subtitle={aboutContent.subtitle} title={aboutContent.title} />
+          <ScrollReveal>
+            <div className="space-y-5">
+              {aboutContent.overview.paragraphs.slice(0, 2).map((p, i) => (
+                <p key={i} className="text-gray-600 leading-relaxed text-base lg:text-lg">{p}</p>
+              ))}
+            </div>
+          </ScrollReveal>
+          <div className="text-center mt-6">
+            <Link to="/about" className="inline-flex items-center gap-1 text-green-600 hover:text-green-700 font-medium text-sm">了解更多 <ArrowRight size={16} /></Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ 5. 企业文化 ═══ */}
       <section id="culture" className="py-20 lg:py-28 bg-gray-50 scroll-mt-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle subtitle={cultureContent.subtitle} title={cultureContent.title} />
@@ -207,8 +135,80 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ═══ 合作伙伴 ═══ */}
-      <section id="partners" className="py-20 lg:py-28 bg-white scroll-mt-20">
+      {/* ═══ 6. 产业布局 ═══ */}
+      <section id="industry" className="py-20 lg:py-28 bg-white scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionTitle subtitle={industryContent.subtitle} title={industryContent.title} />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {industryContent.tabs.map((tab) => (
+              <ScrollReveal key={tab.id}>
+                <Link to={`/industry?tab=${tab.id}`} className="block bg-white rounded-xl p-8 shadow-sm border border-gray-100 hover:shadow-md hover:border-green-200 transition-all group h-full text-center">
+                  <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <Building2 size={24} className="text-green-600" />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-3">{tab.label}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">{tab.companies.length} 家子公司</p>
+                </Link>
+              </ScrollReveal>
+            ))}
+          </div>
+          <div className="text-center mt-6">
+            <Link to="/industry" className="inline-flex items-center gap-1 text-green-600 hover:text-green-700 font-medium text-sm">了解更多 <ArrowRight size={16} /></Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ 7. 科研创新 ═══ */}
+      <section id="innovation" className="py-20 lg:py-28 bg-gray-50 scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionTitle subtitle={innovationContent.subtitle} title={innovationContent.title} />
+          <ScrollReveal>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto text-center mb-10">{innovationContent.intro}</p>
+          </ScrollReveal>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {innovationContent.centers.slice(0, 3).map((center) => (
+              <ScrollReveal key={center.name}>
+                <Link to="/innovation" className="block bg-gray-50 rounded-xl p-6 border border-gray-100 hover:border-green-200 transition-all">
+                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mb-3">
+                    <Microscope size={20} className="text-green-600" />
+                  </div>
+                  <h3 className="font-bold text-gray-900 mb-2">{center.name}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed line-clamp-2">{center.description[0]}</p>
+                </Link>
+              </ScrollReveal>
+            ))}
+          </div>
+          <div className="text-center mt-6">
+            <Link to="/innovation" className="inline-flex items-center gap-1 text-green-600 hover:text-green-700 font-medium text-sm">了解更多 <ArrowRight size={16} /></Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ 8. 绿色发展 ═══ */}
+      <section id="green" className="py-20 lg:py-28 bg-white scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionTitle subtitle={greenContent.subtitle} title={greenContent.title} />
+          <ScrollReveal>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto text-center mb-10">{greenContent.intro}</p>
+          </ScrollReveal>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+            {greenContent.practices.map((p) => (
+              <ScrollReveal key={p.title}>
+                <Link to="/green" className="flex items-start gap-3 bg-green-50 rounded-xl p-5 hover:bg-green-100 transition-colors">
+                  <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center shrink-0"><Heart size={16} className="text-green-600" /></div>
+                  <div><h4 className="text-sm font-bold text-gray-900 mb-1">{p.title}</h4><p className="text-xs text-gray-500 line-clamp-2">{p.points[0]}</p></div>
+                </Link>
+              </ScrollReveal>
+            ))}
+          </div>
+          <div className="text-center mt-6">
+            <Link to="/green" className="inline-flex items-center gap-1 text-green-600 hover:text-green-700 font-medium text-sm">了解更多 <ArrowRight size={16} /></Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ 9. 合作伙伴 ═══ */}
+      <section id="partners" className="py-20 lg:py-28 bg-gray-50 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle subtitle={partnersContent.subtitle} title={partnersContent.title} />
           <ScrollReveal>
@@ -233,25 +233,25 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ═══ 新闻动态 ═══ */}
-      <section id="news" className="py-20 lg:py-28 bg-white scroll-mt-20">
+      {/* ═══ 核心优势 ═══ */}
+      <section id="advantages" className="py-20 lg:py-28 bg-green-900 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionTitle subtitle="NEWS" title="新闻动态">
-            了解{site.shortName}最新动态与发展成果。
-          </SectionTitle>
-          <ScrollReveal>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-              {newsContent.articles.slice(0, 3).map((article, i) => (
-                <Link key={i} to={`/news/${article.id}`} className="group bg-gray-50 rounded-xl p-6 hover:bg-green-50 transition-colors border border-gray-100 hover:border-green-100">
-                  <span className="text-xs text-green-600 font-medium">{article.category}</span>
-                  <h3 className="text-base font-bold text-gray-900 mt-2 mb-3 group-hover:text-green-700 transition-colors leading-snug">{article.title}</h3>
-                  <span className="text-xs text-gray-400">{article.date}</span>
-                </Link>
-              ))}
-            </div>
-          </ScrollReveal>
-          <div className="text-center mt-8">
-            <Link to="/news" className="inline-flex items-center gap-1 text-green-600 hover:text-green-700 font-medium text-sm">查看全部新闻 <ArrowRight size={16} /></Link>
+          <SectionTitle subtitle="CORE ADVANTAGES" title="核心优势" light />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {homeContent.advantages.map((item, i) => {
+              const IconComp = advantageIcons[item.icon]
+              return (
+                <ScrollReveal key={i}>
+                  <Link to={advantageLinks[i] || '/about'} className="block bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-colors group h-full">
+                    <div className="w-12 h-12 bg-green-400/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-400/30 transition-colors">
+                      {IconComp && <IconComp className="text-green-300" size={24} />}
+                    </div>
+                    <h3 className="text-white font-bold text-lg mb-2">{item.title}</h3>
+                    <p className="text-green-200/80 text-sm leading-relaxed">{item.desc}</p>
+                  </Link>
+                </ScrollReveal>
+              )
+            })}
           </div>
         </div>
       </section>
