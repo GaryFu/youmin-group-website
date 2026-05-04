@@ -83,7 +83,7 @@ export default function ProductPage() {
                     {subCategoryName}
                   </span>
                 )}
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-5 leading-tight tracking-tight">
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-5 leading-tight tracking-tight">
                   {product.name}
                 </h1>
                 {product.tagline && (

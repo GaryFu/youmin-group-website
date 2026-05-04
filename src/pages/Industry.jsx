@@ -20,11 +20,11 @@ export default function Industry() {
   return (
     <div>
       {/* Page Header */}
-      <section className="bg-gradient-to-r from-green-800 to-green-900 pt-28 pb-20">
+      <section className="bg-gradient-to-r from-green-800 to-green-900 pt-24 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <ScrollReveal>
             <p className="text-green-300 text-sm font-semibold tracking-widest uppercase mb-3">{industryContent.subtitle}</p>
-            <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">{industryContent.title}</h1>
+            <h1 className="text-3xl lg:text-4xl font-bold text-white mb-4">{industryContent.title}</h1>
             <div className="w-16 h-1 mx-auto bg-gold-400 rounded-full" />
           </ScrollReveal>
         </div>

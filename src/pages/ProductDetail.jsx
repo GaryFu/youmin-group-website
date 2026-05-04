@@ -37,7 +37,7 @@ export default function ProductDetail() {
   return (
     <div>
       {/* Page Header */}
-      <section className="bg-gradient-to-r from-green-800 to-green-900 pt-28 pb-20">
+      <section className="bg-gradient-to-r from-green-800 to-green-900 pt-24 pb-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
             <div className="flex items-center gap-2 text-sm text-green-300 mb-4">
