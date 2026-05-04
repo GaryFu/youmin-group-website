@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Calendar, ExternalLink } from 'lucide-react'
+import { Calendar, ChevronRight } from 'lucide-react'
 import SectionTitle from '../components/SectionTitle'
 import ScrollReveal from '../components/ScrollReveal'
 import { useContent } from '../context/ContentContext'
@@ -63,10 +63,8 @@ export default function News() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {paged.map((article, i) => (
               <ScrollReveal key={i}>
-                <a
-                  href={article.url || '#'}
-                  target={article.url ? '_blank' : undefined}
-                  rel="noopener noreferrer"
+                <Link
+                  to={article.id ? `/news/${article.id}` : '/news'}
                   className="block bg-white rounded-xl border border-gray-100 p-6 shadow-md hover:shadow-lg hover:border-green-200 transition-all group"
                 >
                   <div className="flex items-center gap-3 mb-3">
@@ -87,9 +85,9 @@ export default function News() {
                     </p>
                   )}
                   <div className="flex items-center gap-1 text-green-600 text-sm font-medium">
-                    阅读详情 <ExternalLink size={14} />
+                    阅读详情 <ChevronRight size={14} />
                   </div>
-                </a>
+                </Link>
               </ScrollReveal>
             ))}
           </div>

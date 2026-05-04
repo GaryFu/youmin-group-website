@@ -39,7 +39,7 @@ async function fetchContent() {
     try {
       const newsMeta = await pool.query("SELECT data FROM content WHERE key = 'news'")
       const pageData = newsMeta.rows[0]?.data || { title: '新闻动态', subtitle: 'NEWS & UPDATES' }
-      const articlesResult = await pool.query('SELECT title, digest, url, cover, category, date FROM news_articles ORDER BY date DESC, sort_order ASC')
+      const articlesResult = await pool.query('SELECT id, title, digest, url, cover, category, date FROM news_articles ORDER BY date DESC, sort_order ASC')
       content.news = { ...pageData, articles: articlesResult.rows }
       console.log(`  ✓ news (${articlesResult.rows.length} articles)`)
     } catch (err) {

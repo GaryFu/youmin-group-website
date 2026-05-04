@@ -242,7 +242,7 @@ export default function Home() {
           <ScrollReveal>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
               {newsContent.articles.slice(0, 3).map((article, i) => (
-                <Link key={i} to="/news" className="group bg-gray-50 rounded-xl p-6 hover:bg-green-50 transition-colors border border-gray-100 hover:border-green-100">
+                <Link key={i} to={`/news/${article.id}`} className="group bg-gray-50 rounded-xl p-6 hover:bg-green-50 transition-colors border border-gray-100 hover:border-green-100">
                   <span className="text-xs text-green-600 font-medium">{article.category}</span>
                   <h3 className="text-base font-bold text-gray-900 mt-2 mb-3 group-hover:text-green-700 transition-colors leading-snug">{article.title}</h3>
                   <span className="text-xs text-gray-400">{article.date}</span>
