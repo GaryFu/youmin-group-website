@@ -95,7 +95,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {industryContent.tabs.map((tab) => (
               <ScrollReveal key={tab.id}>
-                <Link to={`/industry/${tab.id}`} className="block bg-white rounded-xl p-8 shadow-sm border border-gray-100 hover:shadow-md hover:border-green-200 transition-all group h-full text-center">
+                <Link to="/industry" className="block bg-white rounded-xl p-8 shadow-sm border border-gray-100 hover:shadow-md hover:border-green-200 transition-all group h-full text-center">
                   <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <Building2 size={24} className="text-green-600" />
                   </div>
