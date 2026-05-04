@@ -28,7 +28,8 @@ function ArticleEditor({ article, categories, onSave, onCancel }) {
               <datalist id="news-categories">{(categories || []).map(c => <option key={c} value={c} />)}</datalist>
             </div>
           </div>
-          <div><label className="block text-xs text-gray-500 mb-1">摘要</label><textarea value={form.digest || ''} onChange={(e) => setField('digest', e.target.value)} rows={3} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" /></div>
+          <div><label className="block text-xs text-gray-500 mb-1">摘要</label><textarea value={form.digest || ''} onChange={(e) => setField('digest', e.target.value)} rows={2} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" /></div>
+          <div><label className="block text-xs text-gray-500 mb-1">正文</label><textarea value={form.content || ''} onChange={(e) => setField('content', e.target.value)} rows={6} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" /></div>
           <div><label className="block text-xs text-gray-500 mb-1">链接</label><input type="text" value={form.url || ''} onChange={(e) => setField('url', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" /></div>
           <div className="flex gap-3 pt-4 border-t border-gray-100">
             <button onClick={() => onSave(form)} className="flex-1 bg-green-600 text-white py-2.5 rounded-lg font-medium text-sm hover:bg-green-700">保存</button>
@@ -109,7 +110,7 @@ function NewsList() {
           {categories.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
         <span className="text-xs text-gray-400">共 {total} 篇</span>
-        <button onClick={() => setEditing({ date: new Date().toISOString().slice(0, 10), category: '集团新闻', title: '', digest: '', url: '' })} className="ml-auto px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 flex items-center gap-1.5">
+        <button onClick={() => setEditing({ date: new Date().toISOString().slice(0, 10), category: '集团新闻', title: '', digest: '', content: '', url: '' })} className="ml-auto px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 flex items-center gap-1.5">
           <PlusCircle size={16} /> 新增文章
         </button>
       </div>

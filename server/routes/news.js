@@ -59,10 +59,10 @@ router.get('/:id', async (req, res, next) => {
 // PUT /api/news/:id — update article
 router.put('/:id', auth, async (req, res, next) => {
   try {
-    const { title, digest, url, cover, category, date } = req.body
+    const { title, digest, content, url, cover, category, date } = req.body
     await pool.query(
-      'UPDATE news_articles SET title=$1, digest=$2, url=$3, cover=$4, category=$5, date=$6 WHERE id=$7',
-      [title, digest || '', url || '', cover || '', category || '集团新闻', date, req.params.id]
+      'UPDATE news_articles SET title=$1, digest=$2, content=$3, url=$4, cover=$5, category=$6, date=$7 WHERE id=$8',
+      [title, digest || '', content || '', url || '', cover || '', category || '集团新闻', date, req.params.id]
     )
     res.json({ success: true })
   } catch (err) { next(err) }
@@ -71,10 +71,10 @@ router.put('/:id', auth, async (req, res, next) => {
 // POST /api/news — create article
 router.post('/', auth, async (req, res, next) => {
   try {
-    const { title, digest, url, cover, category, date } = req.body
+    const { title, digest, content, url, cover, category, date } = req.body
     const result = await pool.query(
-      'INSERT INTO news_articles (title, digest, url, cover, category, date, sort_order) VALUES ($1,$2,$3,$4,$5,$6,0) RETURNING *',
-      [title, digest || '', url || '', cover || '', category || '集团新闻', date || new Date().toISOString().slice(0, 10)]
+      'INSERT INTO news_articles (title, digest, content, url, cover, category, date, sort_order) VALUES ($1,$2,$3,$4,$5,$6,$7,0) RETURNING *',
+      [title, digest || '', content || '', url || '', cover || '', category || '集团新闻', date || new Date().toISOString().slice(0, 10)]
     )
     res.json(result.rows[0])
   } catch (err) { next(err) }

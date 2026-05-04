@@ -69,10 +69,10 @@ export default function NewsDetail() {
               )}
               <ScrollReveal>
                 <div className="prose max-w-none">
-                  {article.digest?.split('\n').filter(Boolean).map((p, i) => (
+                  {(article.content || article.digest)?.split('\n').filter(Boolean).map((p, i) => (
                     <p key={i} className="text-gray-600 leading-relaxed text-base mb-4">{p}</p>
                   ))}
-                  {!article.digest && (
+                  {!article.content && !article.digest && (
                     <p className="text-gray-400">暂无详细内容，请点击"查看原文"阅读完整文章。</p>
                   )}
                 </div>

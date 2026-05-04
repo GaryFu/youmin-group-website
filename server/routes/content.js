@@ -52,7 +52,7 @@ async function getNews(req, res, next) {
   try {
     const jsonb = await pool.query("SELECT data FROM content WHERE key = 'news'")
     const pageData = jsonb.rows[0]?.data || { title: '新闻动态', subtitle: 'NEWS & UPDATES' }
-    const articles = await pool.query('SELECT id, title, digest, url, cover, category, date FROM news_articles ORDER BY date DESC, sort_order ASC')
+    const articles = await pool.query('SELECT id, title, digest, content, url, cover, category, date FROM news_articles ORDER BY date DESC, sort_order ASC')
     res.json({ key: 'news', data: { ...pageData, articles: articles.rows }, updatedAt: new Date().toISOString() })
   } catch (err) { next(err) }
 }
