@@ -48,8 +48,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ═══ 产品与服务 ═══ */}
-      <section id="products" className="py-20 lg:py-28 bg-white scroll-mt-20">
+      {/* ═══ 集团简介 ═══ */}
+      <section id="about" className="py-20 lg:py-28 bg-white scroll-mt-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle subtitle={aboutContent.subtitle} title={aboutContent.title} />
           <ScrollReveal>
