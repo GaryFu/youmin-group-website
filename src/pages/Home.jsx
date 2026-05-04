@@ -5,6 +5,7 @@ import ScrollReveal from '../components/ScrollReveal'
 import { useContent } from '../context/ContentContext'
 
 const advantageIcons = { FlaskConical, Layers, Leaf, Shield }
+const advantageLinks = ['/innovation', '/industry', '/green', '/about']
 
 export default function Home() {
   const { getContent } = useContent()
@@ -73,13 +74,13 @@ export default function Home() {
               const IconComp = advantageIcons[item.icon]
               return (
                 <ScrollReveal key={i}>
-                  <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-colors group h-full">
+                  <Link to={advantageLinks[i] || '/about'} className="block bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-colors group h-full">
                     <div className="w-12 h-12 bg-green-400/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-400/30 transition-colors">
                       {IconComp && <IconComp className="text-green-300" size={24} />}
                     </div>
                     <h3 className="text-white font-bold text-lg mb-2">{item.title}</h3>
                     <p className="text-green-200/80 text-sm leading-relaxed">{item.desc}</p>
-                  </div>
+                  </Link>
                 </ScrollReveal>
               )
             })}
@@ -94,13 +95,13 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {industryContent.tabs.map((tab) => (
               <ScrollReveal key={tab.id}>
-                <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 hover:shadow-md hover:border-green-200 transition-all group h-full text-center">
+                <Link to={`/industry/${tab.id}`} className="block bg-white rounded-xl p-8 shadow-sm border border-gray-100 hover:shadow-md hover:border-green-200 transition-all group h-full text-center">
                   <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <Building2 size={24} className="text-green-600" />
                   </div>
                   <h3 className="text-lg font-bold text-gray-900 mb-3">{tab.label}</h3>
                   <p className="text-sm text-gray-500 leading-relaxed">{tab.companies.length} 家子公司</p>
-                </div>
+                </Link>
               </ScrollReveal>
             ))}
           </div>
@@ -120,13 +121,13 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {innovationContent.centers.slice(0, 3).map((center) => (
               <ScrollReveal key={center.name}>
-                <div className="bg-gray-50 rounded-xl p-6 border border-gray-100 hover:border-green-200 transition-all">
+                <Link to="/innovation" className="block bg-gray-50 rounded-xl p-6 border border-gray-100 hover:border-green-200 transition-all">
                   <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mb-3">
                     <Microscope size={20} className="text-green-600" />
                   </div>
                   <h3 className="font-bold text-gray-900 mb-2">{center.name}</h3>
                   <p className="text-sm text-gray-500 leading-relaxed line-clamp-2">{center.description[0]}</p>
-                </div>
+                </Link>
               </ScrollReveal>
             ))}
           </div>
@@ -168,10 +169,10 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
             {greenContent.practices.map((p) => (
               <ScrollReveal key={p.title}>
-                <div className="flex items-start gap-3 bg-green-50 rounded-xl p-5">
+                <Link to="/green" className="flex items-start gap-3 bg-green-50 rounded-xl p-5 hover:bg-green-100 transition-colors">
                   <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center shrink-0"><Heart size={16} className="text-green-600" /></div>
                   <div><h4 className="text-sm font-bold text-gray-900 mb-1">{p.title}</h4><p className="text-xs text-gray-500 line-clamp-2">{p.points[0]}</p></div>
-                </div>
+                </Link>
               </ScrollReveal>
             ))}
           </div>
@@ -188,7 +189,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {cultureContent.items.slice(0, 6).map((item, i) => (
               <ScrollReveal key={i}>
-                <div className="flex items-start gap-3 bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+                <Link to="/culture" className="flex items-start gap-3 bg-white rounded-xl p-4 border border-gray-100 shadow-sm hover:border-green-200 transition-all">
                   <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
                     <span className="text-xs font-bold text-green-600">{String(i + 1).padStart(2, '0')}</span>
                   </div>
@@ -196,7 +197,7 @@ export default function Home() {
                     <h4 className="text-sm font-bold text-gray-900 mb-1">{item.label}</h4>
                     <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">{item.value}</p>
                   </div>
-                </div>
+                </Link>
               </ScrollReveal>
             ))}
           </div>
@@ -216,13 +217,13 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
             {partnersContent.categories.slice(0, 4).map((cat) => (
               <ScrollReveal key={cat.name}>
-                <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm text-center">
+                <Link to="/partners" className="block bg-white rounded-xl p-6 border border-gray-100 shadow-sm text-center hover:border-green-200 transition-all">
                   <div className="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center mx-auto mb-3">
                     <Handshake size={20} className="text-green-600" />
                   </div>
                   <h3 className="text-sm font-bold text-gray-900 mb-2">{cat.name}</h3>
                   <p className="text-xs text-gray-400">{cat.partners.length} 家合作方</p>
-                </div>
+                </Link>
               </ScrollReveal>
             ))}
           </div>
