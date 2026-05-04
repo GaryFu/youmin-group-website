@@ -1,9 +1,7 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { ArrowRight, Eye } from 'lucide-react'
 import { useContent } from '../context/ContentContext'
-
-const footerLinkHash = { '/about': 'about', '/culture': 'culture', '/industry': 'industry', '/innovation': 'innovation', '/products': 'products', '/green': 'green', '/partners': 'partners', '/news': 'news' }
 
 const footerLinks = [
   {
@@ -36,20 +34,11 @@ export default function Footer() {
   const { getContent } = useContent()
   const site = getContent('site')
   const [visitCount, setVisitCount] = useState(null)
-  const { pathname } = useLocation()
-  const isHome = pathname === '/'
 
   useEffect(() => {
     fetch('/api/content/visitor/count').then(r => r.json()).then(d => setVisitCount(d.count)).catch(() => {})
   }, [])
 
-  const scrollTo = (e, to) => {
-    const hash = footerLinkHash[to]
-    if (isHome && hash) {
-      e.preventDefault()
-      document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }
-  }
   return (
     <footer className="bg-gray-900 text-gray-300">
       {/* Top bar */}
@@ -75,7 +64,6 @@ export default function Footer() {
                   <li key={link.to}>
                     <Link
                       to={link.to}
-                      onClick={(e) => scrollTo(e, link.to)}
                       className="text-sm text-gray-400 hover:text-green-400 transition-colors inline-flex items-center gap-1 group"
                     >
                       <ArrowRight size={12} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />

@@ -4,16 +4,16 @@ import { Menu, X, ChevronDown } from 'lucide-react'
 import { useContent } from '../context/ContentContext'
 
 const navLinks = [
-  { to: '/', hash: '', label: '首页' },
-  { to: '/products', hash: 'products', label: '产品与服务' },
-  { to: '/news', hash: 'news', label: '新闻动态' },
-  { to: '/about', hash: 'about', label: '集团简介' },
-  { to: '/culture', hash: 'culture', label: '企业文化' },
-  { to: '/industry', hash: 'industry', label: '产业布局' },
-  { to: '/innovation', hash: 'innovation', label: '科研创新' },
-  { to: '/green', hash: 'green', label: '绿色发展' },
-  { to: '/partners', hash: 'partners', label: '合作伙伴' },
-  { to: '/contact', hash: '', label: '联系我们' },
+  { to: '/', label: '首页' },
+  { to: '/products', label: '产品与服务' },
+  { to: '/news', label: '新闻动态' },
+  { to: '/about', label: '集团简介' },
+  { to: '/culture', label: '企业文化' },
+  { to: '/industry', label: '产业布局' },
+  { to: '/innovation', label: '科研创新' },
+  { to: '/green', label: '绿色发展' },
+  { to: '/partners', label: '合作伙伴' },
+  { to: '/contact', label: '联系我们' },
 ]
 
 export default function Navbar() {
@@ -32,17 +32,6 @@ export default function Navbar() {
   useEffect(() => {
     setMobileOpen(false)
   }, [location.pathname])
-
-  const isHome = location.pathname === '/'
-
-  const handleNavClick = (e, link) => {
-    if (isHome && link.hash) {
-      e.preventDefault()
-      const el = document.getElementById(link.hash)
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      setMobileOpen(false)
-    }
-  }
 
   return (
     <nav
@@ -65,22 +54,19 @@ export default function Navbar() {
 
           {/* Desktop Nav */}
           <div className="hidden lg:flex items-center gap-0.5">
-            {navLinks.map((link) => {
-              const isActive = link.to === '/' ? location.pathname === '/' : location.pathname === link.to || (isHome && location.hash === '#' + link.hash)
-              const NavLink = isHome && link.hash ? 'a' : Link
-              const navProps = isHome && link.hash ? { href: '#' + link.hash, onClick: (e) => handleNavClick(e, link) } : { to: link.to }
-              return (
-                <NavLink key={link.to} {...navProps}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    isActive
-                      ? scrolled ? 'text-green-700 bg-green-50' : 'text-white bg-white/20'
-                      : scrolled ? 'text-gray-600 hover:text-green-700 hover:bg-green-50' : 'text-white/90 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  {link.label}
-                </NavLink>
-              )
-            })}
+            {navLinks.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  location.pathname === link.to
+                    ? scrolled ? 'text-green-700 bg-green-50' : 'text-white bg-white/20'
+                    : scrolled ? 'text-gray-600 hover:text-green-700 hover:bg-green-50' : 'text-white/90 hover:text-white hover:bg-white/10'
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
           </div>
 
           {/* Mobile menu button */}
@@ -99,20 +85,17 @@ export default function Navbar() {
       {mobileOpen && (
         <div className="lg:hidden bg-white border-t border-gray-100 shadow-xl">
           <div className="px-4 py-3 space-y-1 max-h-[70vh] overflow-y-auto">
-            {navLinks.map((link) => {
-              const isActive = location.pathname === link.to
-              const MobileLink = isHome && link.hash ? 'a' : Link
-              const mobileProps = isHome && link.hash ? { href: '#' + link.hash, onClick: (e) => handleNavClick(e, link) } : { to: link.to }
-              return (
-                <MobileLink key={link.to} {...mobileProps}
-                  className={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                    isActive ? 'text-green-700 bg-green-50' : 'text-gray-600 hover:text-green-700 hover:bg-green-50'
-                  }`}
-                >
-                  {link.label}
-                </MobileLink>
-              )
-            })}
+            {navLinks.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                className={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                  location.pathname === link.to ? 'text-green-700 bg-green-50' : 'text-gray-600 hover:text-green-700 hover:bg-green-50'
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
           </div>
         </div>
       )}
