@@ -58,7 +58,7 @@ export default function CompanyDetail() {
             <span className="inline-flex items-center gap-1.5 text-xs font-medium bg-white/10 text-green-200 border border-white/10 px-3 py-1 rounded-full mb-4">
               <TabIcon size={14} /> {tab.label}
             </span>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-4 leading-tight">{company.name}</h1>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white mb-4 leading-tight">{company.name}</h1>
             {company.tagline && <p className="text-xl text-green-200/80 max-w-2xl">{company.tagline}</p>}
           </ScrollReveal>
         </div>

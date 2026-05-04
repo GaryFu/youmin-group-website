@@ -36,7 +36,7 @@ export default function NewsDetail() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative bg-gradient-to-r from-green-800 to-green-900 pt-24 pb-16">
+      <section className="relative bg-gradient-to-r from-green-800 to-green-900 pt-20 pb-14">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
             <div className="flex items-center gap-2 text-sm text-green-300 mb-4">
@@ -49,7 +49,7 @@ export default function NewsDetail() {
             <span className="inline-block text-xs font-medium bg-white/15 text-green-200 px-3 py-1 rounded-full mb-4">
               {article.category}
             </span>
-            <h1 className="text-3xl lg:text-4xl font-bold text-white mb-4 leading-tight">{article.title}</h1>
+            <h1 className="text-2xl lg:text-3xl font-bold text-white mb-4 leading-tight">{article.title}</h1>
             <div className="flex items-center gap-4 text-green-300 text-sm">
               <span className="flex items-center gap-1"><Calendar size={14} /> {article.date}</span>
               {article.url && (

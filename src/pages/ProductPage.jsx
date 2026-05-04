@@ -55,7 +55,7 @@ export default function ProductPage() {
   return (
     <div>
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-green-950 via-green-900 to-green-800 pt-24 pb-0">
+      <section className="relative overflow-hidden bg-gradient-to-br from-green-950 via-green-900 to-green-800 pt-20 pb-0">
         {/* Decorative background */}
         <div className="absolute inset-0 opacity-10" style={{
           backgroundImage: 'radial-gradient(circle at 30% 50%, #22c55e 0%, transparent 60%), radial-gradient(circle at 70% 30%, #eab308 0%, transparent 40%)'
@@ -83,7 +83,7 @@ export default function ProductPage() {
                     {subCategoryName}
                   </span>
                 )}
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-5 leading-tight tracking-tight">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white mb-5 leading-tight tracking-tight">
                   {product.name}
                 </h1>
                 {product.tagline && (
@@ -161,7 +161,7 @@ export default function ProductPage() {
             <ScrollReveal>
               <div className="text-center mb-14">
                 <p className="text-green-600 text-sm font-semibold tracking-widest uppercase mb-3">核心优势</p>
-                <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">为什么选择{product.name}</h2>
+                <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">为什么选择{product.name}</h2>
                 <div className="w-16 h-1 mx-auto mt-4 bg-gold-400 rounded-full" />
               </div>
             </ScrollReveal>
@@ -264,7 +264,7 @@ export default function ProductPage() {
       <section className="py-16 lg:py-20 bg-gradient-to-r from-green-800 to-green-900">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <ScrollReveal>
-            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
+            <h2 className="text-2xl lg:text-3xl font-bold text-white mb-4">
               对{product.name}感兴趣？
             </h2>
             <p className="text-green-200 text-lg mb-8">
