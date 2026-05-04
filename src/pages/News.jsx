@@ -23,7 +23,16 @@ export default function News() {
   const paged = filtered.slice(1).slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
 
   return (
-    <div className="pt-16">
+    <div>
+      <section className="bg-gradient-to-r from-green-800 to-green-900 pt-20 pb-14">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <ScrollReveal>
+            <p className="text-green-300 text-sm font-semibold tracking-widest uppercase mb-3">{newsContent.subtitle}</p>
+            <h1 className="text-2xl lg:text-3xl font-bold text-white mb-4">{newsContent.title}</h1>
+            <div className="w-16 h-1 mx-auto bg-gold-400 rounded-full" />
+          </ScrollReveal>
+        </div>
+      </section>
 
       <section className="py-20 lg:py-28 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">

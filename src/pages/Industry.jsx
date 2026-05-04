@@ -18,7 +18,17 @@ export default function Industry() {
   }
   const industryContent = getContent('industry')
   return (
-    <div className="pt-16">
+    <div>
+      {/* Page Header */}
+      <section className="bg-gradient-to-r from-green-800 to-green-900 pt-20 pb-14">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <ScrollReveal>
+            <p className="text-green-300 text-sm font-semibold tracking-widest uppercase mb-3">{industryContent.subtitle}</p>
+            <h1 className="text-2xl lg:text-3xl font-bold text-white mb-4">{industryContent.title}</h1>
+            <div className="w-16 h-1 mx-auto bg-gold-400 rounded-full" />
+          </ScrollReveal>
+        </div>
+      </section>
 
       {/* Industry Layout */}
       <section className="py-20 lg:py-28 bg-white">

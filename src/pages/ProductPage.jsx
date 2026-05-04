@@ -53,8 +53,106 @@ export default function ProductPage() {
   const hasImages = images.length > 0
 
   return (
-    <div className="pt-16">
+    <div>
       {/* ── Hero ── */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-green-950 via-green-900 to-green-800 pt-20 pb-0">
+        {/* Decorative background */}
+        <div className="absolute inset-0 opacity-10" style={{
+          backgroundImage: 'radial-gradient(circle at 30% 50%, #22c55e 0%, transparent 60%), radial-gradient(circle at 70% 30%, #eab308 0%, transparent 40%)'
+        }} />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gold-400/5 rounded-full blur-3xl" />
+
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-20">
+          <ScrollReveal>
+            {/* Breadcrumb */}
+            <div className="flex items-center gap-2 text-sm text-green-300/80 mb-8">
+              <Link to="/" className="hover:text-white transition-colors">首页</Link>
+              <ChevronRight size={14} />
+              <Link to="/products" className="hover:text-white transition-colors">{productsContent.title}</Link>
+              <ChevronRight size={14} />
+              <Link to={`/products/${category.slug}`} className="hover:text-white transition-colors">{category.name}</Link>
+              <ChevronRight size={14} />
+              <span className="text-gold-400">{product.name}</span>
+            </div>
+
+            <div className="grid lg:grid-cols-5 gap-12 items-center">
+              {/* Left: Text */}
+              <div className="lg:col-span-3">
+                {subCategoryName && (
+                  <span className="inline-block text-xs font-medium bg-white/10 text-green-200 border border-white/10 px-3 py-1 rounded-full mb-5">
+                    {subCategoryName}
+                  </span>
+                )}
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white mb-5 leading-tight tracking-tight">
+                  {product.name}
+                </h1>
+                {product.tagline && (
+                  <p className="text-xl text-green-200/80 leading-relaxed mb-8 max-w-xl">
+                    {product.tagline}
+                  </p>
+                )}
+
+                {/* Quick stats */}
+                <div className="flex flex-wrap gap-6 mb-8">
+                  {product.features?.slice(0, 3).map((f, i) => (
+                    <div key={i} className="flex items-center gap-2 text-green-200">
+                      <div className="w-8 h-8 bg-green-400/20 rounded-lg flex items-center justify-center">
+                        <CheckCircle2 size={16} className="text-gold-400" />
+                      </div>
+                      <span className="text-sm font-medium">{f.text}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex flex-wrap gap-3">
+                  <Link
+                    to="/contact"
+                    className="inline-flex items-center gap-2 bg-gold-500 text-white hover:bg-gold-600 px-6 py-3 rounded-xl font-bold text-sm transition-all shadow-xl shadow-gold-500/30"
+                  >
+                    <Phone size={18} /> 立即咨询
+                  </Link>
+                  {product.url && (
+                    <a
+                      href={product.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-green-200 hover:text-white px-4 py-2 rounded-xl text-sm transition-colors"
+                    >
+                      <ExternalLink size={14} /> 查看产品原文
+                    </a>
+                  )}
+                </div>
+              </div>
+
+              {/* Right: Image */}
+              <div className="lg:col-span-2">
+                <div className="relative">
+                  <div className="absolute -inset-4 bg-gradient-to-br from-gold-400/20 via-green-400/10 to-transparent rounded-3xl blur-xl" />
+                  <div className="relative bg-white rounded-xl p-3 shadow-2xl">
+                    {hasImages ? (
+                      <img
+                        src={images[0]}
+                        alt={product.name}
+                        className="w-full object-contain rounded-xl"
+                      />
+                    ) : (
+                      <div className="w-full aspect-video bg-gradient-to-br from-green-50 to-green-100 rounded-xl flex items-center justify-center">
+                        <div className="text-center">
+                          <Package size={48} className="text-green-300 mx-auto mb-2" />
+                          <span className="text-sm text-green-400">{product.name}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ScrollReveal>
+        </div>
+
+        {/* Wave divider */}
+        <div className="h-16 bg-white" style={{ clipPath: 'ellipse(75% 100% at 50% 100%)' }} />
+      </section>
 
       {/* ── Features Grid ── */}
       {product.features && product.features.length > 0 && (

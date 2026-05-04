@@ -34,8 +34,33 @@ export default function NewsDetail() {
   const body = (article.content || article.digest || '').split('\n').filter(Boolean)
 
   return (
-    <div className="pt-16">
+    <div>
       {/* Hero */}
+      <section className="relative bg-gradient-to-r from-green-800 to-green-900 pt-20 pb-14">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollReveal>
+            <div className="flex items-center gap-2 text-sm text-green-300 mb-4">
+              <Link to="/" className="hover:text-white">首页</Link>
+              <ChevronRight size={14} />
+              <Link to="/news" className="hover:text-white">{newsContent.title}</Link>
+              <ChevronRight size={14} />
+              <span className="text-gold-400">文章详情</span>
+            </div>
+            <span className="inline-block text-xs font-medium bg-white/15 text-green-200 px-3 py-1 rounded-full mb-4">
+              {article.category}
+            </span>
+            <h1 className="text-2xl lg:text-3xl font-bold text-white mb-4 leading-tight">{article.title}</h1>
+            <div className="flex items-center gap-4 text-green-300 text-sm">
+              <span className="flex items-center gap-1"><Calendar size={14} /> {article.date}</span>
+              {article.url && (
+                <a href={article.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-white transition-colors">
+                  <ExternalLink size={14} /> 查看原文
+                </a>
+              )}
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
 
       {/* Body */}
       <section className="py-16 lg:py-24 bg-white">
