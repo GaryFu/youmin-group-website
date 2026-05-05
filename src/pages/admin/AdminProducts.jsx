@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import EditorShell from '../../components/admin/EditorShell'
 import Toast from '../../components/admin/Toast'
-import { Search, X, Plus, Trash2, Upload, Edit3, Package, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, PlusCircle, Rocket } from 'lucide-react'
+import { Search, X, Plus, Trash2, Upload, Edit3, Package, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, PlusCircle, Rocket, Check } from 'lucide-react'
 
 const PAGE_SIZE = 20
 
@@ -84,6 +84,15 @@ function ProductEditor({ product, subcategories, onSave, onCancel }) {
           <button onClick={onCancel} className="p-2 hover:bg-gray-100 rounded-lg"><X size={18} /></button>
         </div>
         <div className="p-6 space-y-5">
+          <div className="rounded-xl border border-gold-200 bg-gold-50 px-4 py-3 text-sm text-gold-900">
+            <div className="flex items-start gap-2">
+              <Rocket size={16} className="mt-0.5 shrink-0 text-gold-600" />
+              <div>
+                <p className="font-semibold">保存后还需要手动发布</p>
+                <p className="mt-0.5 text-xs leading-5 text-gold-800">这里保存的是数据库内容，前台网站要点击列表页的「发布到网站」后才会更新。</p>
+              </div>
+            </div>
+          </div>
           {!form.id && (
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1">所属子分类</label>
@@ -155,7 +164,7 @@ function ProductEditor({ product, subcategories, onSave, onCancel }) {
           </div>
           <div><label className="block text-xs font-medium text-gray-500 mb-1">微信链接</label><input type="text" value={form.url || ''} onChange={(e) => setField('url', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" /></div>
           <div className="flex gap-3 pt-4 border-t border-gray-100">
-            <button onClick={() => onSave(form)} className="flex-1 bg-green-600 text-white py-2.5 rounded-lg font-medium text-sm hover:bg-green-700">保存</button>
+            <button onClick={() => onSave(form)} className="flex-1 bg-green-600 text-white py-2.5 rounded-lg font-medium text-sm hover:bg-green-700">保存到数据库</button>
             <button onClick={onCancel} className="px-6 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50">取消</button>
           </div>
         </div>
@@ -170,6 +179,8 @@ function CategoryManager({ onRefresh }) {
   const [open, setOpen] = useState(false)
   const [newCat, setNewCat] = useState({ name: '', slug: '', icon: 'Package', desc: '' })
   const [newSub, setNewSub] = useState({ name: '', category_id: '' })
+  const [editingCat, setEditingCat] = useState(null)
+  const [editingSub, setEditingSub] = useState(null)
   const [err, setErr] = useState('')
 
   const api = async (path, method = 'GET', body) => {
@@ -190,6 +201,14 @@ function CategoryManager({ onRefresh }) {
   useEffect(() => { load() }, [])
 
   const addCat = async () => { try { await api('/categories', 'POST', newCat); setNewCat({ name: '', slug: '', icon: 'Package', desc: '' }); load(); onRefresh() } catch (e) { setErr(e.message) } }
+  const startEditCat = (cat) => setEditingCat({ id: cat.id, name: cat.name || '', slug: cat.slug || '' })
+  const saveCat = async () => {
+    if (!editingCat?.name?.trim() || !editingCat?.slug?.trim()) { setErr('分类名称和 slug 不能为空'); return }
+    try {
+      await api('/categories/' + editingCat.id, 'PUT', { name: editingCat.name.trim(), slug: editingCat.slug.trim() })
+      setEditingCat(null); load(); onRefresh()
+    } catch (e) { setErr(e.message) }
+  }
   const delCat = async (id) => { if (confirm('删除分类将同时删除其下子分类和产品，确定？')) { try { await api('/categories/' + id, 'DELETE'); load(); onRefresh() } catch (e) { setErr(e.message) } } }
   const moveCat = async (idx, dir) => {
     if (idx + dir < 0 || idx + dir >= cats.length) return
@@ -199,6 +218,14 @@ function CategoryManager({ onRefresh }) {
     load(); onRefresh()
   }
   const addSub = async () => { try { await api('/subcategories', 'POST', newSub); setNewSub({ name: '', category_id: '' }); load(); onRefresh() } catch (e) { setErr(e.message) } }
+  const startEditSub = (sub) => setEditingSub({ id: sub.id, name: sub.name || '', category_id: String(sub.category_id || '') })
+  const saveSub = async () => {
+    if (!editingSub?.name?.trim() || !editingSub?.category_id) { setErr('子分类名称和所属分类不能为空'); return }
+    try {
+      await api('/subcategories/' + editingSub.id, 'PUT', { name: editingSub.name.trim(), category_id: editingSub.category_id })
+      setEditingSub(null); load(); onRefresh()
+    } catch (e) { setErr(e.message) }
+  }
   const delSub = async (id) => { if (confirm('删除子分类将同时删除其下产品，确定？')) { try { await api('/subcategories/' + id, 'DELETE'); load(); onRefresh() } catch (e) { setErr(e.message) } } }
   const moveSub = async (idx, dir) => {
     if (idx + dir < 0 || idx + dir >= subs.length) return
@@ -231,7 +258,32 @@ function CategoryManager({ onRefresh }) {
               <button onClick={() => moveCat(i, -1)} disabled={i === 0} className="text-gray-300 hover:text-gray-500 disabled:opacity-20 leading-none"><ChevronUp size={12} /></button>
               <button onClick={() => moveCat(i, 1)} disabled={i === cats.length - 1} className="text-gray-300 hover:text-gray-500 disabled:opacity-20 leading-none"><ChevronDown size={12} /></button>
             </div>
-            <span className="flex-1 text-gray-700">{c.name} <span className="text-gray-400 text-xs">({c.slug})</span></span>
+            {editingCat?.id === c.id ? (
+              <div className="flex flex-1 items-center gap-2">
+                <input
+                  value={editingCat.name}
+                  onChange={e => setEditingCat(p => ({ ...p, name: e.target.value }))}
+                  className="min-w-0 flex-1 px-2 py-1.5 border border-green-200 rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500"
+                  autoFocus
+                />
+                <input
+                  value={editingCat.slug}
+                  onChange={e => setEditingCat(p => ({ ...p, slug: e.target.value }))}
+                  className="w-40 px-2 py-1.5 border border-green-200 rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="slug"
+                />
+              </div>
+            ) : (
+              <span className="flex-1 text-gray-700">{c.name} <span className="text-gray-400 text-xs">({c.slug})</span></span>
+            )}
+            {editingCat?.id === c.id ? (
+              <>
+                <button onClick={saveCat} className="text-green-600 hover:text-green-700" aria-label="保存分类"><Check size={14} /></button>
+                <button onClick={() => setEditingCat(null)} className="text-gray-400 hover:text-gray-600" aria-label="取消编辑"><X size={14} /></button>
+              </>
+            ) : (
+              <button onClick={() => startEditCat(c)} className="text-gray-400 hover:text-green-600" aria-label="编辑分类"><Edit3 size={12} /></button>
+            )}
             <button onClick={() => delCat(c.id)} className="text-red-400 hover:text-red-600"><Trash2 size={12} /></button>
           </div>
         ))}
@@ -253,7 +305,33 @@ function CategoryManager({ onRefresh }) {
               <button onClick={() => moveSub(i, -1)} disabled={i === 0} className="text-gray-300 hover:text-gray-500 disabled:opacity-20 leading-none"><ChevronUp size={12} /></button>
               <button onClick={() => moveSub(i, 1)} disabled={i === subs.length - 1} className="text-gray-300 hover:text-gray-500 disabled:opacity-20 leading-none"><ChevronDown size={12} /></button>
             </div>
-            <span className="flex-1 text-gray-700">{s.name} <span className="text-gray-400 text-xs">({s.cat_name})</span></span>
+            {editingSub?.id === s.id ? (
+              <div className="flex flex-1 items-center gap-2">
+                <input
+                  value={editingSub.name}
+                  onChange={e => setEditingSub(p => ({ ...p, name: e.target.value }))}
+                  className="min-w-0 flex-1 px-2 py-1.5 border border-green-200 rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500"
+                  autoFocus
+                />
+                <select
+                  value={editingSub.category_id}
+                  onChange={e => setEditingSub(p => ({ ...p, category_id: e.target.value }))}
+                  className="w-40 px-2 py-1.5 border border-green-200 rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+                  {cats.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                </select>
+              </div>
+            ) : (
+              <span className="flex-1 text-gray-700">{s.name} <span className="text-gray-400 text-xs">({s.cat_name})</span></span>
+            )}
+            {editingSub?.id === s.id ? (
+              <>
+                <button onClick={saveSub} className="text-green-600 hover:text-green-700" aria-label="保存子分类"><Check size={14} /></button>
+                <button onClick={() => setEditingSub(null)} className="text-gray-400 hover:text-gray-600" aria-label="取消编辑"><X size={14} /></button>
+              </>
+            ) : (
+              <button onClick={() => startEditSub(s)} className="text-gray-400 hover:text-green-600" aria-label="编辑子分类"><Edit3 size={12} /></button>
+            )}
             <button onClick={() => delSub(s.id)} className="text-red-400 hover:text-red-600"><Trash2 size={12} /></button>
           </div>
         ))}
@@ -327,7 +405,11 @@ function ProductList() {
     })
     if (res.ok) {
       setEditing(null)
-      setToast({ message: isNew ? '创建成功' : '保存成功', type: 'success' })
+      setToast({
+        title: isNew ? '产品创建成功' : '产品保存成功',
+        message: '内容已保存到数据库。请点击「发布到网站」，前台页面才会更新。',
+        type: 'success',
+      })
       fetchProducts(page, search, filterCat)
     } else {
       const d = await res.json()
@@ -343,7 +425,11 @@ function ProductList() {
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token || ''}` },
     })
     const d = await res.json()
-    setToast({ message: d.message || d.error || '操作完成', type: res.ok ? 'success' : 'error' })
+    setToast({
+      title: res.ok ? '发布已触发' : '发布失败',
+      message: d.message || d.error || '操作完成',
+      type: res.ok ? 'success' : 'error',
+    })
   }
 
   const handleDelete = async (product) => {
@@ -363,9 +449,19 @@ function ProductList() {
 
   return (
     <div>
-      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+      {toast && <Toast {...toast} onClose={() => setToast(null)} />}
 
       <CategoryManager onRefresh={() => { fetchProducts(page, search, filterCat); fetch('/api/products/subcategories').then(r => r.json()).then(setSubcategories).catch(() => {}) }} />
+
+      <div className="mb-5 rounded-xl border border-gold-200 bg-gold-50 px-4 py-3 text-sm text-gold-900 shadow-sm">
+        <div className="flex items-start gap-2">
+          <Rocket size={17} className="mt-0.5 shrink-0 text-gold-600" />
+          <div>
+            <p className="font-semibold">产品修改后必须手动发布</p>
+            <p className="mt-0.5 text-xs leading-5 text-gold-800">保存会立即写入后管数据库；公开网站使用静态内容，需要点击「发布到网站」触发部署后生效。</p>
+          </div>
+        </div>
+      </div>
 
       <div className="flex flex-wrap items-center gap-3 mb-6">
         <form onSubmit={handleSearch} className="relative flex-1 min-w-[200px] max-w-sm">

@@ -70,7 +70,7 @@ router.get('/', auth, async (req, res, next) => {
 router.get('/subcategories', async (req, res, next) => {
   try {
     const result = await pool.query(
-      `SELECT ps.id, ps.name, pc.name as cat_name
+      `SELECT ps.id, ps.name, ps.category_id, pc.name as cat_name
        FROM product_subcategories ps
        JOIN product_categories pc ON ps.category_id = pc.id
        ORDER BY pc.sort_order, ps.sort_order`
