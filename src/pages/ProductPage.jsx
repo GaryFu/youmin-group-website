@@ -5,6 +5,50 @@ import ScrollReveal from '../components/ScrollReveal'
 import { useContent } from '../context/ContentContext'
 
 const featureIcons = { Award, Zap, Shield, Star, TrendingUp, CheckCircle2, Package, Beaker, Leaf }
+const visualSpecPrefix = '视觉识别-'
+
+function formatSpecLabel(label) {
+  return label?.startsWith(visualSpecPrefix) ? label.slice(visualSpecPrefix.length) : label
+}
+
+function isWatermarkSpecValue(value) {
+  const normalized = String(value || '').trim()
+  return /^(?:微信|公众号|YOMAN佑民|股份)$/.test(normalized) || /^[^；,，、\s]{0,4}民股份$/.test(normalized)
+}
+
+function buildDisplaySpecs(specs = []) {
+  const visualSpecs = []
+  const otherSpecs = []
+
+  for (const spec of specs) {
+    if (spec.label?.startsWith(visualSpecPrefix)) {
+      visualSpecs.push(spec)
+    } else {
+      otherSpecs.push(spec)
+    }
+  }
+
+  if (visualSpecs.length === 0) return otherSpecs
+
+  const visualValue = visualSpecs
+    .map((spec) => {
+      const label = formatSpecLabel(spec.label)
+      return label ? `${label}：${spec.value}` : spec.value
+    })
+    .filter((value) => !isWatermarkSpecValue(value.split('：').at(-1)))
+    .filter(Boolean)
+    .join('；')
+
+  return visualValue
+    ? [
+        ...otherSpecs,
+        {
+          label: '技术指标',
+          value: visualValue,
+        },
+      ]
+    : otherSpecs
+}
 
 export default function ProductPage() {
   const { categorySlug, productId } = useParams()
@@ -73,6 +117,7 @@ export default function ProductPage() {
   const images = product.images?.length > 0 ? product.images : (product.image ? [product.image] : [])
   const hasImages = images.length > 0
   const activeImage = hasImages ? images[Math.min(activeImageIndex, images.length - 1)] : null
+  const displaySpecs = buildDisplaySpecs(product.specs)
   const openImage = (index) => {
     setActiveImageIndex(index)
     setIsLightboxOpen(true)
@@ -249,22 +294,22 @@ export default function ProductPage() {
             </div>
 
             {/* Specs */}
-            {product.specs && product.specs.length > 0 && (
+            {displaySpecs.length > 0 && (
               <div className="lg:col-span-2">
                 <ScrollReveal>
                   <p className="text-green-600 text-sm font-semibold tracking-widest uppercase mb-3">技术规格</p>
                   <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-                    {product.specs.map((spec, i) => (
+                    {displaySpecs.map((spec, i) => (
                       <div
                         key={i}
                         className={`flex items-start gap-4 px-6 py-4 ${
-                          i < product.specs.length - 1 ? 'border-b border-gray-50' : ''
+                          i < displaySpecs.length - 1 ? 'border-b border-gray-50' : ''
                         }`}
                       >
                         <div className="w-1.5 h-1.5 mt-2 rounded-full bg-green-500 shrink-0" />
-                        <div>
+                        <div className="min-w-0">
                           <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">{spec.label}</p>
-                          <p className="text-sm text-gray-900 mt-0.5">{spec.value}</p>
+                          <p className="text-sm text-gray-900 mt-0.5 leading-6">{spec.value}</p>
                         </div>
                       </div>
                     ))}

@@ -57,6 +57,11 @@ function cleanOcrLines(text) {
     .filter((line) => !['佑民股份', 'YOMAN佑民'].includes(line))
 }
 
+function isWatermarkText(text) {
+  const normalized = String(text || '').trim()
+  return /^(?:微信|公众号|YOMAN佑民|股份)$/.test(normalized) || /^[^；,，、\s]{0,4}民股份$/.test(normalized)
+}
+
 function numericLikeCount(lines) {
   return lines.filter((line) => /(?:[<>≤≥=]|[0-9])/.test(line)).length
 }
@@ -88,18 +93,30 @@ function lineLooksLikeValue(line) {
   return /^(?:[A-Z]{1,6}\d{1,4}(?:\.\d+)?|[<>≤≥=]?\s*\d|[\d.]+[-~至][\d.]+)/.test(line)
 }
 
-function parseOcrSpecs(lines) {
+function isNumericValue(value) {
+  return /^(?:[<>≤≥=]?\s*\d|[\d.]+[-~至][\d.]+)/.test(String(value || '').trim())
+}
+
+function isSectionHeading(label) {
+  return /保证值[:：]?$/.test(String(label || '').trim())
+}
+
+function parseOcrSpecs(lines, productName = '') {
   if (!looksLikeTableText(lines)) return []
 
   const firstValueIndex = lines.findIndex(lineLooksLikeValue)
   if (firstValueIndex > 0) {
-    const labels = lines.slice(0, firstValueIndex)
+    const labels = lines.slice(0, firstValueIndex).filter((label) => !isSectionHeading(label))
     const values = lines.slice(firstValueIndex, firstValueIndex + labels.length)
     const simpleSingleRowTable = labels.length <= 12 && lines.length <= labels.length * 2 + 3
     if (simpleSingleRowTable && labels.length >= 2 && values.length >= 2 && numericLikeCount(values) >= 2) {
+      const normalizedValues = [...values]
+      if (/产品名称/.test(labels[0]) && isNumericValue(normalizedValues[0]) && productName) {
+        normalizedValues.unshift(productName)
+      }
       return labels
-        .map((label, index) => ({ label, value: values[index] || '' }))
-        .filter((spec) => spec.label && spec.value)
+        .map((label, index) => ({ label, value: normalizedValues[index] || '' }))
+        .filter((spec) => spec.label && spec.value && !isWatermarkText(spec.label) && !isWatermarkText(spec.value))
     }
   }
 
@@ -112,12 +129,19 @@ function parseOcrSpecs(lines) {
 
   if (keyValueSpecs.length > 0) return keyValueSpecs
   const title = lines.find((line) => /营养|推荐配方|保证值|产品名称/.test(line)) || '图片表格'
-  return [{ label: title, value: lines.join('；') }]
+  return [{ label: title, value: lines.filter((line) => !isWatermarkText(line)).join('；') }]
 }
 
 async function prepareImageForOcr(imagePath, metadata) {
   const ratio = metadata.width / metadata.height
-  let pipeline = sharp(imagePath).flatten({ background: '#ffffff' })
+  const watermarkMask = Buffer.from(
+    `<svg width="${metadata.width}" height="${metadata.height}">
+      <rect x="${Math.round(metadata.width * 0.66)}" y="${Math.round(metadata.height * 0.58)}" width="${Math.round(metadata.width * 0.34)}" height="${Math.round(metadata.height * 0.42)}" fill="#fff"/>
+    </svg>`
+  )
+  let pipeline = sharp(imagePath)
+    .flatten({ background: '#ffffff' })
+    .composite([{ input: watermarkMask, left: 0, top: 0 }])
 
   if (metadata.height < 280 || ratio > 2.2) {
     pipeline = pipeline
@@ -130,7 +154,7 @@ async function prepareImageForOcr(imagePath, metadata) {
   return pipeline.png().toBuffer()
 }
 
-async function callVisionModel({ imagePath, metadata }) {
+async function callVisionModel({ product, imagePath, metadata }) {
   const image = await prepareImageForOcr(imagePath, metadata)
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), Number(process.env.OLLAMA_OCR_TIMEOUT_MS || 120000))
@@ -160,7 +184,7 @@ async function callVisionModel({ imagePath, metadata }) {
   }
 
   const lines = cleanOcrLines(body.response || '')
-  const specs = parseOcrSpecs(lines)
+  const specs = parseOcrSpecs(lines, product.name)
   return {
     isTable: specs.length > 0,
     keepImage: specs.length > 0,
