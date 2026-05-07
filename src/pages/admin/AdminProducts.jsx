@@ -4,15 +4,58 @@ import Toast from '../../components/admin/Toast'
 import { Search, X, Plus, Trash2, Upload, Edit3, Package, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, PlusCircle, Rocket, Check } from 'lucide-react'
 
 const PAGE_SIZE = 20
+const VISUAL_SPEC_PREFIX = '视觉识别-'
+
+function cleanSpecLabel(label = '') {
+  return label.startsWith(VISUAL_SPEC_PREFIX) ? label.slice(VISUAL_SPEC_PREFIX.length) : label
+}
+
+function normalizeSpecsForEditing(specs = []) {
+  const regularSpecs = []
+  const visualSpecs = []
+
+  for (const spec of specs) {
+    if (spec.label?.startsWith(VISUAL_SPEC_PREFIX)) {
+      visualSpecs.push(spec)
+    } else {
+      regularSpecs.push({ ...spec, label: cleanSpecLabel(spec.label || '') })
+    }
+  }
+
+  if (visualSpecs.length === 0) return regularSpecs
+
+  const technicalValue = visualSpecs
+    .map((spec) => {
+      const label = cleanSpecLabel(spec.label || '')
+      return label ? `${label}：${spec.value || ''}` : spec.value || ''
+    })
+    .filter(Boolean)
+    .join('；')
+
+  return [
+    ...regularSpecs,
+    {
+      label: '技术指标',
+      value: technicalValue,
+    },
+  ]
+}
+
+function normalizeProductForEditing(product) {
+  return {
+    ...product,
+    specs: normalizeSpecsForEditing(product.specs || []),
+  }
+}
 
 function ProductEditor({ product, subcategories, onSave, onCancel }) {
-  const [form, setForm] = useState({ ...product })
+  const [form, setForm] = useState(() => normalizeProductForEditing(product))
   const [uploading, setUploading] = useState(-1)
   const [showFeatures, setShowFeatures] = useState(true)
   const [showSpecs, setShowSpecs] = useState(true)
   const [error, setError] = useState(null)
 
-  useEffect(() => { setForm({ ...product }) }, [product])
+  useEffect(() => { setForm(normalizeProductForEditing(product)) }, [product])
 
   const handleImageUpload = async (file, slotIndex) => {
     setUploading(slotIndex)
@@ -74,7 +117,7 @@ function ProductEditor({ product, subcategories, onSave, onCancel }) {
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
       <div className="absolute inset-0 bg-black/30" onClick={onCancel} />
-      <div className="relative w-full max-w-lg bg-white h-full overflow-y-auto shadow-2xl">
+      <div className="relative w-full max-w-2xl bg-white h-full overflow-y-auto shadow-2xl">
         {error && <div className="fixed top-4 right-4 z-[100] bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl shadow-lg text-sm">{error}</div>}
         <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between z-10">
           <div>
@@ -152,10 +195,37 @@ function ProductEditor({ product, subcategories, onSave, onCancel }) {
             {showSpecs && (
               <div className="space-y-2">
                 {(form.specs || []).map((spec, i) => (
-                  <div key={i} className="flex items-center gap-2">
-                    <input type="text" value={spec.label} onChange={(e) => setSpec(i, 'label', e.target.value)} className="w-24 px-2 py-1.5 border border-gray-200 rounded text-xs focus:outline-none" placeholder="名称" />
-                    <input type="text" value={spec.value} onChange={(e) => setSpec(i, 'value', e.target.value)} className="flex-1 px-2 py-1.5 border border-gray-200 rounded text-xs focus:outline-none" placeholder="值" />
-                    <button onClick={() => removeSpec(i)} className="text-red-300 hover:text-red-500"><Trash2 size={12} /></button>
+                  <div key={i} className="rounded-lg border border-gray-100 bg-gray-50/60 p-3">
+                    <div className="flex items-start gap-2">
+                      <input
+                        type="text"
+                        value={cleanSpecLabel(spec.label)}
+                        onChange={(e) => setSpec(i, 'label', e.target.value)}
+                        className="w-28 px-2 py-1.5 border border-gray-200 rounded text-xs focus:outline-none focus:ring-1 focus:ring-green-500"
+                        placeholder="名称"
+                      />
+                      {spec.label === '技术指标' || String(spec.value || '').length > 48 ? (
+                        <textarea
+                          value={spec.value}
+                          onChange={(e) => setSpec(i, 'value', e.target.value)}
+                          rows={spec.label === '技术指标' ? 5 : 3}
+                          className="flex-1 resize-y px-2 py-1.5 border border-gray-200 rounded text-xs leading-5 focus:outline-none focus:ring-1 focus:ring-green-500"
+                          placeholder="值"
+                        />
+                      ) : (
+                        <input
+                          type="text"
+                          value={spec.value}
+                          onChange={(e) => setSpec(i, 'value', e.target.value)}
+                          className="flex-1 px-2 py-1.5 border border-gray-200 rounded text-xs focus:outline-none focus:ring-1 focus:ring-green-500"
+                          placeholder="值"
+                        />
+                      )}
+                      <button onClick={() => removeSpec(i)} className="mt-1.5 text-red-300 hover:text-red-500"><Trash2 size={12} /></button>
+                    </div>
+                    {spec.label === '技术指标' && (
+                      <p className="mt-2 text-[11px] leading-4 text-gray-400">多个指标可用分号分隔，例如：粗蛋白质：14；粗纤维：≤8；水分：≤14.0</p>
+                    )}
                   </div>
                 ))}
                 <button onClick={addSpec} className="text-xs text-green-600 hover:text-green-700"><Plus size={12} /> 添加规格</button>
