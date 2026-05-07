@@ -241,27 +241,29 @@ export default function ProductPage() {
 
       {/* ── Features Grid ── */}
       {product.features && product.features.length > 0 && (
-        <section className="py-20 lg:py-28 bg-white">
+        <section className="py-16 lg:py-20 bg-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <ScrollReveal>
-              <div className="text-center mb-14">
+              <div className="text-center mb-10">
                 <p className="text-green-600 text-sm font-semibold tracking-widest uppercase mb-3">核心优势</p>
                 <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">为什么选择{product.name}</h2>
                 <div className="w-16 h-1 mx-auto mt-4 bg-gold-400 rounded-full" />
               </div>
             </ScrollReveal>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="mx-auto flex max-w-5xl flex-wrap justify-center gap-3 sm:gap-4">
               {product.features.map((feat, i) => {
                 const Icon = featureIcons[feat.icon] || CheckCircle2
                 return (
-                  <ScrollReveal key={i}>
-                    <div className="group bg-white rounded-xl p-8 border border-gray-100 shadow-sm hover:shadow-xl hover:border-green-200 transition-all duration-300 text-center">
-                      <div className="w-16 h-16 bg-gradient-to-br from-green-50 to-green-100 rounded-xl flex items-center justify-center mx-auto mb-5 group-hover:scale-110 transition-transform duration-300">
-                        <Icon size={28} className="text-green-600" />
+                  <ScrollReveal key={i} className="w-full min-w-0 sm:w-56 lg:w-auto lg:flex-1 lg:basis-0">
+                    <div className="group flex min-h-20 items-center gap-3 rounded-lg border border-gray-100 bg-white px-4 py-3 shadow-sm transition-all duration-300 hover:border-green-200 hover:shadow-md">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-green-50 transition-colors group-hover:bg-green-100">
+                        <Icon size={20} className="text-green-600" />
                       </div>
-                      <h3 className="text-lg font-bold text-gray-900 mb-2">{feat.text}</h3>
-                      <p className="text-sm text-gray-400">0{i + 1}</p>
+                      <div className="min-w-0">
+                        <h3 className="text-base font-bold leading-snug text-gray-900 [word-break:keep-all]">{feat.text}</h3>
+                        <p className="mt-1 text-xs font-medium text-gray-400">0{i + 1}</p>
+                      </div>
                     </div>
                   </ScrollReveal>
                 )
