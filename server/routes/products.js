@@ -4,6 +4,40 @@ import auth from '../middleware/auth.js'
 
 const router = Router()
 
+function toSlug(value) {
+  const slug = String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+
+  return slug || 'product'
+}
+
+async function getUniqueProductSlug(subcategoryId, value, excludeId = null) {
+  const base = toSlug(value)
+  let candidate = base
+  let suffix = 2
+
+  while (true) {
+    const params = [subcategoryId, candidate]
+    let exclude = ''
+    if (excludeId) {
+      params.push(excludeId)
+      exclude = ` AND id <> $${params.length}`
+    }
+
+    const existing = await pool.query(
+      `SELECT 1 FROM product_items WHERE subcategory_id = $1 AND slug = $2${exclude} LIMIT 1`,
+      params
+    )
+    if (existing.rows.length === 0) return candidate
+
+    candidate = `${base}-${suffix}`
+    suffix++
+  }
+}
+
 // GET /api/products — paginated, searchable, filterable
 router.get('/', auth, async (req, res, next) => {
   try {
@@ -205,11 +239,12 @@ router.post('/', auth, async (req, res, next) => {
     if (!name || !subcategory_id) {
       return res.status(400).json({ error: '产品名和子分类为必填项' })
     }
+    const safeSlug = await getUniqueProductSlug(subcategory_id, slug || name)
 
     const result = await pool.query(
       `INSERT INTO product_items (subcategory_id, name, slug, tagline, "desc", image, images, url, sort_order)
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,0) RETURNING *`,
-      [subcategory_id, name, slug || '', tagline || '', desc || '', imageArray[0] || null, JSON.stringify(imageArray), url || '']
+      [subcategory_id, name, safeSlug, tagline || '', desc || '', imageArray[0] || null, JSON.stringify(imageArray), url || '']
     )
     const prodId = result.rows[0].id
 
