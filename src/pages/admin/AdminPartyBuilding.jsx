@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { Plus, Trash2, Edit3, X, Upload, Image as ImageIcon } from 'lucide-react'
+import { Plus, Trash2, Edit3, X, Upload, Image as ImageIcon, Rocket } from 'lucide-react'
 import EditorShell from '../../components/admin/EditorShell'
+import Toast from '../../components/admin/Toast'
 import { deepClone } from '../../utils/deepClone'
 
 function normalizeImage(image, index) {
@@ -163,6 +164,7 @@ function ArticleEditor({ article, categories, onSave, onCancel }) {
 function PartyBuildingForm({ data, onSave, resetKey }) {
   const [form, setForm] = useState(deepClone(data))
   const [editing, setEditing] = useState(null)
+  const [toast, setToast] = useState(null)
 
   useEffect(() => { setForm(deepClone(data)) }, [data, resetKey])
 
@@ -180,10 +182,34 @@ function PartyBuildingForm({ data, onSave, resetKey }) {
     if (!confirm(`确定删除「${article.title}」？`)) return
     setForm((prev) => ({ ...prev, articles: (prev.articles || []).filter((item) => String(item.id) !== String(article.id)) }))
   }
+  const handlePublish = async () => {
+    if (!confirm('确定要发布党建更改到网站吗？这将触发 Vercel 重新部署，约 1 分钟后生效。')) return
+    const token = JSON.parse(localStorage.getItem('youmin_admin_auth') || '{}').token
+    const res = await fetch('/api/news/publish', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token || ''}` },
+    })
+    const data = await res.json()
+    setToast({
+      title: res.ok ? '发布已触发' : '发布失败',
+      message: data.message || data.error || '操作完成',
+      type: res.ok ? 'success' : 'error',
+    })
+  }
 
   return (
     <form onSubmit={(e) => { e.preventDefault(); onSave(form) }} className="space-y-6">
+      {toast && <Toast {...toast} onClose={() => setToast(null)} />}
       {editing && <ArticleEditor article={editing} categories={categories} onSave={handleArticleSave} onCancel={() => setEditing(null)} />}
+      <div className="rounded-xl border border-gold-200 bg-gold-50 px-4 py-3 text-sm text-gold-900 shadow-sm">
+        <div className="flex items-start gap-2">
+          <Rocket size={17} className="mt-0.5 shrink-0 text-gold-600" />
+          <div>
+            <p className="font-semibold">党建修改后必须手动发布</p>
+            <p className="mt-0.5 text-xs leading-5 text-gold-800">保存会立即写入后管数据库；公开网站使用静态内容，需要点击「发布到网站」触发部署后生效。</p>
+          </div>
+        </div>
+      </div>
       <div className="rounded-xl border border-gray-200 p-6">
         <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-gray-900">页面信息</h3>
         <div className="grid gap-4 md:grid-cols-3">
@@ -194,7 +220,10 @@ function PartyBuildingForm({ data, onSave, resetKey }) {
       </div>
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-400">党建文章 ({form.articles?.length || 0})</h3>
-        <button type="button" onClick={() => setEditing({ date: new Date().toISOString().slice(0, 10), category: '党建动态', title: '', digest: '', content: '', images: [] })} className="inline-flex items-center gap-1 text-sm font-medium text-red-600 hover:text-red-700"><Plus size={16} /> 新增文章</button>
+        <div className="flex items-center gap-3">
+          <button type="button" onClick={handlePublish} className="inline-flex items-center gap-1.5 rounded-lg bg-gold-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gold-600"><Rocket size={16} /> 发布到网站</button>
+          <button type="button" onClick={() => setEditing({ date: new Date().toISOString().slice(0, 10), category: '党建动态', title: '', digest: '', content: '', images: [] })} className="inline-flex items-center gap-1 text-sm font-medium text-red-600 hover:text-red-700"><Plus size={16} /> 新增文章</button>
+        </div>
       </div>
       <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
         {(form.articles || []).length === 0 ? (
