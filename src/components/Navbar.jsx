@@ -60,7 +60,7 @@ export default function Navbar() {
               <Link
                 key={link.to}
                 to={link.to}
-                className={`px-2 py-2 xl:px-3 rounded-lg text-xs xl:text-sm font-medium transition-colors ${
+                className={`px-2 py-2 xl:px-3 rounded-lg text-sm xl:text-base font-semibold transition-colors ${
                   location.pathname === link.to
                     ? scrolled ? 'text-green-700 bg-green-50' : 'text-white bg-white/20'
                     : scrolled ? 'text-gray-600 hover:text-green-700 hover:bg-green-50' : 'text-white/90 hover:text-white hover:bg-white/10'
@@ -91,7 +91,7 @@ export default function Navbar() {
               <Link
                 key={link.to}
                 to={link.to}
-                className={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                className={`block px-4 py-3 rounded-lg text-base font-semibold transition-colors ${
                   location.pathname === link.to ? 'text-green-700 bg-green-50' : 'text-gray-600 hover:text-green-700 hover:bg-green-50'
                 }`}
               >
