@@ -25,6 +25,8 @@ const footerLinks = [
     title: '新闻资讯',
     links: [
       { to: '/news', label: '新闻动态' },
+      { to: '/party-building', label: '党建' },
+      { to: '/recruitment', label: '招聘' },
       { to: '/contact', label: '联系我们' },
     ],
   },

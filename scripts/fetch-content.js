@@ -6,7 +6,7 @@ import pg from 'pg'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const { Pool } = pg
 
-const JSONB_KEYS = ['site', 'home', 'about', 'culture', 'industry', 'innovation', 'green', 'partners', 'contact']
+const JSONB_KEYS = ['site', 'home', 'about', 'culture', 'industry', 'innovation', 'green', 'partners', 'contact', 'partyBuilding', 'recruitment']
 
 async function ensureNewsImagesColumn(pool) {
   await pool.query(`ALTER TABLE news_articles ADD COLUMN IF NOT EXISTS images JSONB NOT NULL DEFAULT '[]'::jsonb`)
@@ -123,6 +123,8 @@ function generateSitemap() {
     { loc: '/products', changefreq: 'weekly', priority: '0.9' },
     { loc: '/green', changefreq: 'monthly', priority: '0.7' },
     { loc: '/news', changefreq: 'weekly', priority: '0.9' },
+    { loc: '/party-building', changefreq: 'weekly', priority: '0.8' },
+    { loc: '/recruitment', changefreq: 'weekly', priority: '0.8' },
     { loc: '/partners', changefreq: 'monthly', priority: '0.7' },
     { loc: '/contact', changefreq: 'monthly', priority: '0.7' },
   ]

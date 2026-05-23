@@ -3,7 +3,7 @@ import { useContent } from '../../context/ContentContext'
 import { Link } from 'react-router-dom'
 import {
   Settings, Home, Building2, Factory, Microscope,
-  Package, Leaf, Newspaper, Handshake, Phone, ExternalLink
+  Package, Leaf, Newspaper, Handshake, Phone, ExternalLink, Flag, Briefcase
 } from 'lucide-react'
 
 const cards = [
@@ -15,6 +15,8 @@ const cards = [
   { to: '/admin/products', label: '产品与服务', icon: Package, desc: '产品分类及服务项目' },
   { to: '/admin/green', label: '绿色发展', icon: Leaf, desc: '绿色实践、社会责任' },
   { to: '/admin/news', label: '新闻动态', icon: Newspaper, desc: '新闻列表管理' },
+  { to: '/admin/party-building', label: '党建', icon: Flag, desc: '党建文章与活动内容' },
+  { to: '/admin/recruitment', label: '招聘', icon: Briefcase, desc: '招聘页面与职位管理' },
   { to: '/admin/partners', label: '合作伙伴', icon: Handshake, desc: '合作方分类及名单' },
   { to: '/admin/contact', label: '联系我们', icon: Phone, desc: '联系信息及表单配置' },
 ]

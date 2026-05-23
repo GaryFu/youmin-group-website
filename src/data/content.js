@@ -316,6 +316,60 @@ export const partnersContent = {
   ],
 }
 
+export const partyBuildingContent = {
+  title: '党建工作',
+  subtitle: 'PARTY BUILDING',
+  intro: '坚持党建引领发展，把组织优势转化为企业高质量发展的内生动力。',
+  articles: [
+    {
+      id: 1,
+      date: '2025-07-01',
+      title: '党建引领聚合力，实干担当促发展',
+      category: '党建动态',
+      digest: '集团持续推动党建工作与经营管理深度融合，以高质量党建引领企业高质量发展。',
+      content: '## 党建引领发展\n\n集团坚持把党建工作融入企业经营管理全过程，围绕组织建设、党员教育、文化引领等重点工作，持续增强党组织凝聚力和战斗力。\n\n> 以党建凝心聚力，以实干推动发展。\n\n## 实干担当促提升\n\n- 强化党员先锋意识\n- 推动党建与业务融合\n- 服务员工成长与企业发展',
+      images: [],
+    },
+  ],
+}
+
+export const recruitmentContent = {
+  title: '人才招聘',
+  subtitle: 'JOIN US',
+  intro: '我们期待有责任心、有进取心的伙伴加入，一起服务农牧产业高质量发展。',
+  contact: {
+    email: 'hr@tianyouagri.com',
+    phone: '400-XXX-XXXX',
+    address: '河南省郑州市',
+  },
+  jobs: [
+    {
+      id: 1,
+      title: '饲料销售经理',
+      department: '市场销售部',
+      location: '河南省内',
+      type: '全职',
+      headcount: '若干',
+      summary: '负责区域客户开发、维护与产品推广，协助客户提升养殖效益。',
+      responsibilities: ['负责区域客户拜访与关系维护', '推动饲料产品销售和服务落地', '收集市场信息并反馈业务需求'],
+      requirements: ['热爱农牧行业，具备良好沟通能力', '有饲料、养殖或农牧销售经验者优先', '能适应区域出差'],
+      active: true,
+    },
+    {
+      id: 2,
+      title: '动物营养技术服务',
+      department: '技术服务部',
+      location: '郑州/市场一线',
+      type: '全职',
+      headcount: '若干',
+      summary: '为客户提供饲喂管理、营养方案和养殖技术支持。',
+      responsibilities: ['开展客户技术服务与培训', '协助制定饲喂和营养方案', '跟踪产品使用效果并形成反馈'],
+      requirements: ['动物科学、动物医学、饲料营养等相关专业', '具备较强学习能力和服务意识', '有养殖一线经验者优先'],
+      active: true,
+    },
+  ],
+}
+
 export const contactContent = {
   title: '联系我们',
   subtitle: 'CONTACT US',

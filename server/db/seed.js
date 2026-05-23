@@ -41,7 +41,8 @@ async function seed() {
     const keys = [
       'site', 'homeContent', 'aboutContent', 'industryContent',
       'innovationContent', 'productsContent', 'greenContent',
-      'newsContent', 'partnersContent', 'contactContent',
+      'cultureContent', 'newsContent', 'partyBuildingContent', 'recruitmentContent',
+      'partnersContent', 'contactContent',
     ]
     defaults = {}
     for (const key of keys) {

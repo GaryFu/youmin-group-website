@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { ArrowLeft, ChevronLeft, ChevronRight, CheckCircle2, Phone, ExternalLink, X, ZoomIn, Award, Zap, Shield, Star, TrendingUp, Package, Beaker, Leaf } from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
+import ArticleContent from '../components/ArticleContent'
 import { useContent } from '../context/ContentContext'
 
 const featureIcons = { Award, Zap, Shield, Star, TrendingUp, CheckCircle2, Package, Beaker, Leaf }
@@ -282,16 +283,7 @@ export default function ProductPage() {
               <ScrollReveal>
                 <p className="text-green-600 text-sm font-semibold tracking-widest uppercase mb-3">产品详情</p>
                 <h2 className="text-3xl font-bold text-gray-900 mb-8">深入了解{product.name}</h2>
-                <div className="prose max-w-none space-y-5">
-                  {product.desc?.split('\n').filter(Boolean).map((p, i) => (
-                    <p key={i} className="text-gray-600 leading-relaxed text-base">
-                      {i === 0 && (
-                        <span className="float-left text-5xl font-serif font-bold text-green-600 leading-none mr-3 mt-0.5">"</span>
-                      )}
-                      {p}
-                    </p>
-                  ))}
-                </div>
+                <ArticleContent content={product.desc || ''} emptyText="暂无产品详情" />
               </ScrollReveal>
             </div>
 

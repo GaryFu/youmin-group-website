@@ -13,6 +13,9 @@ import ProductPage from './pages/ProductPage'
 import CompanyDetail from './pages/CompanyDetail'
 import InnovationDetail from './pages/InnovationDetail'
 import NewsDetail from './pages/NewsDetail'
+import PartyBuilding from './pages/PartyBuilding'
+import PartyBuildingDetail from './pages/PartyBuildingDetail'
+import Recruitment from './pages/Recruitment'
 import Green from './pages/Green'
 import News from './pages/News'
 import Partners from './pages/Partners'
@@ -33,6 +36,8 @@ import AdminInnovationPage from './pages/admin/AdminInnovation'
 import AdminProductsPage from './pages/admin/AdminProducts'
 import AdminGreenPage from './pages/admin/AdminGreen'
 import AdminNewsPage from './pages/admin/AdminNews'
+import AdminPartyBuildingPage from './pages/admin/AdminPartyBuilding'
+import AdminRecruitmentPage from './pages/admin/AdminRecruitment'
 import AdminPartnersPage from './pages/admin/AdminPartners'
 import AdminCulturePage from './pages/admin/AdminCulture'
 import AdminContactPage from './pages/admin/AdminContact'
@@ -67,6 +72,8 @@ export default function App() {
           <Route path="green" element={<AdminGreenPage />} />
           <Route path="culture" element={<AdminCulturePage />} />
           <Route path="news" element={<AdminNewsPage />} />
+          <Route path="party-building" element={<AdminPartyBuildingPage />} />
+          <Route path="recruitment" element={<AdminRecruitmentPage />} />
           <Route path="partners" element={<AdminPartnersPage />} />
           <Route path="contact" element={<AdminContactPage />} />
         </Route>
@@ -89,6 +96,9 @@ export default function App() {
         <Route path="/green" element={<Green />} />
         <Route path="/news/:articleId" element={<NewsDetail />} />
         <Route path="/news" element={<News />} />
+        <Route path="/party-building/:articleId" element={<PartyBuildingDetail />} />
+        <Route path="/party-building" element={<PartyBuilding />} />
+        <Route path="/recruitment" element={<Recruitment />} />
         <Route path="/culture" element={<Culture />} />
         <Route path="/partners" element={<Partners />} />
         <Route path="/contact" element={<Contact />} />

@@ -3,7 +3,7 @@ import pool from '../db/pool.js'
 import auth from '../middleware/auth.js'
 import { ensureNewsImagesColumn, normalizeNewsImages } from '../db/newsImages.js'
 
-const JSONB_KEYS = ['site', 'home', 'about', 'culture', 'industry', 'innovation', 'green', 'partners', 'contact']
+const JSONB_KEYS = ['site', 'home', 'about', 'culture', 'industry', 'innovation', 'green', 'partners', 'contact', 'partyBuilding', 'recruitment']
 
 const router = Router()
 

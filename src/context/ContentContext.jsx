@@ -10,6 +10,8 @@ import {
   productsContent as defaultProducts,
   greenContent as defaultGreen,
   newsContent as defaultNews,
+  partyBuildingContent as defaultPartyBuilding,
+  recruitmentContent as defaultRecruitment,
   partnersContent as defaultPartners,
   cultureContent as defaultCulture,
   contactContent as defaultContact,
@@ -25,6 +27,8 @@ const defaults = {
   products: defaultProducts,
   green: defaultGreen,
   news: defaultNews,
+  partyBuilding: defaultPartyBuilding,
+  recruitment: defaultRecruitment,
   partners: defaultPartners,
   contact: defaultContact,
 }

@@ -7,13 +7,15 @@ const navLinks = [
   { to: '/', label: '首页' },
   { to: '/products', label: '产品与服务' },
   { to: '/news', label: '新闻动态' },
+  { to: '/party-building', label: '党建' },
+  { to: '/recruitment', label: '招聘' },
+  { to: '/partners', label: '合作伙伴' },
+  { to: '/contact', label: '联系我们' },
   { to: '/about', label: '集团简介' },
   { to: '/culture', label: '企业文化' },
   { to: '/industry', label: '产业布局' },
   { to: '/innovation', label: '科研创新' },
   { to: '/green', label: '绿色发展' },
-  { to: '/partners', label: '合作伙伴' },
-  { to: '/contact', label: '联系我们' },
 ]
 
 export default function Navbar() {
@@ -58,7 +60,7 @@ export default function Navbar() {
               <Link
                 key={link.to}
                 to={link.to}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`px-2 py-2 xl:px-3 rounded-lg text-xs xl:text-sm font-medium transition-colors ${
                   location.pathname === link.to
                     ? scrolled ? 'text-green-700 bg-green-50' : 'text-white bg-white/20'
                     : scrolled ? 'text-gray-600 hover:text-green-700 hover:bg-green-50' : 'text-white/90 hover:text-white hover:bg-white/10'

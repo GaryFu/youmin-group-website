@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom'
 import { ArrowLeft, ChevronRight, Calendar, ChevronLeft } from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
+import ArticleContent from '../components/ArticleContent'
 import { useContent } from '../context/ContentContext'
 
 function getArticleImages(article) {
@@ -41,11 +42,9 @@ export default function NewsDetail() {
     .filter((a) => String(a.id) !== articleId && a.category === article.category)
     .slice(0, 4)
 
-  const body = (article.content || article.digest || '').split('\n').filter(Boolean)
   const images = getArticleImages(article)
   const coverImage = images[0]
   const inlineImages = images.slice(1)
-  const fallbackImages = inlineImages.filter((image) => !image.afterParagraph || Number(image.afterParagraph) > body.length)
 
   return (
     <div>
@@ -81,46 +80,8 @@ export default function NewsDetail() {
           )}
 
           <ScrollReveal>
-            <article className="prose max-w-none">
-              {body.length > 0 ? (
-                body.map((p, i) => {
-                  const paragraphNumber = i + 1
-                  const paragraphImages = inlineImages.filter((image) => Number(image.afterParagraph) === paragraphNumber)
-                  return (
-                    <div key={i}>
-                      <p className="text-gray-700 leading-relaxed text-base lg:text-lg mb-5">{p}</p>
-                      {paragraphImages.length > 0 && (
-                        <div className="my-8 space-y-5">
-                          {paragraphImages.map((image, imageIndex) => (
-                            <img key={imageIndex} src={image.url} alt="" className="w-full rounded-xl object-contain bg-gray-50 shadow-md" />
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  )
-                })
-              ) : (
-                inlineImages.length > 0 ? (
-                  <div className="space-y-5">
-                    {inlineImages.map((image, i) => (
-                      <img key={i} src={image.url} alt="" className="w-full rounded-xl object-contain bg-gray-50 shadow-md" />
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-gray-400 text-center py-8">暂无详细内容</p>
-                )
-              )}
-            </article>
+            <ArticleContent content={article.content || article.digest || ''} inlineImages={inlineImages} />
           </ScrollReveal>
-          {body.length > 0 && fallbackImages.length > 0 && (
-            <ScrollReveal>
-              <div className="mt-8 space-y-5">
-                {fallbackImages.map((image, i) => (
-                  <img key={i} src={image.url} alt="" className="w-full rounded-xl object-contain bg-gray-50 shadow-md" />
-                ))}
-              </div>
-            </ScrollReveal>
-          )}
         </div>
       </section>
 

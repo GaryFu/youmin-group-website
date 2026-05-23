@@ -131,7 +131,11 @@ function ArticleEditor({ article, categories, onSave, onCancel }) {
             </div>
           </div>
           <div><label className="block text-xs text-gray-500 mb-1">摘要</label><textarea value={form.digest || ''} onChange={(e) => setField('digest', e.target.value)} rows={2} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" /></div>
-          <div><label className="block text-xs text-gray-500 mb-1">正文</label><textarea value={form.content || ''} onChange={(e) => setField('content', e.target.value)} rows={6} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" /></div>
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">正文</label>
+            <textarea value={form.content || ''} onChange={(e) => setField('content', e.target.value)} rows={6} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm leading-6 focus:outline-none focus:ring-2 focus:ring-green-500" />
+            <p className="mt-1 text-[11px] text-gray-400">支持 Markdown：## 标题、### 小标题、**加粗**、- 列表、1. 编号、&gt; 引用、---</p>
+          </div>
           <div>
             <label className="block text-xs text-gray-500 mb-1">文章图片</label>
             <p className="mb-2 text-[11px] leading-4 text-gray-400">第一张作为封面图；后续图片可指定插入到第几段正文后。</p>

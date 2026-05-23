@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { NavLink, useNavigate, useLocation, Outlet } from 'react-router-dom'
 import {
   LayoutDashboard, Settings, Home, Building2, Factory,
-  Microscope, Package, Leaf, Newspaper, Handshake, Phone,
+  Microscope, Package, Leaf, Newspaper, Handshake, Phone, Flag, Briefcase,
   LogOut, Menu, X, ChevronRight, UserCircle, Heart
 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
@@ -18,6 +18,8 @@ const navItems = [
   { to: '/admin/products', label: '产品与服务', icon: Package },
   { to: '/admin/green', label: '绿色发展', icon: Leaf },
   { to: '/admin/news', label: '新闻动态', icon: Newspaper },
+  { to: '/admin/party-building', label: '党建', icon: Flag },
+  { to: '/admin/recruitment', label: '招聘', icon: Briefcase },
   { to: '/admin/partners', label: '合作伙伴', icon: Handshake },
   { to: '/admin/contact', label: '联系我们', icon: Phone },
 ]
