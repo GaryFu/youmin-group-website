@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import EditorShell from '../../components/admin/EditorShell'
 import Toast from '../../components/admin/Toast'
-import { Search, X, Plus, Trash2, Edit3, Newspaper, ChevronLeft, ChevronRight, PlusCircle, Upload, Image as ImageIcon } from 'lucide-react'
+import { Search, X, Plus, Trash2, Edit3, Newspaper, ChevronLeft, ChevronRight, PlusCircle, Upload, Image as ImageIcon, Rocket } from 'lucide-react'
 
 const PAGE_SIZE = 20
 
@@ -201,9 +201,34 @@ function NewsList() {
     else { setToast({ message: '删除失败', type: 'error' }) }
   }
 
+  const handlePublish = async () => {
+    if (!confirm('确定要发布更改到网站吗？这将触发 Vercel 重新部署，约 1 分钟后生效。')) return
+    const token = JSON.parse(localStorage.getItem('youmin_admin_auth') || '{}').token
+    const res = await fetch('/api/news/publish', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token || ''}` },
+    })
+    const data = await res.json()
+    setToast({
+      title: res.ok ? '发布已触发' : '发布失败',
+      message: data.message || data.error || '操作完成',
+      type: res.ok ? 'success' : 'error',
+    })
+  }
+
   return (
     <div>
-      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+      {toast && <Toast {...toast} onClose={() => setToast(null)} />}
+
+      <div className="mb-5 rounded-xl border border-gold-200 bg-gold-50 px-4 py-3 text-sm text-gold-900 shadow-sm">
+        <div className="flex items-start gap-2">
+          <Rocket size={17} className="mt-0.5 shrink-0 text-gold-600" />
+          <div>
+            <p className="font-semibold">新闻修改后必须手动发布</p>
+            <p className="mt-0.5 text-xs leading-5 text-gold-800">保存会立即写入后管数据库；公开网站使用静态内容，需要点击「发布到网站」触发部署后生效。</p>
+          </div>
+        </div>
+      </div>
 
       <div className="flex flex-wrap items-center gap-3 mb-6">
         <form onSubmit={handleSearch} className="relative flex-1 min-w-[200px] max-w-sm">
@@ -215,7 +240,10 @@ function NewsList() {
           {categories.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
         <span className="text-xs text-gray-400">共 {total} 篇</span>
-        <button onClick={() => setEditing({ date: new Date().toISOString().slice(0, 10), category: '集团新闻', title: '', digest: '', content: '', images: [] })} className="ml-auto px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 flex items-center gap-1.5">
+        <button onClick={handlePublish} className="ml-auto px-4 py-2 bg-gold-500 text-white rounded-lg text-sm font-medium hover:bg-gold-600 transition-colors flex items-center gap-1.5">
+          <Rocket size={16} /> 发布到网站
+        </button>
+        <button onClick={() => setEditing({ date: new Date().toISOString().slice(0, 10), category: '集团新闻', title: '', digest: '', content: '', images: [] })} className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 flex items-center gap-1.5">
           <PlusCircle size={16} /> 新增文章
         </button>
       </div>

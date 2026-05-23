@@ -49,6 +49,19 @@ router.get('/', async (req, res, next) => {
   } catch (err) { next(err) }
 })
 
+// POST /api/news/publish — manually trigger Vercel redeploy
+router.post('/publish', auth, async (req, res) => {
+  if (!process.env.DEPLOY_HOOK_URL) {
+    return res.status(400).json({ error: '未配置 DEPLOY_HOOK_URL' })
+  }
+  try {
+    await fetch(process.env.DEPLOY_HOOK_URL, { method: 'POST' })
+    res.json({ message: '部署已触发，约1分钟后生效' })
+  } catch (err) {
+    res.status(500).json({ error: '触发部署失败' })
+  }
+})
+
 // GET /api/news/:id — single article
 router.get('/:id', async (req, res, next) => {
   try {
