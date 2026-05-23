@@ -6,9 +6,17 @@ import { Search, X, Plus, Trash2, Edit3, Newspaper, ChevronLeft, ChevronRight, P
 const PAGE_SIZE = 20
 
 function ArticleEditor({ article, categories, onSave, onCancel }) {
+  const normalizeImage = (image, index) => {
+    if (typeof image === 'string') return { url: image, afterParagraph: index === 0 ? '' : String(index) }
+    return {
+      url: image?.url || '',
+      afterParagraph: index === 0 ? '' : String(image?.afterParagraph || ''),
+    }
+  }
+
   const normalizeArticle = (item) => ({
     ...item,
-    images: item.images?.length > 0 ? item.images : (item.cover ? [item.cover] : []),
+    images: (item.images?.length > 0 ? item.images : (item.cover ? [item.cover] : [])).map(normalizeImage),
     url: '',
   })
 
@@ -59,8 +67,8 @@ function ArticleEditor({ article, categories, onSave, onCancel }) {
 
       setForm((prev) => {
         const images = [...(prev.images || [])]
-        images[slotIndex] = data.url
-        return { ...prev, images, cover: images[0] || '' }
+        images[slotIndex] = { ...(images[slotIndex] || {}), url: data.url }
+        return { ...prev, images, cover: images[0]?.url || '' }
       })
     } catch (err) {
       setError('图片上传失败：' + err.message)
@@ -69,13 +77,13 @@ function ArticleEditor({ article, categories, onSave, onCancel }) {
     setUploading(-1)
   }
 
-  const addImage = () => setForm((prev) => ({ ...prev, images: [...(prev.images || []), ''] }))
+  const addImage = () => setForm((prev) => ({ ...prev, images: [...(prev.images || []), { url: '', afterParagraph: '' }] }))
   const handleBatchUpload = async (files) => {
     const fileList = Array.from(files || [])
     if (fileList.length === 0) return
 
     const startIndex = (form.images || []).length
-    setForm((prev) => ({ ...prev, images: [...(prev.images || []), ...fileList.map(() => '')] }))
+    setForm((prev) => ({ ...prev, images: [...(prev.images || []), ...fileList.map(() => ({ url: '', afterParagraph: '' }))] }))
     for (let i = 0; i < fileList.length; i++) {
       await handleImageUpload(fileList[i], startIndex + i)
     }
@@ -84,13 +92,26 @@ function ArticleEditor({ article, categories, onSave, onCancel }) {
   const removeImage = (index) => setForm((prev) => {
     const images = [...(prev.images || [])]
     images.splice(index, 1)
-    return { ...prev, images, cover: images[0] || '' }
+    return { ...prev, images, cover: images[0]?.url || '' }
+  })
+
+  const setImageField = (index, field, value) => setForm((prev) => {
+    const images = [...(prev.images || [])]
+    images[index] = { ...(images[index] || {}), [field]: value }
+    return { ...prev, images, cover: images[0]?.url || '' }
   })
 
   const handleSave = () => {
-    const images = (form.images || []).filter(Boolean)
-    onSave({ ...form, images, cover: images[0] || '', url: '' })
+    const images = (form.images || [])
+      .filter((image) => image?.url)
+      .map((image, index) => ({
+        url: image.url,
+        afterParagraph: index === 0 ? null : Number.parseInt(image.afterParagraph, 10) || null,
+      }))
+    onSave({ ...form, images, cover: images[0]?.url || '', url: '' })
   }
+
+  const getImageRole = (index) => (index === 0 ? '封面图' : `文中插图 ${index}`)
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
@@ -112,14 +133,31 @@ function ArticleEditor({ article, categories, onSave, onCancel }) {
           <div><label className="block text-xs text-gray-500 mb-1">摘要</label><textarea value={form.digest || ''} onChange={(e) => setField('digest', e.target.value)} rows={2} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" /></div>
           <div><label className="block text-xs text-gray-500 mb-1">正文</label><textarea value={form.content || ''} onChange={(e) => setField('content', e.target.value)} rows={6} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" /></div>
           <div>
-            <label className="block text-xs text-gray-500 mb-2">文章图片（多张）</label>
+            <label className="block text-xs text-gray-500 mb-1">文章图片</label>
+            <p className="mb-2 text-[11px] leading-4 text-gray-400">第一张作为封面图；后续图片可指定插入到第几段正文后。</p>
             <div className="space-y-2">
               {(form.images || []).map((img, i) => (
                 <div key={i} className="flex items-center gap-2 rounded-lg border border-gray-100 bg-gray-50/60 p-2">
                   <div className="h-14 w-20 shrink-0 overflow-hidden rounded-md bg-white border border-gray-100 flex items-center justify-center">
-                    {img ? <img src={img} alt="" className="h-full w-full object-contain" /> : <ImageIcon size={18} className="text-gray-300" />}
+                    {img.url ? <img src={img.url} alt="" className="h-full w-full object-contain" /> : <ImageIcon size={18} className="text-gray-300" />}
                   </div>
-                  <span className="flex-1 truncate text-xs text-gray-500">{img || `图片 ${i + 1}`}</span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-medium text-gray-700">{getImageRole(i)}</p>
+                    <p className="truncate text-[11px] text-gray-400">{img.url || `图片 ${i + 1}`}</p>
+                    {i > 0 && (
+                      <label className="mt-1 flex items-center gap-1 text-[11px] text-gray-500">
+                        插入到第
+                        <input
+                          type="number"
+                          min="1"
+                          value={img.afterParagraph || ''}
+                          onChange={(e) => setImageField(i, 'afterParagraph', e.target.value)}
+                          className="w-14 rounded border border-gray-200 px-1.5 py-0.5 text-xs focus:outline-none focus:ring-1 focus:ring-green-500"
+                        />
+                        段后
+                      </label>
+                    )}
+                  </div>
                   <label className={`cursor-pointer rounded px-2 py-1 text-xs flex items-center gap-1 ${uploading === i ? 'bg-green-100 text-green-600' : 'bg-white text-gray-500 hover:bg-green-50 hover:text-green-600'}`}>
                     <Upload size={12} />{uploading === i ? '上传中' : '上传'}
                     <input type="file" accept="image/*" className="hidden" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleImageUpload(file, i); e.target.value = '' }} />

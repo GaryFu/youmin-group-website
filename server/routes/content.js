@@ -85,12 +85,12 @@ async function putNews(req, res, next) {
           updatedIds.add(a.id)
           await pool.query(
             'UPDATE news_articles SET title=$1, digest=$2, content=$3, url=$4, cover=$5, images=$6, category=$7, date=$8, sort_order=$9 WHERE id=$10',
-            [a.title, a.digest || '', a.content || '', '', images[0] || '', JSON.stringify(images), a.category || '集团新闻', a.date, i, a.id]
+            [a.title, a.digest || '', a.content || '', '', images[0]?.url || '', JSON.stringify(images), a.category || '集团新闻', a.date, i, a.id]
           )
         } else {
           const result = await pool.query(
             'INSERT INTO news_articles (title, digest, content, url, cover, images, category, date, sort_order) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id',
-            [a.title, a.digest || '', a.content || '', '', images[0] || '', JSON.stringify(images), a.category || '集团新闻', a.date, i]
+            [a.title, a.digest || '', a.content || '', '', images[0]?.url || '', JSON.stringify(images), a.category || '集团新闻', a.date, i]
           )
           updatedIds.add(result.rows[0].id)
         }

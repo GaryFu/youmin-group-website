@@ -80,7 +80,7 @@ router.put('/:id', auth, async (req, res, next) => {
     const imageArray = normalizeNewsImages({ images, cover })
     await pool.query(
       'UPDATE news_articles SET title=$1, digest=$2, content=$3, url=$4, cover=$5, images=$6, category=$7, date=$8 WHERE id=$9',
-      [title, digest || '', content || '', '', imageArray[0] || '', JSON.stringify(imageArray), category || '集团新闻', date, req.params.id]
+      [title, digest || '', content || '', '', imageArray[0]?.url || '', JSON.stringify(imageArray), category || '集团新闻', date, req.params.id]
     )
     res.json({ success: true })
   } catch (err) { next(err) }
@@ -94,7 +94,7 @@ router.post('/', auth, async (req, res, next) => {
     const imageArray = normalizeNewsImages({ images, cover })
     const result = await pool.query(
       'INSERT INTO news_articles (title, digest, content, url, cover, images, category, date, sort_order) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,0) RETURNING *',
-      [title, digest || '', content || '', '', imageArray[0] || '', JSON.stringify(imageArray), category || '集团新闻', date || new Date().toISOString().slice(0, 10)]
+      [title, digest || '', content || '', '', imageArray[0]?.url || '', JSON.stringify(imageArray), category || '集团新闻', date || new Date().toISOString().slice(0, 10)]
     )
     res.json(result.rows[0])
   } catch (err) { next(err) }

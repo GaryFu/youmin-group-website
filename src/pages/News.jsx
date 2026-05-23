@@ -7,7 +7,10 @@ import { useContent } from '../context/ContentContext'
 const PAGE_SIZE = 6
 
 function getArticleImages(article) {
-  return article.images?.length > 0 ? article.images : (article.cover ? [article.cover] : [])
+  const source = article.images?.length > 0 ? article.images : (article.cover ? [article.cover] : [])
+  return source
+    .map((image) => (typeof image === 'string' ? { url: image } : image))
+    .filter((image) => image?.url)
 }
 
 export default function News() {
@@ -68,7 +71,7 @@ export default function News() {
                   <div className="grid md:grid-cols-5">
                     {getArticleImages(featured)[0] && (
                       <div className="md:col-span-2 bg-gray-50">
-                        <img src={getArticleImages(featured)[0]} alt="" className="w-full h-48 md:h-full object-contain" />
+                        <img src={getArticleImages(featured)[0].url} alt="" className="w-full h-48 md:h-full object-contain" />
                       </div>
                     )}
                     <div className={`p-8 flex flex-col justify-center ${getArticleImages(featured)[0] ? 'md:col-span-3' : 'md:col-span-5'}`}>
@@ -100,7 +103,7 @@ export default function News() {
                 >
                   {getArticleImages(article)[0] && (
                     <div className="bg-gray-50">
-                      <img src={getArticleImages(article)[0]} alt="" className="w-full h-40 object-contain" />
+                      <img src={getArticleImages(article)[0].url} alt="" className="w-full h-40 object-contain" />
                     </div>
                   )}
                   <div className="p-6">

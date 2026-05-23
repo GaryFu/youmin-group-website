@@ -4,7 +4,13 @@ import ScrollReveal from '../components/ScrollReveal'
 import { useContent } from '../context/ContentContext'
 
 function getArticleImages(article) {
-  return article.images?.length > 0 ? article.images : (article.cover ? [article.cover] : [])
+  const source = article.images?.length > 0 ? article.images : (article.cover ? [article.cover] : [])
+  return source
+    .map((image, index) => {
+      if (typeof image === 'string') return { url: image, afterParagraph: index === 0 ? null : index }
+      return image
+    })
+    .filter((image) => image?.url)
 }
 
 export default function NewsDetail() {
@@ -37,6 +43,9 @@ export default function NewsDetail() {
 
   const body = (article.content || article.digest || '').split('\n').filter(Boolean)
   const images = getArticleImages(article)
+  const coverImage = images[0]
+  const inlineImages = images.slice(1)
+  const fallbackImages = inlineImages.filter((image) => !image.afterParagraph || Number(image.afterParagraph) > body.length)
 
   return (
     <div>
@@ -65,27 +74,53 @@ export default function NewsDetail() {
       {/* Body */}
       <section className="py-16 lg:py-24 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          {images.length > 0 && (
+          {coverImage && (
             <ScrollReveal>
-              <div className="mb-10 space-y-4">
-                {images.map((image, i) => (
-                  <img key={i} src={image} alt="" className="w-full rounded-2xl object-contain bg-gray-50 shadow-lg" />
-                ))}
-              </div>
+              <img src={coverImage.url} alt="" className="mb-10 w-full rounded-2xl object-contain bg-gray-50 shadow-lg" />
             </ScrollReveal>
           )}
 
           <ScrollReveal>
             <article className="prose max-w-none">
               {body.length > 0 ? (
-                body.map((p, i) => (
-                  <p key={i} className="text-gray-700 leading-relaxed text-base lg:text-lg mb-5">{p}</p>
-                ))
+                body.map((p, i) => {
+                  const paragraphNumber = i + 1
+                  const paragraphImages = inlineImages.filter((image) => Number(image.afterParagraph) === paragraphNumber)
+                  return (
+                    <div key={i}>
+                      <p className="text-gray-700 leading-relaxed text-base lg:text-lg mb-5">{p}</p>
+                      {paragraphImages.length > 0 && (
+                        <div className="my-8 space-y-5">
+                          {paragraphImages.map((image, imageIndex) => (
+                            <img key={imageIndex} src={image.url} alt="" className="w-full rounded-xl object-contain bg-gray-50 shadow-md" />
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )
+                })
               ) : (
-                <p className="text-gray-400 text-center py-8">暂无详细内容</p>
+                inlineImages.length > 0 ? (
+                  <div className="space-y-5">
+                    {inlineImages.map((image, i) => (
+                      <img key={i} src={image.url} alt="" className="w-full rounded-xl object-contain bg-gray-50 shadow-md" />
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-400 text-center py-8">暂无详细内容</p>
+                )
               )}
             </article>
           </ScrollReveal>
+          {body.length > 0 && fallbackImages.length > 0 && (
+            <ScrollReveal>
+              <div className="mt-8 space-y-5">
+                {fallbackImages.map((image, i) => (
+                  <img key={i} src={image.url} alt="" className="w-full rounded-xl object-contain bg-gray-50 shadow-md" />
+                ))}
+              </div>
+            </ScrollReveal>
+          )}
         </div>
       </section>
 
@@ -117,7 +152,7 @@ export default function NewsDetail() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {relatedArticles.map((ra) => (
                 <Link key={ra.id} to={`/news/${ra.id}`} className="group bg-gray-50 rounded-xl p-4 border border-gray-100 hover:border-green-200 transition-all">
-                  {getArticleImages(ra)[0] && <img src={getArticleImages(ra)[0]} alt="" className="w-full h-24 object-contain rounded-lg mb-3" />}
+                  {getArticleImages(ra)[0] && <img src={getArticleImages(ra)[0].url} alt="" className="w-full h-24 object-contain rounded-lg mb-3" />}
                   <p className="text-xs text-gray-400 mb-1">{ra.date}</p>
                   <p className="text-sm font-medium text-gray-700 group-hover:text-green-700 transition-colors line-clamp-2">{ra.title}</p>
                 </Link>

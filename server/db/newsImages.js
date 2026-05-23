@@ -18,5 +18,21 @@ export async function ensureNewsImagesColumn() {
 
 export function normalizeNewsImages({ images, cover }) {
   const source = Array.isArray(images) ? images : (cover ? [cover] : [])
-  return source.map((image) => String(image || '').trim()).filter(Boolean)
+  return source
+    .map((image, index) => {
+      if (typeof image === 'string') {
+        const url = image.trim()
+        return url ? { url, afterParagraph: index === 0 ? null : index } : null
+      }
+
+      const url = String(image?.url || '').trim()
+      if (!url) return null
+
+      const afterParagraph = Number.parseInt(image.afterParagraph, 10)
+      return {
+        url,
+        afterParagraph: index === 0 || !Number.isFinite(afterParagraph) || afterParagraph < 1 ? null : afterParagraph,
+      }
+    })
+    .filter(Boolean)
 }
