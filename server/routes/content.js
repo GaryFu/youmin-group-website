@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import pool from '../db/pool.js'
 import auth from '../middleware/auth.js'
+import { ensureNewsImagesColumn, normalizeNewsImages } from '../db/newsImages.js'
 
 const JSONB_KEYS = ['site', 'home', 'about', 'culture', 'industry', 'innovation', 'green', 'partners', 'contact']
 
@@ -50,9 +51,10 @@ router.put('/:key', auth, async (req, res, next) => {
 // ── News (relational) ──
 async function getNews(req, res, next) {
   try {
+    await ensureNewsImagesColumn()
     const jsonb = await pool.query("SELECT data FROM content WHERE key = 'news'")
     const pageData = jsonb.rows[0]?.data || { title: '新闻动态', subtitle: 'NEWS & UPDATES' }
-    const articles = await pool.query('SELECT id, title, digest, content, url, cover, category, date FROM news_articles ORDER BY date DESC, sort_order ASC')
+    const articles = await pool.query('SELECT id, title, digest, content, url, cover, images, category, date FROM news_articles ORDER BY date DESC, sort_order ASC')
     res.json({ key: 'news', data: { ...pageData, articles: articles.rows }, updatedAt: new Date().toISOString() })
   } catch (err) { next(err) }
 }
@@ -70,6 +72,7 @@ async function putNews(req, res, next) {
     )
     // Sync articles: delete and re-insert
     if (Array.isArray(articles)) {
+      await ensureNewsImagesColumn()
       // Batch upsert: delete removed, insert/update changed
       const existing = await pool.query('SELECT id FROM news_articles')
       const existingIds = new Set(existing.rows.map(r => r.id))
@@ -77,16 +80,17 @@ async function putNews(req, res, next) {
 
       for (let i = 0; i < articles.length; i++) {
         const a = articles[i]
+        const images = normalizeNewsImages(a)
         if (a.id) {
           updatedIds.add(a.id)
           await pool.query(
-            'UPDATE news_articles SET title=$1, digest=$2, url=$3, cover=$4, category=$5, date=$6, sort_order=$7 WHERE id=$8',
-            [a.title, a.digest || '', a.url || '', a.cover || '', a.category || '集团新闻', a.date, i, a.id]
+            'UPDATE news_articles SET title=$1, digest=$2, content=$3, url=$4, cover=$5, images=$6, category=$7, date=$8, sort_order=$9 WHERE id=$10',
+            [a.title, a.digest || '', a.content || '', '', images[0] || '', JSON.stringify(images), a.category || '集团新闻', a.date, i, a.id]
           )
         } else {
           const result = await pool.query(
-            'INSERT INTO news_articles (title, digest, url, cover, category, date, sort_order) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING id',
-            [a.title, a.digest || '', a.url || '', a.cover || '', a.category || '集团新闻', a.date, i]
+            'INSERT INTO news_articles (title, digest, content, url, cover, images, category, date, sort_order) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id',
+            [a.title, a.digest || '', a.content || '', '', images[0] || '', JSON.stringify(images), a.category || '集团新闻', a.date, i]
           )
           updatedIds.add(result.rows[0].id)
         }

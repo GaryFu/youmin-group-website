@@ -1,21 +1,102 @@
 import { useState, useEffect, useCallback } from 'react'
 import EditorShell from '../../components/admin/EditorShell'
 import Toast from '../../components/admin/Toast'
-import { Search, X, Plus, Trash2, Edit3, Newspaper, ChevronLeft, ChevronRight, PlusCircle } from 'lucide-react'
+import { Search, X, Plus, Trash2, Edit3, Newspaper, ChevronLeft, ChevronRight, PlusCircle, Upload, Image as ImageIcon } from 'lucide-react'
 
 const PAGE_SIZE = 20
 
 function ArticleEditor({ article, categories, onSave, onCancel }) {
-  const [form, setForm] = useState({ ...article })
+  const normalizeArticle = (item) => ({
+    ...item,
+    images: item.images?.length > 0 ? item.images : (item.cover ? [item.cover] : []),
+    url: '',
+  })
 
-  useEffect(() => { setForm({ ...article }) }, [article])
+  const [form, setForm] = useState(() => normalizeArticle(article))
+  const [uploading, setUploading] = useState(-1)
+  const [error, setError] = useState(null)
+
+  useEffect(() => { setForm(normalizeArticle(article)) }, [article])
 
   const setField = (f, v) => setForm((p) => ({ ...p, [f]: v }))
+
+  const handleImageUpload = async (file, slotIndex) => {
+    setUploading(slotIndex)
+    try {
+      let blob = file
+      if (file.size > 500 * 1024) {
+        blob = await new Promise((resolve) => {
+          const img = new Image()
+          img.onload = () => {
+            const canvas = document.createElement('canvas')
+            const scale = Math.min(1, 1600 / Math.max(img.width, img.height))
+            canvas.width = img.width * scale
+            canvas.height = img.height * scale
+            canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height)
+            canvas.toBlob((b) => resolve(b || file), 'image/jpeg', 0.75)
+          }
+          img.src = URL.createObjectURL(file)
+        })
+      }
+
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => resolve(reader.result)
+        reader.onerror = reject
+        reader.readAsDataURL(blob)
+      })
+      const ext = file.name.split('.').pop() || 'jpg'
+      const safeName = Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext
+      const token = JSON.parse(localStorage.getItem('youmin_admin_auth') || '{}').token
+      const res = await fetch('/api/upload/image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token || ''}` },
+        body: JSON.stringify({ image: base64, filename: safeName }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || '上传失败')
+      if (!data.url) throw new Error('服务器未返回图片地址')
+
+      setForm((prev) => {
+        const images = [...(prev.images || [])]
+        images[slotIndex] = data.url
+        return { ...prev, images, cover: images[0] || '' }
+      })
+    } catch (err) {
+      setError('图片上传失败：' + err.message)
+      setTimeout(() => setError(null), 3000)
+    }
+    setUploading(-1)
+  }
+
+  const addImage = () => setForm((prev) => ({ ...prev, images: [...(prev.images || []), ''] }))
+  const handleBatchUpload = async (files) => {
+    const fileList = Array.from(files || [])
+    if (fileList.length === 0) return
+
+    const startIndex = (form.images || []).length
+    setForm((prev) => ({ ...prev, images: [...(prev.images || []), ...fileList.map(() => '')] }))
+    for (let i = 0; i < fileList.length; i++) {
+      await handleImageUpload(fileList[i], startIndex + i)
+    }
+  }
+
+  const removeImage = (index) => setForm((prev) => {
+    const images = [...(prev.images || [])]
+    images.splice(index, 1)
+    return { ...prev, images, cover: images[0] || '' }
+  })
+
+  const handleSave = () => {
+    const images = (form.images || []).filter(Boolean)
+    onSave({ ...form, images, cover: images[0] || '', url: '' })
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
       <div className="absolute inset-0 bg-black/30" onClick={onCancel} />
       <div className="relative w-full max-w-lg bg-white h-full overflow-y-auto shadow-2xl">
+        {error && <div className="fixed top-4 left-1/2 z-[100] -translate-x-1/2 rounded-xl border border-red-200 bg-red-50 px-5 py-3 text-center text-sm font-medium text-red-700 shadow-lg">{error}</div>}
         <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between z-10">
           <h3 className="font-bold text-gray-900">{form.id ? '编辑文章' : '新增文章'}</h3>
           <button onClick={onCancel} className="p-2 hover:bg-gray-100 rounded-lg"><X size={18} /></button>
@@ -30,9 +111,33 @@ function ArticleEditor({ article, categories, onSave, onCancel }) {
           </div>
           <div><label className="block text-xs text-gray-500 mb-1">摘要</label><textarea value={form.digest || ''} onChange={(e) => setField('digest', e.target.value)} rows={2} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" /></div>
           <div><label className="block text-xs text-gray-500 mb-1">正文</label><textarea value={form.content || ''} onChange={(e) => setField('content', e.target.value)} rows={6} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" /></div>
-          <div><label className="block text-xs text-gray-500 mb-1">链接</label><input type="text" value={form.url || ''} onChange={(e) => setField('url', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" /></div>
+          <div>
+            <label className="block text-xs text-gray-500 mb-2">文章图片（多张）</label>
+            <div className="space-y-2">
+              {(form.images || []).map((img, i) => (
+                <div key={i} className="flex items-center gap-2 rounded-lg border border-gray-100 bg-gray-50/60 p-2">
+                  <div className="h-14 w-20 shrink-0 overflow-hidden rounded-md bg-white border border-gray-100 flex items-center justify-center">
+                    {img ? <img src={img} alt="" className="h-full w-full object-contain" /> : <ImageIcon size={18} className="text-gray-300" />}
+                  </div>
+                  <span className="flex-1 truncate text-xs text-gray-500">{img || `图片 ${i + 1}`}</span>
+                  <label className={`cursor-pointer rounded px-2 py-1 text-xs flex items-center gap-1 ${uploading === i ? 'bg-green-100 text-green-600' : 'bg-white text-gray-500 hover:bg-green-50 hover:text-green-600'}`}>
+                    <Upload size={12} />{uploading === i ? '上传中' : '上传'}
+                    <input type="file" accept="image/*" className="hidden" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleImageUpload(file, i); e.target.value = '' }} />
+                  </label>
+                  <button type="button" onClick={() => removeImage(i)} className="p-1.5 text-red-300 hover:text-red-500"><Trash2 size={13} /></button>
+                </div>
+              ))}
+            </div>
+            <div className="mt-2 flex flex-wrap items-center gap-3">
+              <label className="inline-flex cursor-pointer items-center gap-1 text-xs text-green-600 hover:text-green-700">
+                <Upload size={12} /> 上传多张图片
+                <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => { handleBatchUpload(e.target.files); e.target.value = '' }} />
+              </label>
+              <button type="button" onClick={addImage} className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-green-700"><Plus size={12} /> 添加空位</button>
+            </div>
+          </div>
           <div className="flex gap-3 pt-4 border-t border-gray-100">
-            <button onClick={() => onSave(form)} className="flex-1 bg-green-600 text-white py-2.5 rounded-lg font-medium text-sm hover:bg-green-700">保存</button>
+            <button onClick={handleSave} className="flex-1 bg-green-600 text-white py-2.5 rounded-lg font-medium text-sm hover:bg-green-700">保存</button>
             <button onClick={onCancel} className="px-6 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50">取消</button>
           </div>
         </div>
@@ -110,7 +215,7 @@ function NewsList() {
           {categories.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
         <span className="text-xs text-gray-400">共 {total} 篇</span>
-        <button onClick={() => setEditing({ date: new Date().toISOString().slice(0, 10), category: '集团新闻', title: '', digest: '', content: '', url: '' })} className="ml-auto px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 flex items-center gap-1.5">
+        <button onClick={() => setEditing({ date: new Date().toISOString().slice(0, 10), category: '集团新闻', title: '', digest: '', content: '', images: [] })} className="ml-auto px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 flex items-center gap-1.5">
           <PlusCircle size={16} /> 新增文章
         </button>
       </div>

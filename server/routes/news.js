@@ -1,12 +1,14 @@
 import { Router } from 'express'
 import pool from '../db/pool.js'
 import auth from '../middleware/auth.js'
+import { ensureNewsImagesColumn, normalizeNewsImages } from '../db/newsImages.js'
 
 const router = Router()
 
 // GET /api/news — paginated, searchable
 router.get('/', async (req, res, next) => {
   try {
+    await ensureNewsImagesColumn()
     const page = Math.max(1, parseInt(req.query.page) || 1)
     const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 20))
     const search = req.query.search || ''
@@ -50,6 +52,7 @@ router.get('/', async (req, res, next) => {
 // GET /api/news/:id — single article
 router.get('/:id', async (req, res, next) => {
   try {
+    await ensureNewsImagesColumn()
     const result = await pool.query('SELECT * FROM news_articles WHERE id = $1', [req.params.id])
     if (result.rows.length === 0) return res.status(404).json({ error: '文章不存在' })
     res.json(result.rows[0])
@@ -59,10 +62,12 @@ router.get('/:id', async (req, res, next) => {
 // PUT /api/news/:id — update article
 router.put('/:id', auth, async (req, res, next) => {
   try {
-    const { title, digest, content, url, cover, category, date } = req.body
+    await ensureNewsImagesColumn()
+    const { title, digest, content, cover, images, category, date } = req.body
+    const imageArray = normalizeNewsImages({ images, cover })
     await pool.query(
-      'UPDATE news_articles SET title=$1, digest=$2, content=$3, url=$4, cover=$5, category=$6, date=$7 WHERE id=$8',
-      [title, digest || '', content || '', url || '', cover || '', category || '集团新闻', date, req.params.id]
+      'UPDATE news_articles SET title=$1, digest=$2, content=$3, url=$4, cover=$5, images=$6, category=$7, date=$8 WHERE id=$9',
+      [title, digest || '', content || '', '', imageArray[0] || '', JSON.stringify(imageArray), category || '集团新闻', date, req.params.id]
     )
     res.json({ success: true })
   } catch (err) { next(err) }
@@ -71,10 +76,12 @@ router.put('/:id', auth, async (req, res, next) => {
 // POST /api/news — create article
 router.post('/', auth, async (req, res, next) => {
   try {
-    const { title, digest, content, url, cover, category, date } = req.body
+    await ensureNewsImagesColumn()
+    const { title, digest, content, cover, images, category, date } = req.body
+    const imageArray = normalizeNewsImages({ images, cover })
     const result = await pool.query(
-      'INSERT INTO news_articles (title, digest, content, url, cover, category, date, sort_order) VALUES ($1,$2,$3,$4,$5,$6,$7,0) RETURNING *',
-      [title, digest || '', content || '', url || '', cover || '', category || '集团新闻', date || new Date().toISOString().slice(0, 10)]
+      'INSERT INTO news_articles (title, digest, content, url, cover, images, category, date, sort_order) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,0) RETURNING *',
+      [title, digest || '', content || '', '', imageArray[0] || '', JSON.stringify(imageArray), category || '集团新闻', date || new Date().toISOString().slice(0, 10)]
     )
     res.json(result.rows[0])
   } catch (err) { next(err) }

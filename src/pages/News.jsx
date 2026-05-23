@@ -6,6 +6,10 @@ import { useContent } from '../context/ContentContext'
 
 const PAGE_SIZE = 6
 
+function getArticleImages(article) {
+  return article.images?.length > 0 ? article.images : (article.cover ? [article.cover] : [])
+}
+
 export default function News() {
   const { getContent } = useContent()
   const newsContent = getContent('news')
@@ -62,12 +66,12 @@ export default function News() {
               <Link to={`/news/${featured.id}`} className="block mb-10 group">
                 <div className="bg-white rounded-xl border border-gray-100 shadow-md hover:shadow-xl hover:border-green-200 transition-all overflow-hidden">
                   <div className="grid md:grid-cols-5">
-                    {featured.cover && (
+                    {getArticleImages(featured)[0] && (
                       <div className="md:col-span-2 bg-gray-50">
-                        <img src={featured.cover} alt="" className="w-full h-48 md:h-full object-contain" />
+                        <img src={getArticleImages(featured)[0]} alt="" className="w-full h-48 md:h-full object-contain" />
                       </div>
                     )}
-                    <div className={`p-8 flex flex-col justify-center ${featured.cover ? 'md:col-span-3' : 'md:col-span-5'}`}>
+                    <div className={`p-8 flex flex-col justify-center ${getArticleImages(featured)[0] ? 'md:col-span-3' : 'md:col-span-5'}`}>
                       <div className="flex items-center gap-3 mb-3">
                         <span className="text-xs font-medium bg-green-50 text-green-600 px-2.5 py-1 rounded-full">{featured.category}</span>
                         <span className="text-xs text-gray-400 flex items-center gap-1"><Calendar size={12} />{featured.date}</span>
@@ -94,9 +98,9 @@ export default function News() {
                   to={`/news/${article.id}`}
                   className="block bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-lg hover:border-green-200 transition-all group h-full overflow-hidden"
                 >
-                  {article.cover && (
+                  {getArticleImages(article)[0] && (
                     <div className="bg-gray-50">
-                      <img src={article.cover} alt="" className="w-full h-40 object-contain" />
+                      <img src={getArticleImages(article)[0]} alt="" className="w-full h-40 object-contain" />
                     </div>
                   )}
                   <div className="p-6">

@@ -1,7 +1,11 @@
 import { useParams, Link } from 'react-router-dom'
-import { ArrowLeft, ChevronRight, Calendar, ExternalLink, ChevronLeft } from 'lucide-react'
+import { ArrowLeft, ChevronRight, Calendar, ChevronLeft } from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
 import { useContent } from '../context/ContentContext'
+
+function getArticleImages(article) {
+  return article.images?.length > 0 ? article.images : (article.cover ? [article.cover] : [])
+}
 
 export default function NewsDetail() {
   const { articleId } = useParams()
@@ -32,6 +36,7 @@ export default function NewsDetail() {
     .slice(0, 4)
 
   const body = (article.content || article.digest || '').split('\n').filter(Boolean)
+  const images = getArticleImages(article)
 
   return (
     <div>
@@ -52,11 +57,6 @@ export default function NewsDetail() {
             <h1 className="text-2xl lg:text-3xl font-bold text-white mb-4 leading-tight">{article.title}</h1>
             <div className="flex items-center gap-4 text-green-300 text-sm">
               <span className="flex items-center gap-1"><Calendar size={14} /> {article.date}</span>
-              {article.url && (
-                <a href={article.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-white transition-colors">
-                  <ExternalLink size={14} /> 查看原文
-                </a>
-              )}
             </div>
           </ScrollReveal>
         </div>
@@ -65,9 +65,13 @@ export default function NewsDetail() {
       {/* Body */}
       <section className="py-16 lg:py-24 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          {article.cover && (
+          {images.length > 0 && (
             <ScrollReveal>
-              <img src={article.cover} alt="" className="w-full rounded-2xl object-contain bg-gray-50 mb-10 shadow-lg" />
+              <div className="mb-10 space-y-4">
+                {images.map((image, i) => (
+                  <img key={i} src={image} alt="" className="w-full rounded-2xl object-contain bg-gray-50 shadow-lg" />
+                ))}
+              </div>
             </ScrollReveal>
           )}
 
@@ -78,19 +82,10 @@ export default function NewsDetail() {
                   <p key={i} className="text-gray-700 leading-relaxed text-base lg:text-lg mb-5">{p}</p>
                 ))
               ) : (
-                <p className="text-gray-400 text-center py-8">暂无详细内容，请查看原文。</p>
+                <p className="text-gray-400 text-center py-8">暂无详细内容</p>
               )}
             </article>
           </ScrollReveal>
-
-          {article.url && (
-            <div className="mt-10 flex justify-center">
-              <a href={article.url} target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-xl text-sm font-medium hover:bg-green-700 transition-colors shadow-lg shadow-green-600/20">
-                <ExternalLink size={16} /> 在微信中查看原文
-              </a>
-            </div>
-          )}
         </div>
       </section>
 
@@ -122,7 +117,7 @@ export default function NewsDetail() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {relatedArticles.map((ra) => (
                 <Link key={ra.id} to={`/news/${ra.id}`} className="group bg-gray-50 rounded-xl p-4 border border-gray-100 hover:border-green-200 transition-all">
-                  {ra.cover && <img src={ra.cover} alt="" className="w-full h-24 object-contain rounded-lg mb-3" />}
+                  {getArticleImages(ra)[0] && <img src={getArticleImages(ra)[0]} alt="" className="w-full h-24 object-contain rounded-lg mb-3" />}
                   <p className="text-xs text-gray-400 mb-1">{ra.date}</p>
                   <p className="text-sm font-medium text-gray-700 group-hover:text-green-700 transition-colors line-clamp-2">{ra.title}</p>
                 </Link>

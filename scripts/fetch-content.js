@@ -8,6 +8,17 @@ const { Pool } = pg
 
 const JSONB_KEYS = ['site', 'home', 'about', 'culture', 'industry', 'innovation', 'green', 'partners', 'contact']
 
+async function ensureNewsImagesColumn(pool) {
+  await pool.query(`ALTER TABLE news_articles ADD COLUMN IF NOT EXISTS images JSONB NOT NULL DEFAULT '[]'::jsonb`)
+  await pool.query(`
+    UPDATE news_articles
+    SET images = jsonb_build_array(cover)
+    WHERE jsonb_array_length(images) = 0
+      AND cover IS NOT NULL
+      AND cover <> ''
+  `)
+}
+
 async function fetchContent() {
   if (!process.env.DATABASE_URL) {
     console.warn('DATABASE_URL not set, skipping content fetch. Using defaults.')
@@ -37,9 +48,10 @@ async function fetchContent() {
 
     // News: relational
     try {
+      await ensureNewsImagesColumn(pool)
       const newsMeta = await pool.query("SELECT data FROM content WHERE key = 'news'")
       const pageData = newsMeta.rows[0]?.data || { title: '新闻动态', subtitle: 'NEWS & UPDATES' }
-      const articlesResult = await pool.query('SELECT id, title, digest, content, url, cover, category, date FROM news_articles ORDER BY date DESC, sort_order ASC')
+      const articlesResult = await pool.query('SELECT id, title, digest, content, url, cover, images, category, date FROM news_articles ORDER BY date DESC, sort_order ASC')
       content.news = { ...pageData, articles: articlesResult.rows }
       console.log(`  ✓ news (${articlesResult.rows.length} articles)`)
     } catch (err) {
