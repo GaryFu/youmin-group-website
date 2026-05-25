@@ -136,21 +136,20 @@ function ProductEditor({ product, subcategories, onSave, onCancel }) {
               </div>
             </div>
           </div>
-          {!form.id && (
-            <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">所属子分类</label>
-              <select
-                value={form.subcategory_id || ''}
-                onChange={(e) => setField('subcategory_id', parseInt(e.target.value))}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-              >
-                <option value="">请选择</option>
-                {(subcategories || []).map((s) => (
-                  <option key={s.id} value={s.id}>{s.cat_name} · {s.name}</option>
-                ))}
-              </select>
-            </div>
-          )}
+          <div>
+            <label className="block text-xs font-medium text-gray-500 mb-1">所属子分类</label>
+            <select
+              value={form.subcategory_id || ''}
+              onChange={(e) => setField('subcategory_id', e.target.value ? parseInt(e.target.value) : '')}
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+            >
+              <option value="">请选择</option>
+              {(subcategories || []).map((s) => (
+                <option key={s.id} value={s.id}>{s.cat_name} · {s.name}</option>
+              ))}
+            </select>
+            {form.id && <p className="mt-1 text-[11px] text-gray-400">修改后保存，可将该产品移动到新的子分类。</p>}
+          </div>
           <div>
             <label className="block text-xs font-medium text-gray-500 mb-1">产品名</label>
             <input type="text" value={form.name || ''} onChange={(e) => setField('name', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />

@@ -200,12 +200,20 @@ router.get('/:id', auth, async (req, res, next) => {
 router.put('/:id', auth, async (req, res, next) => {
   try {
     const { id } = req.params
-    const { name, slug, tagline, desc, image, images, url, features, specs } = req.body
+    const { name, slug, tagline, desc, image, images, url, subcategory_id, features, specs } = req.body
     const imageArray = images?.length > 0 ? images : (image ? [image] : [])
+    const currentResult = await pool.query('SELECT * FROM product_items WHERE id = $1', [id])
+    if (currentResult.rows.length === 0) return res.status(404).json({ error: '产品不存在' })
+    const current = currentResult.rows[0]
+    const nextSubcategoryId = subcategory_id || current.subcategory_id
+    if (!name || !nextSubcategoryId) {
+      return res.status(400).json({ error: '产品名和子分类为必填项' })
+    }
+    const safeSlug = await getUniqueProductSlug(nextSubcategoryId, slug || name, id)
 
     await pool.query(
-      `UPDATE product_items SET name=$1, slug=$2, tagline=$3, "desc"=$4, image=$5, images=$6, url=$7 WHERE id=$8`,
-      [name, slug, tagline, desc, imageArray[0] || null, JSON.stringify(imageArray), url, id]
+      `UPDATE product_items SET subcategory_id=$1, name=$2, slug=$3, tagline=$4, "desc"=$5, image=$6, images=$7, url=$8 WHERE id=$9`,
+      [nextSubcategoryId, name, safeSlug, tagline, desc, imageArray[0] || null, JSON.stringify(imageArray), url, id]
     )
 
     if (Array.isArray(features)) {
